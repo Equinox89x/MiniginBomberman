@@ -35,7 +35,7 @@ namespace dae {
 
 					player->SetMovement(m_Movement);
 					input->SetMoveSpeed(m_MoveSpeed, m_Movement, false);
-					tex->SetTexture(m_Movement, m_TextureName + (player->GetShouldDig() ? "Dig.png" : ".png"), 0.1f, 2);
+					tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 3);
 				}
 			}
 			else {
@@ -50,7 +50,7 @@ namespace dae {
 				}
 				player->SetMovement(m_Movement);
 				input->SetMoveSpeed(m_MoveSpeed, m_Movement, false);
-				tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 2);
+				tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 3);
 			}
 			
 		}
@@ -84,7 +84,7 @@ namespace dae {
 
 					player->SetMovement(m_Movement);
 					input->SetMoveSpeed(m_MoveSpeed, m_Movement, true);
-					tex->SetTexture(m_Movement, m_TextureName + (player->GetShouldDig() ? "Dig.png" : ".png"), 0.1f, 2);
+					tex->SetTexture(m_Movement, m_TextureName +".png", 0.1f, 3);
 				}
 			}
 			else {
@@ -115,7 +115,7 @@ namespace dae {
 				}
 				player->SetMovement(m_Movement);
 				input->SetMoveSpeed(m_MoveSpeed, m_Movement, true);
-				tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 2);
+				tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 3);
 			}
 		};
 

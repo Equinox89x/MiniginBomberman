@@ -33,8 +33,6 @@ namespace dae {
         MathLib::ELifeState GetState() { return m_PlayerState; };
         SDL_Rect GetCollider() { return m_PathwayColliderRect; };
         SDL_Rect GetCharacterCollider() { return m_Rect; };
-        bool GetShouldDig() { return m_ShouldDig; };
-        void SetShouldDig(bool shouldDig) { m_ShouldDig = shouldDig; };
 
         void SetNextTileId(int id) { m_NextTileId = id; };
         void SetCurrentTileId(int id);        
@@ -64,7 +62,7 @@ namespace dae {
         void SetGhostLocation(glm::vec2 loc) { m_CachedLocation = loc; };
 
     private:
-        bool m_IsController{ false }, m_ShouldDig{ false }, m_IsAutonomous{ false }, m_CanMove{ true };
+        bool m_IsController{ false }, m_IsAutonomous{ false }, m_CanMove{ true };
         int m_NextTileId{ 0 }, m_CurrentTileId{ 0 };
         std::map<MathLib::Movement, int> m_CurrentSurroundingTiles{};
         Scene* m_Scene{ nullptr };
