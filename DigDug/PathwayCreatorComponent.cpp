@@ -16,12 +16,15 @@ void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string
 	m_pScene->Add(go);
 	GetGameObject()->AddChild(go.get());
 	go->SetName(std::to_string(id));
-	go->GetTransform()->Translate(pos);
+
+	glm::vec2 pos2{ pos.x, pos.y };
+	go->GetTransform()->Translate(pos2);
 
 	auto comp{ std::make_unique<TextureComponent>() };
 	comp->SetName(std::to_string(id));
-	comp->SetTexture("Levels/hole.png");
+	comp->SetTexture("Levels/blocker.png");
 	auto component{ go->AddComponent(std::move(comp)) };
+	//component->SetPosition(pos.x, pos.y);
 	component->SetIsVisible(false);
 
 	SDL_Rect rect{ static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(Cellsize), static_cast<int>(Cellsize )};
@@ -45,6 +48,13 @@ void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string
 		pathWay.PathState = EPathState::EnemySpawn;
 		m_EnemySpawns.push_back(pathWay);
 	}
+	else if (type == "blocker") {
+		component->SetIsVisible(true);
+	}	
+	else if (type == "breakable") {
+		component->SetTexture("Levels/breakable.png");
+		component->SetIsVisible(true);
+	}
 
 	m_Pathways.insert({ id, pathWay });
 }
@@ -62,26 +72,26 @@ void dae::PathwayCreatorComponent::Update()
 void dae::PathwayCreatorComponent::HandleEntityTileOverlap()
 {
 	auto& children{ GetGameObject()->GetChildren() };
-	if (m_pCharacters.size() > 0) {
+	//if (m_pCharacters.size() > 0) {
 
-		for (const auto& character : m_pCharacters) {
-			if (character->IsMarkedForDestroy()) continue;
-			const auto& moveComp{ character->GetComponent<EntityMovementComponent>() };
-			for (const auto& gameObj : children)
-			{
-				auto texComp{ gameObj->GetComponent<TextureComponent>() };
-				if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCollider())) {
-					moveComp->SetNextTileId(std::stoi(gameObj->GetName()));
-				}
-				if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCharacterCollider())) {
-					moveComp->SetCurrentTileId(std::stoi(gameObj->GetName()));
-				}
-			}
+	//	for (const auto& character : m_pCharacters) {
+	//		if (character->IsMarkedForDestroy()) continue;
+	//		const auto& moveComp{ character->GetComponent<EntityMovementComponent>() };
+	//		for (const auto& gameObj : children)
+	//		{
+	//			auto texComp{ gameObj->GetComponent<TextureComponent>() };
+	//			if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCollider())) {
+	//				moveComp->SetNextTileId(std::stoi(gameObj->GetName()));
+	//			}
+	//			if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCharacterCollider())) {
+	//				moveComp->SetCurrentTileId(std::stoi(gameObj->GetName()));
+	//			}
+	//		}
 
-			moveComp->SetShouldDig(m_Pathways[moveComp->GetNextTileId()].PathState == EPathState::Blocker);
-			//ActivatePathway(moveComp->GetCurrentTileId());
-		}
-	}
+	//		//moveComp->SetShouldDig(m_Pathways[moveComp->GetNextTileId()].PathState == EPathState::Blocker);
+	//		//ActivatePathway(moveComp->GetCurrentTileId());
+	//	}
+	//}
 
 	if (m_pEnemies.size() > 0) {
 		for (const auto& character : m_pEnemies) {

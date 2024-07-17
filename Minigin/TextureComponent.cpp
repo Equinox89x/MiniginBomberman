@@ -34,8 +34,8 @@ void dae::TextureComponent::Update()
     }
 }
 void dae::TextureComponent::HandleAnimation() {
-    const auto& pos{ GetGameObject()->GetTransform()->GetFullPosition() };
-    const auto& scale{ GetGameObject()->GetTransform()->GetScale() };
+    const auto& pos{ GetGameObject()->GetTransform()->GetWorld().Position };
+    const auto& scale{ GetGameObject()->GetTransform()->GetWorld().Scale };
 
     SDL_QueryTexture(m_Texture.m_pTexture->GetSDLTexture(), nullptr, nullptr, &m_SrcRect.w, &m_SrcRect.h);
     if (m_Texture.NrOfFrames > 1) {
@@ -107,25 +107,25 @@ void dae::TextureComponent::RemoveTexture(MathLib::Movement movement)
 
 void dae::TextureComponent::SetPosition(const float x, const float y)
 {
-    GetGameObject()->GetTransform()->Translate(x, y, 0.0f);
+    GetGameObject()->GetTransform()->SetPosition(x, y, 0.0f);
     m_needsUpdate = true;
 }
 
 void dae::TextureComponent::AddPosition(const float x, const float y)
 {
-    GetGameObject()->GetTransform()->AddTranslate(x, y, 0.0f);
+    GetGameObject()->GetTransform()->Translate(x, y);
     m_needsUpdate = true;
 }
 
-void dae::TextureComponent::SetWorldPosition(const float x, const float y)
+void dae::TextureComponent::SetWorldPosition(const float /*x*/, const float /*y*/)
 {
-    GetGameObject()->GetTransform()->TranslateWorld(x, y, 0.0f);
-    m_needsUpdate = true;
+    //GetGameObject()->GetTransform()->Translate(x, y, 0.0f);
+    //m_needsUpdate = true;
 }
 
 void dae::TextureComponent::Scale(const float x, const float y)
 {
-    GetGameObject()->GetTransform()->SetScale(x, y, 1);
+    GetGameObject()->GetTransform()->SetScale(x, y);
     m_needsUpdate = true;
 }
 

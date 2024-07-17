@@ -41,7 +41,7 @@ void dae::TextObjectComponent::Render() const
 	if (m_textTexture != nullptr)
 	{
 		if (auto go{ GetGameObject() }) {
-			auto pos = go->GetTransform()->GetFullPosition();
+			auto pos = go->GetTransform()->GetWorld().Position;
 			//const auto& pos2 = GetGameObject()->GetTransform()->GetPosition();
 			//pos.x += pos2.x;
 			//pos.y += pos2.y;
@@ -59,7 +59,7 @@ void dae::TextObjectComponent::SetText(const std::string& text)
 
 void dae::TextObjectComponent::SetPosition(const float x, const float y)
 {
-	GetGameObject()->GetTransform()->TranslateWorld(x, y, 0.0f);
+	GetGameObject()->GetTransform()->SetPosition(x, y, 0.0f);
 	m_needsUpdate = true;
 }
 

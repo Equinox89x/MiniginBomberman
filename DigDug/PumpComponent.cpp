@@ -45,25 +45,25 @@ void dae::PumpComponent::ResetMovement(glm::vec3 /*loc*/)
 		{
 		case MathLib::UP:
 			m_StartPos.x -= texComp2.w /3;
-				//GetGameObject()->GetTransform()->AddTranslate(0, -speed);
+				//GetGameObject()->GetTransform()->Translate(0, -speed);
 				GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Character/PumpUp.png", 0.1f, 1);
 
 			break;
 		case MathLib::DOWN:
 			m_StartPos.x -= texComp2.w / 3;
-			//GetGameObject()->GetTransform()->AddTranslate(0, speed);
+			//GetGameObject()->GetTransform()->Translate(0, speed);
 			GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Character/PumpDown.png", 0.1f, 1);
 
 			break;
 		case MathLib::LEFT:
 			m_StartPos.y -= texComp2.h / 3;
-			//GetGameObject()->GetTransform()->AddTranslate(-speed, 0);
+			//GetGameObject()->GetTransform()->Translate(-speed, 0);
 			GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Character/PumpLeft.png", 0.1f, 1);
 
 			break;
 		case MathLib::RIGHT:
 			m_StartPos.y -= texComp2.h / 3;
-			//GetGameObject()->GetTransform()->AddTranslate(speed, 0);
+			//GetGameObject()->GetTransform()->Translate(speed, 0);
 			GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Character/PumpRight.png", 0.1f, 1);
 
 			break;
@@ -168,22 +168,22 @@ void dae::PumpComponent::UpdatePosition()
 	switch (dir)
 	{
 	case MathLib::UP:
-		GetGameObject()->GetTransform()->AddTranslate(0, -speed);
+		GetGameObject()->GetTransform()->Translate(0, -speed);
 		//GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Character/PumpUp.png", 0.1f, 1);
 
 		break;
 	case MathLib::DOWN:
-		GetGameObject()->GetTransform()->AddTranslate(0, speed);
+		GetGameObject()->GetTransform()->Translate(0, speed);
 		//GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Character/PumpDown.png", 0.1f, 1);
 
 		break;
 	case MathLib::LEFT:
-		GetGameObject()->GetTransform()->AddTranslate(-speed, 0);
+		GetGameObject()->GetTransform()->Translate(-speed, 0);
 		//GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Character/PumpLeft.png", 0.1f, 1);
 
 		break;
 	case MathLib::RIGHT:
-		GetGameObject()->GetTransform()->AddTranslate(speed, 0);
+		GetGameObject()->GetTransform()->Translate(speed, 0);
 		//GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Character/PumpRight.png", 0.1f, 1);
 
 		break;

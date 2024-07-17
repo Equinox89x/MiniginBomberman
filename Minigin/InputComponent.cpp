@@ -11,7 +11,7 @@ void dae::InputComponent::UpdatePos(float dt)
 	{
 		auto go{ GetGameObject() };
 
-		glm::vec3 currentPosition = go->GetTransform()->GetPosition();
+		glm::vec2 currentPosition = go->GetTransform()->GetWorld().Position;
 		glm::vec3 futurePosition = glm::vec3(currentPosition.x + (m_Movespeed.x * dt), currentPosition.y + (m_Movespeed.y * dt), 1);
 
 		if (futurePosition.x < 0 || futurePosition.x >(WindowSizeX) - PlayerSize) return;
@@ -20,7 +20,7 @@ void dae::InputComponent::UpdatePos(float dt)
 		if (!m_Movement[MathLib::Side::Bottom] && m_Movespeed.y > 0) return;
 		if (!m_Movement[MathLib::Side::Left] && m_Movespeed.x < 0) return;
 		if (!m_Movement[MathLib::Side::Right] && m_Movespeed.x > 0) return;
-		go->GetTransform()->Translate(futurePosition.x, futurePosition.y, 0);
+		go->GetTransform()->SetPosition(futurePosition.x, futurePosition.y);
 		//m_Movespeed = glm::vec3{ 0,0,0 };
 	}
 }
@@ -42,16 +42,17 @@ void dae::InputComponent::Update()
 
 	for (const auto& pathWay : pathwayComp->GetPathways()) {
 		const auto rect{ pathWay.second.Rect };
-		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::LEFT), rect) && pathWay.second.PathState == EPathState::Blocker) {
+		const auto canMove{ pathWay.second.PathState == EPathState::Blocker || pathWay.second.PathState == EPathState::Breakable };
+		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::LEFT), rect) && canMove) {
 			m_Movement[MathLib::Side::Left] = false;
 		}
-		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::RIGHT), rect) && pathWay.second.PathState == EPathState::Blocker) {
+		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::RIGHT), rect) && canMove) {
 			m_Movement[MathLib::Side::Right] = false;
 		}
-		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::DOWN), rect) && pathWay.second.PathState == EPathState::Blocker) {
+		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::DOWN), rect) && canMove) {
 			m_Movement[MathLib::Side::Bottom] = false;
 		}
-		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::UP), rect) && pathWay.second.PathState == EPathState::Blocker) {
+		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::UP), rect) && canMove) {
 			m_Movement[MathLib::Side::Top] = false;
 		}
 

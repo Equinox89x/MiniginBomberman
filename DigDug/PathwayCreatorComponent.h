@@ -7,7 +7,7 @@
 namespace dae {
 
 	enum class EPathState {
-		Tile, Blocker, Spawn, EnemySpawn, Rock
+		Tile, Blocker, Spawn, EnemySpawn, Breakable
 	};
 
 	struct PathWay {

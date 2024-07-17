@@ -50,7 +50,7 @@ void dae::GameObject::Update() {
 	if (auto comp{ GetComponent<TextureComponent>() }) {
 		if (GetTransform()) {
 			m_Center.x = comp->GetRect().x + (comp->GetRect().w/1.75f);
-			m_Center.y = GetTransform()->GetFullPosition().y + comp->GetRect().h / 2.3f;
+			m_Center.y = GetTransform()->GetWorld().Position.y + comp->GetRect().h / 2.3f;
 		}
 	}
 
@@ -151,7 +151,7 @@ void dae::GameObject::RemoveComponent(const std::unique_ptr<Component>& comp)
 	}
 }
 
-void dae::GameObject::SetParent(GameObject* const child, bool updateTransforms)
+void dae::GameObject::SetParent(GameObject* const child, bool /*updateTransforms*/)
 {
 	//recursive child check, check slides too
 	if (child) {
@@ -160,10 +160,10 @@ void dae::GameObject::SetParent(GameObject* const child, bool updateTransforms)
 			child->m_pParent->m_pChildren.erase(std::remove(child->m_pParent->m_pChildren.begin(), child->m_pParent->m_pChildren.end(), child));
 		}
 
-		if (updateTransforms) {
-			//Update position, rotation and scale
-			m_pTransform->SetDirty();
-		}
+		//if (updateTransforms) {
+		//	//Update position, rotation and scale
+		//	m_pTransform->SetDirty();
+		//}
 
 		//Set the given parent on itself.
 		child->m_pParent = this;
@@ -189,32 +189,42 @@ void dae::GameObject::RemoveChild(GameObject* gameObject)
 			m_pChildren.erase(std::remove(m_pChildren.begin(), m_pChildren.end(), gameObject));
 
 			//	Update position, rotation and scale
-			m_pTransform->UpdateTransforms();
+			m_pTransform->Init();
 		}
 	}
 }
 
-dae::GameObject* dae::GameObject::AddChild(GameObject* gameObject, bool updateTransforms)
+dae::GameObject* dae::GameObject::AddChild(GameObject* gameObject, bool /*updateTransforms*/)
 {
-	if (gameObject) {
-		// Remove the given child from the child's previous parent if it had a parent before
-		if (gameObject->m_pParent) {
-			gameObject->m_pParent->RemoveChild(gameObject);
-		}
+	//if (gameObject) {
+	//	// Remove the given child from the child's previous parent if it had a parent before
+	//	if (gameObject->m_pParent) {
+	//		gameObject->m_pParent->RemoveChild(gameObject);
+	//	}
 
-		//Set itself as parent of the child
+	//	//Set itself as parent of the child
+	//	gameObject->m_pParent = this;
+
+
+	//	//Update position, rotation and scale
+	//	if (updateTransforms) {
+	//		gameObject->GetTransform()->Init();
+	//	}
+
+	//	gameObject->Init();
+
+	//	//Add the child to its children list.
+	//	m_pChildren.push_back(std::move(gameObject));
+	//}
+
+	if (std::find(m_pChildren.begin(), m_pChildren.end(), gameObject) == m_pChildren.end())
+	{
+		m_pChildren.push_back(gameObject);
 		gameObject->m_pParent = this;
-
-
-		//Update position, rotation and scale
-		if (updateTransforms) {
-			gameObject->GetTransform()->UpdateTransforms();
-		}
 
 		gameObject->Init();
 
-		//Add the child to its children list.
-		m_pChildren.push_back(std::move(gameObject));
+		gameObject->GetTransform()->Init();
 	}
 
 	return gameObject;

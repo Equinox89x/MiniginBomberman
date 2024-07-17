@@ -83,7 +83,7 @@ void dae::EntityMovementComponent::Update()
 			m_LastDir = "Right";
 		}
 
-		GetGameObject()->GetTransform()->AddTranslate(dx * 2.f, dy * 2.f);
+		GetGameObject()->GetTransform()->Translate(dx * 2.f, dy * 2.f);
 		GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Enemies/" + m_EnemyName + (m_IsGhostMode ? "Ghost" : m_LastDir) + ".png", 0.2f, 2);
 	}
 }
@@ -131,7 +131,7 @@ void dae::EntityMovementComponent::CheckMovement(const std::map<int, PathWay>& p
 		if (paths.size() > 0) {
 			m_CachedLocation = paths[randIndex].Middle;
 
-			if (m_CachedLocation.x > GetGameObject()->GetTransform()->GetFullPosition().x) {
+			if (m_CachedLocation.x > GetGameObject()->GetTransform()->GetWorld().Position.x) {
 				m_Movement = MathLib::RIGHT;
 				m_LastDir = "Right";
 			}

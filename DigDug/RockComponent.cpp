@@ -67,7 +67,7 @@ void dae::RockComponent::Update()
 
 			if (m_MoveTimer > 0) {
 				m_MoveTimer -= dt;
-				GetGameObject()->GetTransform()->AddTranslate(0, m_Speed * dt);
+				GetGameObject()->GetTransform()->Translate(0, m_Speed * dt);
 			}
 			else {
 				m_DeathTimer -= dt;
@@ -76,7 +76,7 @@ void dae::RockComponent::Update()
 
 					auto go{ std::make_shared<dae::GameObject>() };
 					go->AddComponent(std::make_unique<TextObjectComponent>(std::to_string(GetScore()), font));
-					go->AddComponent(std::make_unique<FloatingScoreComponent>(m_Scene, GetScore(), GetGameObject()->GetTransform()->GetFullPosition()));
+					go->AddComponent(std::make_unique<FloatingScoreComponent>(m_Scene, GetScore(), GetGameObject()->GetTransform()->GetWorld().Position));
 					m_Scene->Add(go);
 
 					m_PlayerHasPassed = false;

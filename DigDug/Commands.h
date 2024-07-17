@@ -180,7 +180,7 @@ namespace dae {
 			m_pObject->GetComponent<dae::AudioComponent>()->PlayPumpSound();
 			m_pObject->GetComponent<dae::EntityMovementComponent>()->DisableMovement(true);
 			m_pObject->GetComponent<dae::InputComponent>()->DisableMovement(true);
-			m_pPumpObject->GetComponent<dae::PumpComponent>()->Pump(m_pObject->GetTransform()->GetFullPosition());
+			m_pPumpObject->GetComponent<dae::PumpComponent>()->Pump(m_pObject->GetTransform()->GetWorld().Position);
 		}
 		void Execute(glm::vec2) override {};
 

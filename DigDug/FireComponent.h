@@ -9,7 +9,7 @@ namespace dae {
     class FireComponent  final : public Component
     {
     public:
-        FireComponent(Scene* scene, GameObject* gameObject) : m_Scene{ scene }, m_EnemyGameObject{ gameObject }, m_OriginLocation { gameObject->GetTransform()->GetWorldPosition() } { };
+        FireComponent(Scene* scene, GameObject* gameObject) : m_Scene{ scene }, m_EnemyGameObject{ gameObject }, m_OriginLocation { gameObject->GetTransform()->GetWorld().Position } { };
         ~FireComponent() = default;
         FireComponent(const FireComponent&) = delete;
         FireComponent(FireComponent&&) noexcept = delete;

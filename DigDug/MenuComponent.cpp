@@ -16,7 +16,7 @@ void dae::MenuComponent::CycleGameMode(bool isMoveUp)
 		}
 	}
 	m_ControlTimer = 0.2f;
-	GetGameObject()->GetTransform()->TranslateWorld(m_CursorLocations[static_cast<int>(m_SelectedGameMode)]);
+	GetGameObject()->GetTransform()->SetPosition(m_CursorLocations[static_cast<int>(m_SelectedGameMode)]);
 
 }
 

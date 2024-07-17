@@ -9,7 +9,7 @@ void dae::FloatingScoreComponent::Update()
 {
 	auto dt{ Timer::GetInstance().GetDeltaTime() };
 	float speed{ dt * m_Speed };
-	GetGameObject()->GetTransform()->AddTranslate(0, -speed);
+	GetGameObject()->GetTransform()->Translate(0, -speed);
 	m_Timer -= dt;
 	if (m_Timer < 0) {
 		m_Timer = 50;

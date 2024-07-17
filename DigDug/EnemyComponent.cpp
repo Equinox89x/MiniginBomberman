@@ -72,7 +72,7 @@ void dae::DeathState::Init()
 
 	gameObject->GetComponent<EnemyComponent>()->SetLifeState(MathLib::ELifeState::DEAD);
 	auto font{ ResourceManager::GetInstance().LoadFont("Emulogic.ttf", 10) };
-	auto pos{ gameObject->GetTransform()->GetFullPosition() };
+	auto pos{ gameObject->GetTransform()->GetWorld().Position };
 
 	auto rect{ gameObject->GetComponent<TextureComponent>()->GetRect() };
 
