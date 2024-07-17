@@ -40,7 +40,7 @@ void dae::AudioComponent::PlayPlayerDeathSound(bool shouldStopPreviousSound)
 	m_pAudioService->PlaySound(m_PlayerDeathSoundId);
 }
 
-void dae::AudioComponent::PlayPumpSound(bool shouldStopPreviousSound)
+void dae::AudioComponent::PlayBombSound(bool shouldStopPreviousSound)
 {
 	if (shouldStopPreviousSound) m_pAudioService->StopSound();
 	m_pAudioService->SetEffectVolume(60);

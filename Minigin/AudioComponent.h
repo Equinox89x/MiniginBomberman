@@ -17,7 +17,7 @@ namespace dae {
 		virtual void Update() override;
 
 		void PlayPlayerDeathSound(bool shouldStopPreviousSound = false);
-		void PlayPumpSound(bool shouldStopPreviousSound = false);
+		void PlayBombSound(bool shouldStopPreviousSound = false);
 		void PlayShootSound(bool shouldStopPreviousSound = false);
 		void PlayFireSound(bool shouldStopPreviousSound = false);
 		void PlayGhostSound(bool shouldStopPreviousSound = false);

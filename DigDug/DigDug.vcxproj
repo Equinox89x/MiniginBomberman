@@ -197,7 +197,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\*.dll" "$(O
     <ClCompile Include="Observers.cpp" />
     <ClCompile Include="PathwayCreatorComponent.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
-    <ClCompile Include="PumpComponent.cpp" />
+    <ClCompile Include="BombComponent.cpp" />
     <ClCompile Include="RockComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -212,7 +212,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\*.dll" "$(O
     <ClInclude Include="Observers.h" />
     <ClInclude Include="PathwayCreatorComponent.h" />
     <ClInclude Include="PlayerComponent.h" />
-    <ClInclude Include="PumpComponent.h" />
+    <ClInclude Include="BombComponent.h" />
     <ClInclude Include="RockComponent.h" />
   </ItemGroup>
   <ItemGroup>

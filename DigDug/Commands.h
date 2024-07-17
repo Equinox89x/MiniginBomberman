@@ -8,7 +8,7 @@
 #include "Command.h"
 #include "ValuesComponent.h"
 #include "AudioComponent.h"
-#include "../DigDug/PumpComponent.h"
+#include "../DigDug/BombComponent.h"
 #include "../DigDug/MenuComponent.h"
 #include "../DigDug/HighscoreComponent.h"
 #include "../DigDug/PlayerComponent.h"
@@ -166,21 +166,22 @@ namespace dae {
 
 		GameObject* m_pObject;
 	};
+	#pragma endregion
 
 
-	class Pump final : public Command
+	class StartBomb final : public Command
 	{
 	public:
-		Pump(Scene* scene, GameObject* const object, GameObject* const pumpObject) : m_pObject(object), m_pPumpObject{ pumpObject }, m_Scene{ scene } {}
+		StartBomb(Scene* scene, GameObject* const object) : m_pObject(object), m_Scene{ scene } {}
 		void Execute() override
 		{
 			if (!m_Scene->GetIsActive()) return;
 
-			if (!m_pObject && !m_pPumpObject) return;
-			m_pObject->GetComponent<dae::AudioComponent>()->PlayPumpSound();
-			m_pObject->GetComponent<dae::EntityMovementComponent>()->DisableMovement(true);
-			m_pObject->GetComponent<dae::InputComponent>()->DisableMovement(true);
-			m_pPumpObject->GetComponent<dae::PumpComponent>()->Pump(m_pObject->GetTransform()->GetWorld().Position);
+			if (!m_pObject) return;
+			auto pBombObject = std::make_shared<GameObject>();
+			m_Scene->Add(pBombObject);
+			pBombObject->AddComponent(std::make_unique<dae::AudioComponent>());
+			pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene))->StartBomb(m_pObject->GetTransform()->GetWorld().Position);
 		}
 		void Execute(glm::vec2) override {};
 
@@ -188,7 +189,6 @@ namespace dae {
 		Scene* m_Scene{ nullptr };
 
 		GameObject* m_pObject;
-		GameObject* m_pPumpObject;
 	};
 
 	class FygarFire final : public Command
@@ -209,7 +209,6 @@ namespace dae {
 
 		GameObject* m_pObject;
 	};
-	#pragma endregion
 
 #pragma region Menu
 	class CycleGameMode final : public Command
