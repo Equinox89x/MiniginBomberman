@@ -7,7 +7,7 @@
 namespace dae {
 
 	enum class EPathState {
-		Tile, Blocker, Spawn, EnemySpawn, Breakable
+		Tile, Blocker, Spawn, EnemySpawn, Breakable, Bomb
 	};
 
 	struct PathWay {
@@ -37,6 +37,7 @@ namespace dae {
 
 		void AddPathway(int id, glm::vec2 pos, std::string type);
 		void ActivatePathway(int id);
+		void ActivateBomb(int id);
 		virtual void Update() override;
 		virtual void Init() override;
 		virtual void Render() const override;

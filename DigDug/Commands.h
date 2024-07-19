@@ -180,8 +180,8 @@ namespace dae {
 			if (!m_pObject) return;
 			auto pBombObject = std::make_shared<GameObject>();
 			m_Scene->Add(pBombObject);
-			pBombObject->AddComponent(std::make_unique<dae::AudioComponent>());
-			pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene))->StartBomb(m_pObject->GetTransform()->GetWorld().Position);
+			int tileId{ m_pObject->GetComponent<EntityMovementComponent>()->GetCurrentTileId() };
+			pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene))->StartBomb(m_pObject->GetTransform()->GetWorld().Position, tileId);
 		}
 		void Execute(glm::vec2) override {};
 

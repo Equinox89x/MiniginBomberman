@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "RockComponent.h"
 #include <memory>
+#include <iostream>
 
 dae::PathwayCreatorComponent::~PathwayCreatorComponent()
 {
@@ -18,7 +19,7 @@ void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string
 	go->SetName(std::to_string(id));
 
 	glm::vec2 pos2{ pos.x, pos.y };
-	go->GetTransform()->Translate(pos2);
+	go->GetTransform()->SetPosition(pos2);
 
 	auto comp{ std::make_unique<TextureComponent>() };
 	comp->SetName(std::to_string(id));
@@ -36,6 +37,9 @@ void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string
 		rect,
 	};
 
+	//glm::vec2 pos{ pathWay.Rect.x - pathWay.Rect.w, pathWay.Rect.y };
+	//pathWay.TextureComponent->SetPosition(pos);
+
 
 	if(type == "tile"){
 		pathWay.PathState = EPathState::Tile;
@@ -49,19 +53,35 @@ void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string
 		m_EnemySpawns.push_back(pathWay);
 	}
 	else if (type == "blocker") {
+		pathWay.PathState = EPathState::Blocker;
 		component->SetIsVisible(true);
 	}	
 	else if (type == "breakable") {
+		pathWay.PathState = EPathState::Breakable;
 		component->SetTexture("Levels/breakable.png");
 		component->SetIsVisible(true);
 	}
 
 	m_Pathways.insert({ id, pathWay });
 }
+
 void dae::PathwayCreatorComponent::ActivatePathway(int id)
 {
-	m_Pathways[id].TextureComponent->SetIsVisible(true);
-	m_Pathways[id].PathState = EPathState::Tile;
+	if (m_Pathways.find(id) != m_Pathways.end()) {
+		auto& path{ m_Pathways[id] };
+		if (path.PathState != EPathState::Blocker) {
+			path.TextureComponent->SetIsVisible(false);
+			path.PathState = EPathState::Tile;
+		}
+	}
+}
+
+void dae::PathwayCreatorComponent::ActivateBomb(int id)
+{
+	if (m_Pathways.find(id) != m_Pathways.end()) {
+		m_Pathways[id].TextureComponent->SetIsVisible(true);
+		m_Pathways[id].PathState = EPathState::Bomb;
+	}
 }
 
 void dae::PathwayCreatorComponent::Update()
@@ -72,26 +92,26 @@ void dae::PathwayCreatorComponent::Update()
 void dae::PathwayCreatorComponent::HandleEntityTileOverlap()
 {
 	auto& children{ GetGameObject()->GetChildren() };
-	//if (m_pCharacters.size() > 0) {
+	if (m_pCharacters.size() > 0) {
 
-	//	for (const auto& character : m_pCharacters) {
-	//		if (character->IsMarkedForDestroy()) continue;
-	//		const auto& moveComp{ character->GetComponent<EntityMovementComponent>() };
-	//		for (const auto& gameObj : children)
-	//		{
-	//			auto texComp{ gameObj->GetComponent<TextureComponent>() };
-	//			if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCollider())) {
-	//				moveComp->SetNextTileId(std::stoi(gameObj->GetName()));
-	//			}
-	//			if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCharacterCollider())) {
-	//				moveComp->SetCurrentTileId(std::stoi(gameObj->GetName()));
-	//			}
-	//		}
+		for (const auto& character : m_pCharacters) {
+			if (character->IsMarkedForDestroy()) continue;
+			const auto& moveComp{ character->GetComponent<EntityMovementComponent>() };
+			for (const auto& gameObj : children)
+			{
+				auto texComp{ gameObj->GetComponent<TextureComponent>() };
+				if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCollider())) {
+					moveComp->SetNextTileId(std::stoi(gameObj->GetName()));
+				}
+				if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCharacterCollider())) {
+					moveComp->SetCurrentTileId(std::stoi(gameObj->GetName()));
+				}
+			}
 
-	//		//moveComp->SetShouldDig(m_Pathways[moveComp->GetNextTileId()].PathState == EPathState::Blocker);
-	//		//ActivatePathway(moveComp->GetCurrentTileId());
-	//	}
-	//}
+			//moveComp->SetShouldDig(m_Pathways[moveComp->GetNextTileId()].PathState == EPathState::Blocker);
+			//ActivatePathway(moveComp->GetCurrentTileId());
+		}
+	}
 
 	if (m_pEnemies.size() > 0) {
 		for (const auto& character : m_pEnemies) {
@@ -129,8 +149,11 @@ void dae::PathwayCreatorComponent::Render() const
 		if (path.second.PathState == EPathState::Blocker) {
 			SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 255, 0, 0, 255);
 		}
-		else {
+		else if(path.second.PathState == EPathState::Tile){
 			SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 0, 200, 0, 200);
+		}
+		else {
+			SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 0, 0, 255, 200);
 		}
 		SDL_RenderFillRect(Renderer::GetInstance().GetSDLRenderer(), &rrect);
 		SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 100, 100, 0, 200);

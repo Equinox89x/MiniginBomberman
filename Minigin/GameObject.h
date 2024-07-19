@@ -8,6 +8,8 @@
 #define WindowSizeX 640
 #define WindowSizeY 640
 #define GridSize 16
+#define GridSizeX 16
+#define GridSizeY 13
 //#define WindowBuffer 80
 
 #define Margin 40.f

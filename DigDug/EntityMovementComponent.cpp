@@ -102,13 +102,13 @@ void dae::EntityMovementComponent::Render() const
 	//SDL_RenderFillRect(Renderer::GetInstance().GetSDLRenderer(), &m_Rect);	
 	//SDL_RenderFillRect(Renderer::GetInstance().GetSDLRenderer(), &m_PathwayColliderRect);
 
+	//auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
+	//auto pathways{ comp->GetPathways() };
+	//auto rrect2 = pathways.at(m_CurrentTileId).TextureComponent->GetRect();
 	//SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 0, 255, 255, 255); // Set the color to red
-	//auto rrect = SDL_Rect{ int(m_CachedLocation.x), int(m_CachedLocation.y), 1,1 };
-	//SDL_RenderFillRect(Renderer::GetInstance().GetSDLRenderer(), &rrect);	
-	//auto rrect2 = SDL_Rect{ int(GetGameObject()->GetCenter().x), int(GetGameObject()->GetCenter().y), 5,5 };
+	////auto rrect = SDL_Rect{ int(m_CachedLocation.x), int(m_CachedLocation.y), 1,1 };
+	////SDL_RenderFillRect(Renderer::GetInstance().GetSDLRenderer(), &rrect);	
 	//SDL_RenderFillRect(Renderer::GetInstance().GetSDLRenderer(), &rrect2);
-
-
 }
 
 void dae::EntityMovementComponent::CheckMovement(const std::map<int, PathWay>& pathways)
