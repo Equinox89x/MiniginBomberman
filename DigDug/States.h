@@ -45,7 +45,7 @@ namespace dae
 		void Update(GameObject* pGameObject) override;
 
 	private:
-		float m_DeathTimer{ 0.3f };
+		float m_DeathTimer{ 1.3f };
 	};
 
 	class DeathState : public EntityState

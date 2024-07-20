@@ -58,10 +58,10 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 	m_BombStrength = gameObject->GetComponent<BombComponent>()->GetBombStrength();
 
 	// TODO trigger explosion & animation sequence
-	auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
+	auto* comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
 	auto& pathways{ comp->GetPathways() };
 
-	const auto path{ pathways.at(m_TileId) };
+	const auto& path{ pathways.at(m_TileId) };
 	glm::vec2 pos2{ path.Rect.x - path.Rect.w, path.Rect.y };
 	for (int i = 1; i <= m_BombStrength; i++) {
 		int leftIndex = (m_TileId - i);
@@ -91,7 +91,6 @@ void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<in
 			pathways.at(index).TextureComponent->SetPosition(pos.x, pos.y);
 			pathways.at(index).TextureComponent->SetIsVisible(true);
 			pathways.at(index).TextureComponent->SetTexture("Character/explosion.png", 0.3f, 4);
-
 		}
 		else {
 			outHitWall = true;

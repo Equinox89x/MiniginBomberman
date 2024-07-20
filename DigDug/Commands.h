@@ -26,6 +26,7 @@ namespace dae {
 		{
 			if (!m_Scene->GetIsActive()) return;
 			auto player{ m_pObject->GetComponent<dae::EntityMovementComponent>() };
+			if (!player)return;
 
 			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() }) {
 				auto state{ playerComp->GetState() };
@@ -57,6 +58,7 @@ namespace dae {
 		void Execute(glm::vec2 pos) override {
 			if (!m_Scene->GetIsActive()) return;
 			auto player{ m_pObject->GetComponent<dae::EntityMovementComponent>() };
+			if (!player)return;
 
 			m_MoveSpeed = glm::vec3{ pos.x * 100,pos.y * -100, 0 };
 			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() }) {
@@ -136,8 +138,8 @@ namespace dae {
 		{
 			if (!m_Scene->GetIsActive()) return;
 
-			m_pObject->GetComponent<dae::InputComponent>()->StopMovement(m_Movement);
-			m_pObject->GetComponent<dae::TextureComponent>()->RemoveTexture(m_Movement);
+			if (auto comp{ m_pObject->GetComponent<dae::InputComponent>() }) comp->StopMovement(m_Movement);
+			if (auto comp{ m_pObject->GetComponent<dae::TextureComponent>() }) comp->RemoveTexture(m_Movement);
 		}
 		void Execute(glm::vec2) override {};
 
@@ -178,10 +180,12 @@ namespace dae {
 			if (!m_Scene->GetIsActive()) return;
 
 			if (!m_pObject) return;
-			auto pBombObject = std::make_shared<GameObject>();
-			m_Scene->Add(pBombObject);
-			int tileId{ m_pObject->GetComponent<EntityMovementComponent>()->GetCurrentTileId() };
-			pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene))->StartBomb(tileId, 2);
+			if (auto comp{ m_pObject->GetComponent<EntityMovementComponent>() }) {
+				auto pBombObject = std::make_shared<GameObject>();
+				m_Scene->Add(pBombObject);
+				int tileId{ comp->GetCurrentTileId() };
+				pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene))->StartBomb(tileId, 2);
+			}
 		}
 		void Execute(glm::vec2) override {};
 

@@ -82,7 +82,7 @@ void dae::PathwayCreatorComponent::ActivateBomb(int id)
 {
 	if (m_Pathways.find(id) != m_Pathways.end()) {
 		m_Pathways[id].TextureComponent->SetIsVisible(true);
-		m_Pathways[id].PathState = MathLib::EPathState::Bomb;
+		m_Pathways[id].PathState = MathLib::EPathState::Explosion;
 	}
 }
 
@@ -101,7 +101,7 @@ void dae::PathwayCreatorComponent::HandleEntityTileOverlap()
 			const auto& moveComp{ character->GetComponent<EntityMovementComponent>() };
 			for (const auto& gameObj : children)
 			{
-				HandleTileChange(gameObj, moveComp);
+				HandleTileChange(character, gameObj, moveComp);
 			}
 		}
 	}
@@ -112,28 +112,32 @@ void dae::PathwayCreatorComponent::HandleEntityTileOverlap()
 			const auto& moveComp{ enemy->GetComponent<EntityMovementComponent>() };
 			for (const auto& gameObj : children)
 			{
-				HandleTileChange(gameObj, moveComp);
+				HandleTileChange(enemy, gameObj, moveComp);
 			}
 		}
 	}
 }
 
-void dae::PathwayCreatorComponent::HandleTileChange(dae::GameObject* const& gameObj, dae::EntityMovementComponent* const& moveComp)
+void dae::PathwayCreatorComponent::HandleTileChange(std::shared_ptr<GameObject> const& entity, dae::GameObject* const& path, dae::EntityMovementComponent* const& moveComp)
 {
-	auto texComp{ gameObj->GetComponent<TextureComponent>() };
+	auto texComp{ path->GetComponent<TextureComponent>() };
 	if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCollider())) {
-		moveComp->SetNextTileId(std::stoi(gameObj->GetName()));
+		moveComp->SetNextTileId(std::stoi(path->GetName()));
 	}
 	if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCharacterCollider())) {
-		moveComp->SetCurrentTileId(std::stoi(gameObj->GetName()));
+		moveComp->SetCurrentTileId(std::stoi(path->GetName()));
 	}
 
 	if (m_Pathways.at(moveComp->GetCurrentTileId()).PathState == MathLib::EPathState::Explosion) {
-		if (auto enemyComp{ gameObj->GetComponent<EnemyComponent>() }) {
-			enemyComp->SetState(new BombedState(m_pScene), MathLib::ELifeState::BOMBED);
+		if (auto enemyComp{ entity->GetComponent<EnemyComponent>() }) {
+			if (enemyComp->GetState() == MathLib::ELifeState::ALIVE) {
+				enemyComp->SetState(new BombedState(m_pScene), MathLib::ELifeState::BOMBED);
+			}
 		}
-		if (auto playerComp{ gameObj->GetComponent<PlayerComponent>() }) {
-			playerComp->SetState(new BombedState(m_pScene), MathLib::ELifeState::BOMBED);
+		if (auto playerComp{ entity->GetComponent<PlayerComponent>() }) {
+			if (playerComp->GetState() == MathLib::ELifeState::ALIVE) {
+				playerComp->SetState(new BombedState(m_pScene), MathLib::ELifeState::BOMBED);
+			}
 		}
 	}
 }

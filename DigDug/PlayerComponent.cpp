@@ -26,5 +26,5 @@ void dae::PlayerComponent::Render() const
 
 void dae::PlayerComponent::Reposition()
 {
-	GetGameObject()->GetTransform()->Translate(m_OriginalPosition);
+	GetGameObject()->GetTransform()->SetPosition(m_OriginalPosition);
 }

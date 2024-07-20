@@ -57,7 +57,7 @@ namespace dae {
 
 		void HandleEntityTileOverlap();
 
-		void HandleTileChange(GameObject* const& gameObj, EntityMovementComponent* const& moveComp);
+		void HandleTileChange(std::shared_ptr<GameObject> const& entity, dae::GameObject* const& path, dae::EntityMovementComponent* const& moveComp);
 
 	};
 }
