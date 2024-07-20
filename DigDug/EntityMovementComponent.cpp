@@ -119,7 +119,7 @@ void dae::EntityMovementComponent::CheckMovement(const std::map<int, PathWay>& p
 	{
 		auto path{ pathways.find(item.second) };
 		if (path != pathways.end()) {
-			if (path->second.PathState == EPathState::Tile) {
+			if (path->second.PathState == MathLib::EPathState::Tile) {
 					paths.push_back(path->second);
 			}
 		}

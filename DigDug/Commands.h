@@ -29,7 +29,7 @@ namespace dae {
 
 			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() }) {
 				auto state{ playerComp->GetState() };
-				if (state == MathLib::ELifeState::ALIVE || state == MathLib::ELifeState::INVINCIBLE) {
+				if (state == MathLib::ELifeState::ALIVE) {
 					auto input{ m_pObject->GetComponent<dae::InputComponent>() };
 					auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
 
@@ -78,7 +78,7 @@ namespace dae {
 				}
 
 				auto state{ playerComp->GetState() };
-				if (state == MathLib::ELifeState::ALIVE || state == MathLib::ELifeState::INVINCIBLE) {
+				if (state == MathLib::ELifeState::ALIVE) {
 					auto input{ m_pObject->GetComponent<dae::InputComponent>() };
 					auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
 
@@ -181,26 +181,7 @@ namespace dae {
 			auto pBombObject = std::make_shared<GameObject>();
 			m_Scene->Add(pBombObject);
 			int tileId{ m_pObject->GetComponent<EntityMovementComponent>()->GetCurrentTileId() };
-			pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene))->StartBomb(m_pObject->GetTransform()->GetWorld().Position, tileId);
-		}
-		void Execute(glm::vec2) override {};
-
-	private:
-		Scene* m_Scene{ nullptr };
-
-		GameObject* m_pObject;
-	};
-
-	class FygarFire final : public Command
-	{
-	public:
-		FygarFire(Scene* scene, GameObject* const object) : m_pObject(object), m_Scene{ scene } {}
-		void Execute() override
-		{
-			if (!m_Scene->GetIsActive()) return;
-
-			if (!m_pObject) return;
-			m_pObject->GetComponent<EnemyComponent>()->SetState(new BreatheFireState());
+			pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene))->StartBomb(tileId, 2);
 		}
 		void Execute(glm::vec2) override {};
 

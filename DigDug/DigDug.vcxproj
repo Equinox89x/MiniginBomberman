@@ -189,7 +189,6 @@ xcopy "$(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\*.dll" "$(O
   <ItemGroup>
     <ClCompile Include="EnemyComponent.cpp" />
     <ClCompile Include="EntityMovementComponent.cpp" />
-    <ClCompile Include="FireComponent.cpp" />
     <ClCompile Include="FloatingScoreComponent.cpp" />
     <ClCompile Include="HighscoreComponent.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -198,13 +197,12 @@ xcopy "$(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\*.dll" "$(O
     <ClCompile Include="PathwayCreatorComponent.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="BombComponent.cpp" />
-    <ClCompile Include="RockComponent.cpp" />
+    <ClCompile Include="States.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Commands.h" />
     <ClInclude Include="EnemyComponent.h" />
     <ClInclude Include="EntityMovementComponent.h" />
-    <ClInclude Include="FireComponent.h" />
     <ClInclude Include="FloatingScoreComponent.h" />
     <ClInclude Include="HighscoreComponent.h" />
     <ClInclude Include="Main.h" />
@@ -213,7 +211,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\*.dll" "$(O
     <ClInclude Include="PathwayCreatorComponent.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="BombComponent.h" />
-    <ClInclude Include="RockComponent.h" />
+    <ClInclude Include="States.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Minigin\Minigin.vcxproj">

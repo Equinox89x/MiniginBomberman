@@ -7,7 +7,6 @@
 #include "Commands.h"
 #include "TextObjectComponent.h"
 #include "SteamHolder.h"
-#include "RockComponent.h"
 #include <FileReader.h>
 #include "PlayerComponent.h"
 
@@ -86,40 +85,6 @@ void dae::EnemyDeathObserver::Notify(GameObject* /*go*/, Event& event)
 			}
 			m_Scene->GetGameObject(EnumStrings[Names::Global])->GetComponent<MenuComponent>()->SkipLevel();
 		}
-		break;
-	}
-}
-
-void dae::RockDeathObserver::Notify(GameObject* go, Event& event)
-{
-	auto comp{ go->GetComponent<RockComponent>() };
-	switch (event.GetEvent())
-	{
-	case EventType::RockDeath:
-		auto player{ m_Scene->GetGameObject(EnumStrings[Names::PlayerGeneral] + std::to_string(comp->GetPlayerId())) };
-		ValuesComponent* valueComp{ player->GetComponent<ValuesComponent>() };
-		valueComp->IncreaseScore(comp->GetScore());
-
-		auto enemies{ m_Scene->GetGameObjects(EnumStrings[Names::EnemyGeneral], false) };
-		if (enemies.size() <= 0) {
-			if (auto playerScore{ m_Scene->GetGameObject(EnumStrings[Names::Player0]) }) {
-				if (auto scoreComp{ playerScore->GetComponent<ValuesComponent>() }) {
-					FileReader* file{ new FileReader("../Data/save.json") };
-					file->WriteData({ {"Score", std::to_string(scoreComp->GetScores())} });
-					delete file;
-				}
-			}
-			m_Scene->GetGameObject(EnumStrings[Names::Global])->GetComponent<MenuComponent>()->SkipLevel();
-		}
-
-		if (go && !go->IsMarkedForDestroy()) {
-			/*if (auto comp{ go->GetComponent<RockComponent>() }) {
-				if (comp->IsMarkedForDestroy()) return;
-				comp->SetIsVisible(false);
-			}*/
-			go->MarkForDestroy();
-		}
-
 		break;
 	}
 }

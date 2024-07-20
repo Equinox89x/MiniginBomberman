@@ -266,6 +266,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\*.dll" "$(O
     <ClCompile Include="FPSCounterComponent.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="MathLib.cpp" />
     <ClCompile Include="Minigin.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="Renderer.cpp" />

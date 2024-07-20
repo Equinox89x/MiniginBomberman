@@ -48,19 +48,6 @@ namespace dae
 		Scene* m_Scene;
 
 	};
-
-	class RockDeathObserver final : public Observer
-	{
-	public:
-
-		RockDeathObserver(Scene* const scene) : m_Scene{ scene } {};
-		~RockDeathObserver() {};
-		void Notify(GameObject* go, Event& event) override;
-
-	private:
-		Scene* m_Scene;
-
-	};
 	
 	//class PumpEnemyOverlapObserver final : public Observer
 	//{

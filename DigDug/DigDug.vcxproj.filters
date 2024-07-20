@@ -45,9 +45,6 @@
     <ClCompile Include="Observers.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
-    <ClCompile Include="FireComponent.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="MenuComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
@@ -60,8 +57,8 @@
     <ClCompile Include="FloatingScoreComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="RockComponent.cpp">
-      <Filter>Source Files\Components</Filter>
+    <ClCompile Include="States.cpp">
+      <Filter>Source Files\Misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -86,9 +83,6 @@
     <ClInclude Include="Observers.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="FireComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="MenuComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
@@ -101,8 +95,8 @@
     <ClInclude Include="FloatingScoreComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="RockComponent.h">
-      <Filter>Header Files\Components</Filter>
+    <ClInclude Include="States.h">
+      <Filter>Header Files\Misc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -126,7 +126,15 @@ namespace MathLib {
 	};
 
 	enum ELifeState {
-		ALIVE, DEAD, RESPAWN, INVINCIBLE, INFLATING
+		ALIVE, DEAD, RESPAWN, BOMBED
+	};
+
+	enum EBombState {
+		Fuse, Explosion, Death
+	};
+
+	enum class EPathState {
+		Tile, Blocker, Spawn, EnemySpawn, Breakable, Bomb, Explosion
 	};
 
 	inline Side GetNonOverlappingSide(const SDL_Rect& rect1, const SDL_Rect& rect2) {

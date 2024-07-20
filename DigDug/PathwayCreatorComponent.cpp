@@ -2,9 +2,11 @@
 #include "GameObject.h"
 #include "EntityMovementComponent.h"
 #include "Renderer.h"
-#include "RockComponent.h"
 #include <memory>
 #include <iostream>
+#include "EnemyComponent.h"
+#include "PlayerComponent.h"
+#include <ValuesComponent.h>
 
 dae::PathwayCreatorComponent::~PathwayCreatorComponent()
 {
@@ -32,7 +34,7 @@ void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string
 	PathWay pathWay{
 		id,
 		component,
-		EPathState::Blocker,
+		MathLib::EPathState::Blocker,
 		{ rect.x + rect.w / 2, rect.y + rect.h / 2 },
 		rect,
 	};
@@ -42,22 +44,22 @@ void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string
 
 
 	if(type == "tile"){
-		pathWay.PathState = EPathState::Tile;
+		pathWay.PathState = MathLib::EPathState::Tile;
 	}
 	else if (type == "spawn") {
-		pathWay.PathState = EPathState::Spawn;
+		pathWay.PathState = MathLib::EPathState::Spawn;
 		m_Spawns.push_back(pathWay);
 	}
 	else if(type == "enemySpawn"){
-		pathWay.PathState = EPathState::EnemySpawn;
+		pathWay.PathState = MathLib::EPathState::EnemySpawn;
 		m_EnemySpawns.push_back(pathWay);
 	}
 	else if (type == "blocker") {
-		pathWay.PathState = EPathState::Blocker;
+		pathWay.PathState = MathLib::EPathState::Blocker;
 		component->SetIsVisible(true);
 	}	
 	else if (type == "breakable") {
-		pathWay.PathState = EPathState::Breakable;
+		pathWay.PathState = MathLib::EPathState::Breakable;
 		component->SetTexture("Levels/breakable.png");
 		component->SetIsVisible(true);
 	}
@@ -69,9 +71,9 @@ void dae::PathwayCreatorComponent::ActivatePathway(int id)
 {
 	if (m_Pathways.find(id) != m_Pathways.end()) {
 		auto& path{ m_Pathways[id] };
-		if (path.PathState != EPathState::Blocker) {
+		if (path.PathState != MathLib::EPathState::Blocker) {
 			path.TextureComponent->SetIsVisible(false);
-			path.PathState = EPathState::Tile;
+			path.PathState = MathLib::EPathState::Tile;
 		}
 	}
 }
@@ -80,7 +82,7 @@ void dae::PathwayCreatorComponent::ActivateBomb(int id)
 {
 	if (m_Pathways.find(id) != m_Pathways.end()) {
 		m_Pathways[id].TextureComponent->SetIsVisible(true);
-		m_Pathways[id].PathState = EPathState::Bomb;
+		m_Pathways[id].PathState = MathLib::EPathState::Bomb;
 	}
 }
 
@@ -99,39 +101,40 @@ void dae::PathwayCreatorComponent::HandleEntityTileOverlap()
 			const auto& moveComp{ character->GetComponent<EntityMovementComponent>() };
 			for (const auto& gameObj : children)
 			{
-				auto texComp{ gameObj->GetComponent<TextureComponent>() };
-				if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCollider())) {
-					moveComp->SetNextTileId(std::stoi(gameObj->GetName()));
-				}
-				if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCharacterCollider())) {
-					moveComp->SetCurrentTileId(std::stoi(gameObj->GetName()));
-				}
+				HandleTileChange(gameObj, moveComp);
 			}
-
-			//moveComp->SetShouldDig(m_Pathways[moveComp->GetNextTileId()].PathState == EPathState::Blocker);
-			//ActivatePathway(moveComp->GetCurrentTileId());
 		}
 	}
 
 	if (m_pEnemies.size() > 0) {
-		for (const auto& character : m_pEnemies) {
-			if (character->IsMarkedForDestroy()) continue;
-			const auto& moveComp{ character->GetComponent<EntityMovementComponent>() };
+		for (const auto& enemy : m_pEnemies) {
+			if (enemy->IsMarkedForDestroy()) continue;
+			const auto& moveComp{ enemy->GetComponent<EntityMovementComponent>() };
 			for (const auto& gameObj : children)
 			{
-				auto texComp{ gameObj->GetComponent<TextureComponent>() };
-				if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCollider())) {
-					moveComp->SetNextTileId(std::stoi(gameObj->GetName()));
-				}
-				if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCharacterCollider())) {
-					moveComp->SetCurrentTileId(std::stoi(gameObj->GetName()));
-				}
+				HandleTileChange(gameObj, moveComp);
 			}
 		}
 	}
-	else {
-		m_pCharacters = m_pScene->GetGameObjects(EnumStrings[PlayerGeneral], false);
-		m_pEnemies = m_pScene->GetGameObjects(EnumStrings[EnemyGeneral], false);
+}
+
+void dae::PathwayCreatorComponent::HandleTileChange(dae::GameObject* const& gameObj, dae::EntityMovementComponent* const& moveComp)
+{
+	auto texComp{ gameObj->GetComponent<TextureComponent>() };
+	if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCollider())) {
+		moveComp->SetNextTileId(std::stoi(gameObj->GetName()));
+	}
+	if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCharacterCollider())) {
+		moveComp->SetCurrentTileId(std::stoi(gameObj->GetName()));
+	}
+
+	if (m_Pathways.at(moveComp->GetCurrentTileId()).PathState == MathLib::EPathState::Explosion) {
+		if (auto enemyComp{ gameObj->GetComponent<EnemyComponent>() }) {
+			enemyComp->SetState(new BombedState(m_pScene), MathLib::ELifeState::BOMBED);
+		}
+		if (auto playerComp{ gameObj->GetComponent<PlayerComponent>() }) {
+			playerComp->SetState(new BombedState(m_pScene), MathLib::ELifeState::BOMBED);
+		}
 	}
 }
 
@@ -146,10 +149,10 @@ void dae::PathwayCreatorComponent::Render() const
 {
 	for (auto path : m_Pathways) {
 		auto rrect = path.second.Rect;
-		if (path.second.PathState == EPathState::Blocker) {
+		if (path.second.PathState == MathLib::EPathState::Blocker) {
 			SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 255, 0, 0, 255);
 		}
-		else if(path.second.PathState == EPathState::Tile){
+		else if(path.second.PathState == MathLib::EPathState::Tile){
 			SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 0, 200, 0, 200);
 		}
 		else {

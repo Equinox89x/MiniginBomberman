@@ -7,7 +7,6 @@
 #include <map>
 #include "Scene.h"
 
-
 namespace dae {
     class EntityMovementComponent final : public Component
     {

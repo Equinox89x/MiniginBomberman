@@ -4,11 +4,12 @@
 #include "Scene.h"
 #include "MathLib.h"
 #include "Scene.h"
+#include "States.h"
 
 namespace dae {
-    class PlayerState {
+    /*class EntityState {
     public:
-        virtual ~PlayerState() = default;
+        virtual ~EntityState() = default;
         virtual void Update() = 0;
         virtual void Init() = 0;
 
@@ -28,7 +29,7 @@ namespace dae {
         GameObject* gameObject{ nullptr };
     };
 
-    class RespawnState : public PlayerState {
+    class RespawnState : public EntityState {
     public:
         virtual void Init() override;
         virtual void Update() override;
@@ -37,7 +38,7 @@ namespace dae {
         float m_Timer{ 3 };
     };    
     
-    class DeadState : public PlayerState {
+    class DeadState : public EntityState {
     public:
         virtual void Init() override {};
         virtual void Update() override{};
@@ -45,7 +46,7 @@ namespace dae {
     private:
     };
 
-    class AliveState : public PlayerState {
+    class AliveState : public EntityState {
     public:
         virtual void Init() override {};
         virtual void Update() override;
@@ -54,14 +55,14 @@ namespace dae {
 
     };
 
-    class InvincibleState : public PlayerState {
+    class InvincibleState : public EntityState {
     public:
         virtual void Init() override {};
         virtual void Update() override;
     private:
         float m_Timer{ 3 };
 
-    };
+    };*/
 
     class PlayerComponent final : public Component
     {
@@ -72,32 +73,31 @@ namespace dae {
         PlayerComponent(PlayerComponent&&) noexcept = delete;
         PlayerComponent& operator=(const PlayerComponent&) = delete;
         PlayerComponent& operator=(PlayerComponent&&) noexcept = delete;
+        virtual void Init() override;
         virtual void Update() override;
         virtual void Render() const override;
-        virtual void Init() override;
 
         void Reposition();
 
-        MathLib::ELifeState GetState() { return m_State; };
-        void Respawn();
-        void SetState(PlayerState* state, MathLib::ELifeState lifeState) {
-            delete m_PlayerState;
-            m_State = lifeState;
-            m_PlayerState = state;
-            auto go{ GetGameObject() };
-            m_PlayerState->SetData(m_Scene, go);
-            m_PlayerState->Init();
+        void SetState(EntityState* playerState, MathLib::ELifeState lifeState) {
+            if (playerState)
+            {
+                if(m_PlayerState) m_PlayerState->OnEnd(GetGameObject());
+                m_PlayerState = std::unique_ptr<EntityState>(playerState);
+                m_State = lifeState;
+                if(m_PlayerState) m_PlayerState->OnStart(GetGameObject());
+            }
         }
-        PlayerState* GetPlayerState() { return m_PlayerState; };
+        MathLib::ELifeState GetState() { return m_State; };
+        EntityState* GetPlayerState() { return m_PlayerState.get(); };
 
 
     private:
         Scene* m_Scene{ nullptr };
-        PlayerState* m_PlayerState{ nullptr };
-
+        std::unique_ptr<EntityState> m_PlayerState{ nullptr };
         MathLib::ELifeState m_State{ MathLib::ELifeState::ALIVE };
+
         glm::vec2 m_OriginalPosition;
-        float m_InvincibilityTimer{ 3 };
     };
 }
 

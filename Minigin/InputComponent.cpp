@@ -42,7 +42,7 @@ void dae::InputComponent::Update()
 
 	for (const auto& pathWay : pathwayComp->GetPathways()) {
 		const auto rect{ pathWay.second.Rect };
-		const auto canMove{ pathWay.second.PathState == EPathState::Blocker || pathWay.second.PathState == EPathState::Breakable };
+		const auto canMove{ pathWay.second.PathState == MathLib::EPathState::Blocker || pathWay.second.PathState == MathLib::EPathState::Breakable };
 		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::LEFT), rect) && canMove) {
 			m_Movement[MathLib::Side::Left] = false;
 		}
