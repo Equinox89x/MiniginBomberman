@@ -26,7 +26,14 @@ namespace dae {
 	public:
 
 		PathwayCreatorComponent() {};
-		PathwayCreatorComponent(Scene* scene) : m_pScene{ scene } {};
+		PathwayCreatorComponent(Scene* scene) : m_pScene{ scene } {
+			m_pCharacters.clear();
+			m_pEnemies.clear();
+			m_Pathways.clear();
+			m_Spawns.clear();
+			m_EnemySpawns.clear();
+			m_PathStats.clear();
+		};
 		virtual ~PathwayCreatorComponent() override;
 		PathwayCreatorComponent(const PathwayCreatorComponent& other) = delete;
 		PathwayCreatorComponent(PathwayCreatorComponent&& other) = delete;
@@ -49,18 +56,19 @@ namespace dae {
 
 	private:
 		Scene* m_pScene{ nullptr };
-		std::vector<std::shared_ptr<GameObject>> m_pCharacters{ nullptr };
-		std::vector<std::shared_ptr<GameObject>> m_pEnemies{ nullptr };
+		std::vector<GameObject*> m_pCharacters{ nullptr };
+		std::vector<GameObject*> m_pEnemies{ nullptr };
 		std::map<int, PathWay> m_Pathways{};
 		std::vector<PathWay> m_Spawns{};
 		std::vector<PathWay> m_EnemySpawns{};
 		std::map<std::string, MathLib::EPathStats> m_PathStats{};
+		int* m_Ptr = reinterpret_cast<int*>(0xdddddddddddddddd);
 
 		SDL_Rect m_LeftMapBorder{}, m_RightMapBorder{}, m_TopMapBorder{}, m_BottomMapBorder{};
 
 		void HandleEntityTileOverlap();
 
-		void HandleTileChange(std::shared_ptr<GameObject> const& entity, dae::GameObject* const& path, dae::EntityMovementComponent* const& moveComp);
+		void HandleTileChange(GameObject* entity, dae::GameObject* path, dae::EntityMovementComponent* moveComp);
 
 	};
 }

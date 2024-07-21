@@ -81,7 +81,7 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 	pathways.at(m_TileId).TextureComponent->SetPosition(pos.x, pos.y);
 	pathways.at(m_TileId).TextureComponent->SetTexture("Character/explosionCenter.png", 0.125f, 4);
 	gameObject->GetComponent<TextureComponent>()->SetIsVisible(false);
-	comp->ActivateBomb(m_TileId);;
+	comp->ActivateBomb(m_TileId);
 }
 
 void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<int, dae::PathWay>& pathways, bool& outHitWall)
@@ -121,10 +121,10 @@ void dae::BombedState::OnStart(GameObject* pGameObject)
 		auto pos{ pGameObject->GetTransform()->GetWorld().Position };
 
 		auto stats{ enemyComp->GetEnemyStats() };
-		auto go{ std::make_shared<dae::GameObject>() };
+		auto go{ std::make_unique<dae::GameObject>() };
 		go->AddComponent(std::make_unique<dae::TextObjectComponent>(std::to_string(stats.Points), font));
 		go->AddComponent(std::make_unique<dae::FloatingScoreComponent>(m_Scene, stats.Points, pos));
-		m_Scene->Add(go);
+		m_Scene->Add(std::move(go));
 
 		if (auto player{ pGameObject->GetComponent<EnemyComponent>()->GetPlayer() }) {
 			player->GetComponent<ValuesComponent>()->IncreaseScore(stats.Points);

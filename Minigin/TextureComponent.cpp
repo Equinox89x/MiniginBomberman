@@ -34,6 +34,7 @@ void dae::TextureComponent::Update()
     }
 }
 void dae::TextureComponent::HandleAnimation() {
+    if (!GetGameObject()) return;
     const auto& pos{ GetGameObject()->GetTransform()->GetWorld().Position };
     const auto& scale{ GetGameObject()->GetTransform()->GetWorld().Scale };
 

@@ -17,7 +17,7 @@ namespace dae {
         Live,
         GameOver,
         Score,
-        EnemyDeath,
+        DoorTrigger,
         Reset,
         RockDeath,
     };

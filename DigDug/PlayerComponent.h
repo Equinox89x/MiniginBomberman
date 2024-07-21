@@ -5,6 +5,7 @@
 #include "MathLib.h"
 #include "Scene.h"
 #include "States.h"
+#include "Subject.h"
 
 namespace dae {
     /*class EntityState {
@@ -64,7 +65,7 @@ namespace dae {
 
     };*/
 
-    class PlayerComponent final : public Component
+    class PlayerComponent final : public Component, public Subject
     {
     public:
         PlayerComponent(Scene* scene, glm::vec2 startPos) : m_Scene{ scene }, m_OriginalPosition{ startPos } { };

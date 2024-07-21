@@ -36,12 +36,12 @@ namespace dae
 
 	};
 
-	class EnemyDeathObserver final : public Observer
+	class DoorObserver final : public Observer
 	{
 	public:
 
-		EnemyDeathObserver(Scene* const scene) : m_Scene{ scene } {};
-		~EnemyDeathObserver() {};
+		DoorObserver(Scene* const scene) : m_Scene{ scene } {};
+		~DoorObserver() {};
 		void Notify(GameObject* go, Event& event) override;
 
 	private:

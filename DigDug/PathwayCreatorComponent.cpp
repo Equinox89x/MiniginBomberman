@@ -8,17 +8,21 @@
 #include "PlayerComponent.h"
 #include <ValuesComponent.h>
 #include "BombComponent.h"
+#include "Observers.h"
 
 dae::PathwayCreatorComponent::~PathwayCreatorComponent()
 {
+	for (auto pathway : m_Pathways) {
+		pathway.second.TextureComponent->GetGameObject()->Cleanup();
+		pathway.second.TextureComponent = nullptr;
+	}
 	m_Pathways.clear();
 }
 
 void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string type)
 {
-	auto go = std::make_shared<GameObject>();
-	m_pScene->Add(go);
-	GetGameObject()->AddChild(go.get());
+	GameObject* go = new GameObject();
+	//m_pScene->Add(go);
 	go->SetName(std::to_string(id));
 
 	glm::vec2 pos2{ pos.x, pos.y };
@@ -70,6 +74,8 @@ void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string
 	}
 
 	m_Pathways.insert({ id, pathWay });
+	GetGameObject()->AddChild(std::move(go));
+
 }
 
 void dae::PathwayCreatorComponent::ActivatePathway(int id)
@@ -109,7 +115,7 @@ void dae::PathwayCreatorComponent::PickDoorFromBreakableTiles()
 		}
 	}
 
-	int randomId{ MathLib::CalculateChance(static_cast<int>(breakablePathwayIds.size()) - 1)};
+	int randomId{ MathLib::CalculateChance(static_cast<int>(breakablePathwayIds.size()) - 1) };
 	auto& path{ m_Pathways.at(breakablePathwayIds[randomId]) };
 	path.PathStats.PathState = MathLib::EPathState::Door;
 	path.PathStats.UnderlyingName = "door";
@@ -125,32 +131,41 @@ void dae::PathwayCreatorComponent::Update()
 void dae::PathwayCreatorComponent::HandleEntityTileOverlap()
 {
 	auto& children{ GetGameObject()->GetChildren() };
-	if (m_pCharacters.size() > 0) {
+	m_pCharacters = m_pScene->GetGameObjects(EnumStrings[PlayerGeneral], false);
+	m_pEnemies = m_pScene->GetGameObjects(EnumStrings[EnemyGeneral], false);
 
-		for (const auto& character : m_pCharacters) {
+	if (!m_pCharacters.empty()) {
+		for (GameObject* character : m_pCharacters) {
 			if (character->IsMarkedForDestroy()) continue;
-			const auto& moveComp{ character->GetComponent<EntityMovementComponent>() };
-			for (const auto& gameObj : children)
-			{
-				HandleTileChange(character, gameObj, moveComp);
-			}
+			if (const auto moveComp{ character->GetComponent<EntityMovementComponent>() }) {
+				for (GameObject* path : GetGameObject()->GetChildren())
+				{
+					if (!children.empty() && path) {
+						HandleTileChange(character, path, moveComp);
+					}
+				}
+			};
 		}
 	}
 
-	if (m_pEnemies.size() > 0) {
-		for (const auto& enemy : m_pEnemies) {
+	if (!m_pEnemies.empty()) {
+		for (GameObject* enemy : m_pEnemies) {
 			if (enemy->IsMarkedForDestroy()) continue;
-			const auto& moveComp{ enemy->GetComponent<EntityMovementComponent>() };
-			for (const auto& gameObj : children)
-			{
-				HandleTileChange(enemy, gameObj, moveComp);
-			}
+			if (const auto & moveComp{ enemy->GetComponent<EntityMovementComponent>() }) {
+				for (GameObject* path : GetGameObject()->GetChildren())
+				{
+					if (!children.empty() && path) {
+						HandleTileChange(enemy, path, moveComp);
+					}
+				}
+			};
 		}
 	}
 }
 
-void dae::PathwayCreatorComponent::HandleTileChange(std::shared_ptr<GameObject> const& entity, dae::GameObject* const& path, dae::EntityMovementComponent* const& moveComp)
+void dae::PathwayCreatorComponent::HandleTileChange(GameObject* entity, GameObject* path, EntityMovementComponent* moveComp)
 {
+	if (!path || path->IsMarkedForDestroy()) return;
 	auto texComp{ path->GetComponent<TextureComponent>() };
 	if (MathLib::IsOverlapping(texComp->GetRect(), moveComp->GetCollider())) {
 		moveComp->SetNextTileId(std::stoi(path->GetName()));
@@ -185,6 +200,7 @@ void dae::PathwayCreatorComponent::Init()
 {
 	m_pCharacters = m_pScene->GetGameObjects(EnumStrings[PlayerGeneral], false);
 	m_pEnemies = m_pScene->GetGameObjects(EnumStrings[EnemyGeneral], false);
+
 	m_PathStats = std::map<std::string, MathLib::EPathStats>{
 		{"tile", MathLib::EPathStats{ MathLib::EPathState::Tile, MathLib::EPathType::Tile, false, "blocker", "none" }},
 		{"spawn", MathLib::EPathStats{ MathLib::EPathState::Spawn, MathLib::EPathType::Tile, false, "blocker", "none" }},

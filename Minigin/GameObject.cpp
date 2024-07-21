@@ -37,7 +37,7 @@ dae::GameObject::~GameObject() {
 
 void dae::GameObject::Init()
 {
-	for (const std::unique_ptr<Component>& comp : m_pComponents) {
+	for (auto& comp : m_pComponents) {
 		comp->Init();
 	}
 
@@ -60,15 +60,15 @@ void dae::GameObject::Update() {
 		if(!comp->IsMarkedForDestroy()) comp->Update();
 	}
 
-	for (auto& child : m_pChildren)
-	{
-		child->Update();
-	}
-
 	if (m_pComponents.size() > 0) {
 		m_pComponents.erase(std::remove_if(m_pComponents.begin(), m_pComponents.end(),
 			[](const std::unique_ptr<Component>& comp) { return comp->IsMarkedForDestroy(); }),
 			m_pComponents.end());
+	}
+
+	for (auto& child : m_pChildren)
+	{
+		child->Update();
 	}
 
 	if (m_pChildren.size() > 0) {
@@ -125,14 +125,14 @@ void dae::GameObject::Cleanup()
 		comp->MarkForDestroy();
 	}
 
+	m_pComponents.erase(std::remove_if(m_pComponents.begin(), m_pComponents.end(),
+		[](const std::unique_ptr<Component>& comp) { return comp && comp->IsMarkedForDestroy(); }),
+		m_pComponents.end());
+
 	for (auto& child : m_pChildren)
 	{
 		child->MarkForDestroy();
 	}
-
-	m_pComponents.erase(std::remove_if(m_pComponents.begin(), m_pComponents.end(),
-		[](const std::unique_ptr<Component>& comp) { return comp && comp->IsMarkedForDestroy(); }),
-		m_pComponents.end());
 
 	m_pChildren.erase(std::remove_if(m_pChildren.begin(), m_pChildren.end(),
 		[](GameObject* child) { return child && child->IsMarkedForDestroy(); }),
@@ -140,8 +140,8 @@ void dae::GameObject::Cleanup()
 
 	m_pParent = nullptr;
 	m_pTransform = nullptr;
-
-
+	m_pChildren.clear();
+	m_pComponents.clear();
 }
 
 void dae::GameObject::RemoveComponent(const std::unique_ptr<Component>& comp)

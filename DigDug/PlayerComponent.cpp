@@ -55,6 +55,7 @@ void dae::PlayerComponent::ActivateUnderlyingThing(PathWay& pathway)
 		pathway.TextureComponent->SetIsVisible(false);
 	}
 	else {
-		// TODO door functionality
+		Event scoreEvent{ EventType::DoorTrigger };
+		Notify(GetGameObject(), scoreEvent);
 	}
 }

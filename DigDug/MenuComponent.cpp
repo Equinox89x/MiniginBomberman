@@ -35,6 +35,7 @@ void dae::MenuComponent::SkipLevel()
 {
 	auto& manager = SceneManager::GetInstance();
 	auto scene = manager.GetActiveScene();
+	scene->SetActive(false);
 
 	Input::GetInstance().ClearKeys();
 	if (m_SelectedGameMode == MathLib::GameMode::SOLO) {

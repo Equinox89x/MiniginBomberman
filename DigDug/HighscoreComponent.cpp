@@ -24,7 +24,7 @@ void dae::HighscoreComponent::Init()
 		auto nr{ i == 2 ? 6 : 10 };
 		for (int j = 0; j < nr; j++)
 		{
-			auto go{ std::make_shared<GameObject>() };
+			auto go{ std::make_unique<GameObject>() };
 			auto& key{ m_KeyboardKeys[k] };
 			auto comp{ go->AddComponent(std::make_unique<TextObjectComponent>(key, font)) };
 			comp->SetName(key);
@@ -32,18 +32,18 @@ void dae::HighscoreComponent::Init()
 			m_KeyboardKeyRects.push_back(SDL_Rect{ static_cast<int>(pos.x), static_cast<int>(pos.y), 40,40 });
 			pos.x += 40;
 			k++;
-			m_Scene->Add(go);
+			m_Scene->Add(std::move(go));
 		}
 		pos.y += 40;
 		pos.x = Margin * 2;
 	}
 
-	auto go{ std::make_shared<GameObject>() };
+	auto go{ std::make_unique<GameObject>() };
 	auto comp{ go->AddComponent(std::make_unique<TextObjectComponent>("Submit", font))};
 	comp->SetName("Submit");
 	comp->SetPosition(static_cast<float>(m_KeyboardKeyRects[m_KeyboardKeyRects.size()-1].x + 40), static_cast<float>(pos.y - 40));
 	m_KeyboardKeyRects.push_back(SDL_Rect{ m_KeyboardKeyRects[m_KeyboardKeyRects.size() - 1].x + 40, static_cast<int>(pos.y) - 40, 160,40 });
-	m_Scene->Add(go);
+	m_Scene->Add(std::move(go));
 }
 
 void dae::HighscoreComponent::MoveCursor(glm::vec2 key)

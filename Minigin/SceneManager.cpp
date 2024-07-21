@@ -13,8 +13,9 @@ void dae::SceneManager::Update()
 {
 	for(auto& scene : m_scenes)
 	{
-		if (scene->GetIsActive())
+		if (scene->GetIsActive()) {
 			scene->Update();
+		}
 	}
 }
 
@@ -22,8 +23,9 @@ void dae::SceneManager::LateUpdate()
 {
 	for (auto& scene : m_scenes)
 	{
-		if (scene->GetIsActive())
+		if (scene->GetIsActive()) {
 			scene->LateUpdate();
+		}
 	}
 }
 
@@ -31,8 +33,9 @@ void dae::SceneManager::Render()
 {
 	for (const auto& scene : m_scenes)
 	{
-		if (scene->GetIsActive())
+		if (scene->GetIsActive()) {
 			scene->Render();
+		}
 	}
 }
 
@@ -66,7 +69,7 @@ void dae::SceneManager::DeleteScene(const std::string& name)
 void dae::SceneManager::DeleteScene(std::shared_ptr<dae::Scene> scene)
 {
 	if (scene) {
-		scene.get()->Cleanup();
+		scene->Cleanup();
 		m_scenes.erase(std::remove(m_scenes.begin(), m_scenes.end(), scene));
 	}
 }

@@ -1,20 +1,21 @@
 #pragma once
 #include "SceneManager.h"
+#include "GameObject.h"
 
 namespace dae
 {
-	class GameObject;
+	//class GameObject;
 	class Scene final
 	{
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
-		void Add(std::shared_ptr<GameObject> object);
-		void Remove(std::shared_ptr<GameObject> object);
+		void Add(std::unique_ptr<GameObject> object);
+		void Remove(GameObject* object);
 		void RemoveAll();
 
-		std::shared_ptr<GameObject> GetGameObject(std::string name);
-		std::vector<std::shared_ptr<GameObject>> GetGameObjects(std::string name, bool isCompleteWord = true);
-		std::vector<std::shared_ptr<GameObject>>& GetGameObjects();
+		GameObject* GetGameObject(std::string name);
+		std::vector<GameObject*> GetGameObjects(std::string name, bool isCompleteWord = true);
+		std::vector<GameObject*> GetGameObjects();
 
 		void Init() const;
 		void LateUpdate();
@@ -36,7 +37,7 @@ namespace dae
 	private: 
 		explicit Scene(const std::string& name);
 		std::string m_name;
-		std::vector < std::shared_ptr<GameObject>> m_objects{};
+		std::vector < std::unique_ptr<GameObject>> m_objects{};
 		bool m_IsActive{ false };
 
 		static unsigned int m_idCounter; 

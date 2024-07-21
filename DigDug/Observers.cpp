@@ -69,21 +69,26 @@ void dae::ScoreObserver::Notify(GameObject* player, Event& event)
 //
 //}
 
-void dae::EnemyDeathObserver::Notify(GameObject* /*go*/, Event& event)
+void dae::DoorObserver::Notify(GameObject* /*go*/, Event& event)
 {
 	switch (event.GetEvent())
 	{
-	case EventType::EnemyDeath:
+	case EventType::DoorTrigger:
 		auto enemies{ m_Scene->GetGameObjects(EnumStrings[Names::EnemyGeneral], false) };
 		if (enemies.size() <= 1) {
 			if (auto player{ m_Scene->GetGameObject(EnumStrings[Names::Player0]) }) {
 				if (auto comp{ player->GetComponent<ValuesComponent>() }) {
 					FileReader* file{ new FileReader("../Data/save.json") };
-					file->WriteData({ {"Score", std::to_string(comp->GetScores())} });
+					file->WriteData({ {"Score", std::to_string(comp->GetScores())}, {"Lives", std::to_string(comp->GetLives()) } });
 					delete file;
+					auto go{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator]) };
+					go->GetComponent<PathwayCreatorComponent>()->MarkForDestroy();
+					m_Scene->Remove(go);
+					//go->MarkForDestroy();
+
+					m_Scene->GetGameObject(EnumStrings[Names::Global])->GetComponent<MenuComponent>()->SkipLevel();
 				}
 			}
-			m_Scene->GetGameObject(EnumStrings[Names::Global])->GetComponent<MenuComponent>()->SkipLevel();
 		}
 		break;
 	}

@@ -185,11 +185,11 @@ namespace dae {
 				auto playerComp{ m_pObject->GetComponent<PlayerComponent>() };
 				if (bombs.size() >= playerComp->GetMaxBombs()) return;
 
-				auto pBombObject = std::make_shared<GameObject>();
+				auto pBombObject = std::make_unique<GameObject>();
 				pBombObject->SetName(EnumStrings[Names::Bomb]);
-				m_Scene->Add(pBombObject);
 				int tileId{ comp->GetCurrentTileId() };
 				pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene))->StartBomb(tileId, playerComp->GetBombStrength());
+				m_Scene->Add(std::move(pBombObject));
 			}
 		}
 		void Execute(glm::vec2) override {};

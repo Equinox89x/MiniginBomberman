@@ -49,7 +49,7 @@ const enum Names {
 
 const std::string EnumStrings[NUM_ENUM_VALUES] = {
 	"Player0", "Player1", "Player","Enemy", "EnemyHolder", "Pump", "Global", "PathCreator", "ScoreHolder", "Life", "Score", "Score0", "Score1", "Selector", "MainMenu", "Background",
-	"BombermanSolo", "BombermanSolo1", "BombermanSolo2", "BombermanSolo3", "BombermanCoop", "BombermanVersus","HighScoreScreen", "Bomb",
+	"BombermanSolo", "BombermanSolo0", "BombermanSolo1", "BombermanSolo2", "BombermanCoop", "BombermanVersus","HighScoreScreen", "Bomb",
 };
 
 namespace dae
