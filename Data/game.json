@@ -11,7 +11,7 @@
                     "blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker",
                     "blocker|tile|breakable|breakable|tile|tile|tile|tile|tile|tile|tile|breakable|tile|tile|tile|blocker",
                     "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|breakable|tile|blocker",
-                    "blocker|tile|tile|tile|breakable|breakable|tile|tile|tile|tile|tile|tile|tile|tile|tile|blocker",
+                    "blocker|tile|tile|tile|flames|breakable|tile|tile|tile|tile|tile|tile|tile|tile|tile|blocker",
                     "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|tile|blocker",
                     "blocker|tile|tile|tile|tile|spawn|tile|tile|tile|tile|tile|extraBomb|tile|tile|tile|blocker",
                     "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|breakable|tile|blocker",

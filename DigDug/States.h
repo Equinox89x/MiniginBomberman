@@ -64,7 +64,7 @@ namespace dae
 		void Update(GameObject* pGameObject) override;
 
 	private:
-		float m_FuseTimer{ 1.2f };
+		float m_FuseTimer{ 3.f };
 
 	};
 
@@ -76,8 +76,8 @@ namespace dae
 		void Update(GameObject* pGameObject) override;
 
 	private:
-		float m_ExplodeTimer{ 1.3f };
-		int m_BombStrength{ 2 };
+		float m_ExplodeTimer{ 0.25f };
+		int m_BombStrength{ 1 };
 		int m_TileId{ 0 };
 		bool m_HitWallLeft{ false }, m_HitWallRight{ false }, m_HitWallTop{ false }, m_HitWallBottom{ false };
 

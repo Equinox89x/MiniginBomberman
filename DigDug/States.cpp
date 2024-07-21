@@ -79,7 +79,7 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 
 	glm::vec2 pos{ pathways.at(m_TileId).Rect.x - pathways.at(m_TileId).Rect.w, pathways.at(m_TileId).Rect.y };
 	pathways.at(m_TileId).TextureComponent->SetPosition(pos.x, pos.y);
-	pathways.at(m_TileId).TextureComponent->SetTexture("Character/explosionCenter.png", 0.3f, 4);
+	pathways.at(m_TileId).TextureComponent->SetTexture("Character/explosionCenter.png", 0.125f, 4);
 	gameObject->GetComponent<TextureComponent>()->SetIsVisible(false);
 	comp->ActivateBomb(m_TileId);;
 }
@@ -95,7 +95,7 @@ void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<in
 			glm::vec2 pos{ pathways.at(index).Rect.x - pathways.at(index).Rect.w, pathways.at(index).Rect.y };
 			pathways.at(index).TextureComponent->SetPosition(pos.x, pos.y);
 			pathways.at(index).TextureComponent->SetIsVisible(true);
-			pathways.at(index).TextureComponent->SetTexture("Character/explosion.png", 0.3f, 4);
+			pathways.at(index).TextureComponent->SetTexture("Character/explosion.png", 0.125f, 4);
 		}
 		else {
 			outHitWall = true;
