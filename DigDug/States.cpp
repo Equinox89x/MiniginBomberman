@@ -11,6 +11,7 @@
 #include <ValuesComponent.h>
 #include <InputComponent.h>
 
+#pragma region Bomb
 void dae::FuseState::OnStart(GameObject* gameObject)
 {
 	auto tileId{ gameObject->GetComponent<BombComponent>()->GetTileId() };
@@ -110,7 +111,9 @@ void dae::ExplosionState::HandleExplosionEnd(int& index)
 		comp->ActivatePathway(index);
 	}
 }
+#pragma endregion
 
+#pragma region Characters
 void dae::BombedState::OnStart(GameObject* pGameObject)
 {
 	if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() }) {
@@ -172,14 +175,14 @@ void dae::AliveState::OnStart(GameObject* pGameObject)
 
 void dae::AliveState::Update(GameObject* pGameObject)
 {
-	if (m_Scene && pGameObject && m_Ptr != reinterpret_cast<int*>(pGameObject)) {
+	if (m_Scene && pGameObject) {
 		if (pGameObject->IsMarkedForDestroy()) return;
 		auto enemies{ m_Scene->GetGameObjects(EnumStrings[Names::EnemyGeneral], false) };
 		for (const auto& enemy : enemies) {
 			if (enemy && !enemy->IsMarkedForDestroy()) {
 				auto lifestate{ enemy->GetComponent<EnemyComponent>()->GetState() };
 				if (lifestate != MathLib::ELifeState::BOMBED && lifestate != MathLib::ELifeState::DEAD) {
-					if (pGameObject && m_Ptr != reinterpret_cast<int*>(pGameObject) && !pGameObject->IsMarkedForDestroy()) {
+					if (pGameObject && !pGameObject->IsMarkedForDestroy()) {
 						if (MathLib::IsOverlapping(pGameObject->GetComponent<TextureComponent>()->GetRect(), enemy->GetComponent<TextureComponent>()->GetRect())) {
 							pGameObject->GetComponent<PlayerComponent>()->SetState(new BombedState(m_Scene), MathLib::ELifeState::BOMBED);
 						}
@@ -189,3 +192,4 @@ void dae::AliveState::Update(GameObject* pGameObject)
 		}
 	}
 }
+#pragma endregion

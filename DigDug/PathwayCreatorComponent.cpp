@@ -131,11 +131,14 @@ void dae::PathwayCreatorComponent::Update()
 void dae::PathwayCreatorComponent::HandleEntityTileOverlap()
 {
 	auto& children{ GetGameObject()->GetChildren() };
+	if (children.empty()) return;
+	if (!m_pScene) return;
 	m_pCharacters = m_pScene->GetGameObjects(EnumStrings[PlayerGeneral], false);
 	m_pEnemies = m_pScene->GetGameObjects(EnumStrings[EnemyGeneral], false);
 
 	if (!m_pCharacters.empty()) {
 		for (GameObject* character : m_pCharacters) {
+			if (children.empty()) return;
 			if (character->IsMarkedForDestroy()) continue;
 			if (const auto moveComp{ character->GetComponent<EntityMovementComponent>() }) {
 				for (GameObject* path : GetGameObject()->GetChildren())
@@ -150,6 +153,7 @@ void dae::PathwayCreatorComponent::HandleEntityTileOverlap()
 
 	if (!m_pEnemies.empty()) {
 		for (GameObject* enemy : m_pEnemies) {
+			if (children.empty()) return;
 			if (enemy->IsMarkedForDestroy()) continue;
 			if (const auto & moveComp{ enemy->GetComponent<EntityMovementComponent>() }) {
 				for (GameObject* path : GetGameObject()->GetChildren())

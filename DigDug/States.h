@@ -34,7 +34,6 @@ namespace dae
 		void Update(GameObject* pGameObject) override;
 
 	private:
-		int* m_Ptr = reinterpret_cast<int*>(0xdddddddddddddddd);
 	};
 
 	class BombedState : public EntityState
@@ -80,8 +79,6 @@ namespace dae
 		int m_BombStrength{ 1 };
 		int m_TileId{ 0 };
 		bool m_HitWallLeft{ false }, m_HitWallRight{ false }, m_HitWallTop{ false }, m_HitWallBottom{ false };
-
-		int* m_Ptr = reinterpret_cast<int*>(0xdddddddddddddddd);
 
 		void HandleExplosionPlacement(int& index, const std::map<int, PathWay>& pathways, bool& outHitWall);
 		void HandleExplosionEnd(int& index);
