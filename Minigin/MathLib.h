@@ -134,7 +134,7 @@ namespace MathLib {
 	};
 
 	enum class EPathState {
-		Tile, Blocker, Spawn, EnemySpawn, Breakable, Bomb, Explosion, Powerup
+		Tile, Blocker, Spawn, EnemySpawn, Breakable, Bomb, Explosion, Powerup, Door
 	};
 
 	enum class EPathType {
@@ -142,7 +142,7 @@ namespace MathLib {
 	};
 
 	enum class EPowerupType {
-		ExtraBomb, Detonator, Flames, None
+		ExtraBomb, Detonator, Flames, Door, None
 	};
 
 	enum class EEnemyType {
@@ -155,10 +155,10 @@ namespace MathLib {
 	struct EPathStats {
 		EPathState PathState{ EPathState::Blocker };
 		EPathType PathType{ EPathType::Blocker };
-		EPowerupType PowerupType{ EPowerupType::None };
-		bool HasPowerup{ false };
+		bool HasUnderlyingThing{ false };
 		std::string TextureName{ "Blocker" };
-		std::string PowerupName{ "None" };
+		std::string UnderlyingName{ "None" };
+		EPowerupType PowerupType{ EPowerupType::None };
 	};
 
 	struct FEnemyStats {

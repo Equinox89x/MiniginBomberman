@@ -78,7 +78,7 @@ namespace dae {
         virtual void Render() const override;
 
         void Reposition();
-        void ActivatePowerup(PathWay& pathway);
+        void ActivateUnderlyingThing(PathWay& pathway);
 
         void SetState(EntityState* playerState, MathLib::ELifeState lifeState) {
             if (playerState)

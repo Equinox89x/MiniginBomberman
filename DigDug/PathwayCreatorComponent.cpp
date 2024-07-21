@@ -33,6 +33,22 @@ void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string
 		component->SetIsVisible(false);
 	}
 
+	if (m_PathStats[type].PathState == MathLib::EPathState::Powerup) {
+		auto value{ MathLib::CalculateChance(90) };
+		if (value >= 0 && value <= 30) {
+			m_PathStats[type].UnderlyingName = "extraBomb";
+			m_PathStats[type].PowerupType = MathLib::EPowerupType::ExtraBomb;
+		}
+		if (value > 30 && value <= 60) {
+			m_PathStats[type].UnderlyingName = "flames";
+			m_PathStats[type].PowerupType = MathLib::EPowerupType::Flames;
+		}
+		if (value > 60 && value <= 90) {
+			m_PathStats[type].UnderlyingName = "detonator";
+			m_PathStats[type].PowerupType = MathLib::EPowerupType::Detonator;
+		}
+	}
+
 	SDL_Rect rect{ static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(Cellsize), static_cast<int>(Cellsize) };
 	PathWay pathWay{
 		id,
@@ -63,8 +79,8 @@ void dae::PathwayCreatorComponent::ActivatePathway(int id)
 		if (path.PathStats.PathType != MathLib::EPathType::Blocker) {
 
 			path.PathStats.PathType = MathLib::EPathType::Tile;
-			if (path.PathStats.HasPowerup) {
-				path.TextureComponent->SetTexture("Levels/" + path.PathStats.PowerupName + ".png", 0.1f, 1, false, false);
+			if (path.PathStats.HasUnderlyingThing) {
+				path.TextureComponent->SetTexture("Levels/" + path.PathStats.UnderlyingName + ".png", 0.1f, 1, false, false);
 			}
 			else {
 				path.PathStats.PathState = MathLib::EPathState::Tile;
@@ -82,6 +98,23 @@ void dae::PathwayCreatorComponent::ActivateBomb(int id)
 		path.PathStats.PathType = MathLib::EPathType::Tile;
 		path.PathStats.PathState = MathLib::EPathState::Explosion;
 	}
+}
+
+void dae::PathwayCreatorComponent::PickDoorFromBreakableTiles()
+{
+	std::vector<int> breakablePathwayIds{};
+	for (auto& pathWay : m_Pathways) {
+		if (pathWay.second.PathStats.PathState == MathLib::EPathState::Breakable) {
+			breakablePathwayIds.push_back(pathWay.first);
+		}
+	}
+
+	int randomId{ MathLib::CalculateChance(static_cast<int>(breakablePathwayIds.size()) - 1)};
+	auto& path{ m_Pathways.at(breakablePathwayIds[randomId]) };
+	path.PathStats.PathState = MathLib::EPathState::Door;
+	path.PathStats.UnderlyingName = "door";
+	path.PathStats.HasUnderlyingThing = true;
+	path.PathStats.PowerupType = MathLib::EPowerupType::Door;
 }
 
 void dae::PathwayCreatorComponent::Update()
@@ -126,7 +159,8 @@ void dae::PathwayCreatorComponent::HandleTileChange(std::shared_ptr<GameObject> 
 		moveComp->SetCurrentTileId(std::stoi(path->GetName()));
 	}
 
-	if (m_Pathways.at(moveComp->GetCurrentTileId()).PathStats.PathState == MathLib::EPathState::Explosion) {
+	auto& pathway{ m_Pathways.at(moveComp->GetCurrentTileId()) };
+	if (pathway.PathStats.PathState == MathLib::EPathState::Explosion) {
 		if (auto enemyComp{ entity->GetComponent<EnemyComponent>() }) {
 			if (enemyComp->GetState() == MathLib::ELifeState::ALIVE) {
 				enemyComp->SetState(new BombedState(m_pScene), MathLib::ELifeState::BOMBED);
@@ -138,10 +172,10 @@ void dae::PathwayCreatorComponent::HandleTileChange(std::shared_ptr<GameObject> 
 			}
 		}
 	}
-	else if (m_Pathways.at(moveComp->GetCurrentTileId()).PathStats.PathState == MathLib::EPathState::Powerup) {
+	else if (pathway.PathStats.HasUnderlyingThing) {
 		if (auto playerComp{ entity->GetComponent<PlayerComponent>() }) {
 			if (playerComp->GetState() == MathLib::ELifeState::ALIVE) {
-				playerComp->ActivatePowerup(m_Pathways.at(moveComp->GetCurrentTileId()));
+				playerComp->ActivateUnderlyingThing(pathway);
 			}
 		}
 	}
@@ -152,14 +186,12 @@ void dae::PathwayCreatorComponent::Init()
 	m_pCharacters = m_pScene->GetGameObjects(EnumStrings[PlayerGeneral], false);
 	m_pEnemies = m_pScene->GetGameObjects(EnumStrings[EnemyGeneral], false);
 	m_PathStats = std::map<std::string, MathLib::EPathStats>{
-		{"tile", MathLib::EPathStats{ MathLib::EPathState::Tile, MathLib::EPathType::Tile, MathLib::EPowerupType::None, false, "blocker", "none" }},
-		{"spawn", MathLib::EPathStats{ MathLib::EPathState::Spawn, MathLib::EPathType::Tile, MathLib::EPowerupType::None, false, "blocker", "none" }},
-		{"enemySpawn", MathLib::EPathStats{ MathLib::EPathState::EnemySpawn, MathLib::EPathType::Tile, MathLib::EPowerupType::None, false, "blocker", "none" }},
-		{"blocker", MathLib::EPathStats{ MathLib::EPathState::Blocker, MathLib::EPathType::Blocker, MathLib::EPowerupType::None, false, "blocker", "blocker" }},
-		{"breakable", MathLib::EPathStats{ MathLib::EPathState::Breakable, MathLib::EPathType::Breakable, MathLib::EPowerupType::None, false, "breakable", "breakable" }},
-		{"extraBomb", MathLib::EPathStats{ MathLib::EPathState::Powerup, MathLib::EPathType::Breakable, MathLib::EPowerupType::ExtraBomb, true, "breakable", "extraBomb" }},
-		{"detonator", MathLib::EPathStats{ MathLib::EPathState::Powerup, MathLib::EPathType::Breakable, MathLib::EPowerupType::Detonator, true, "breakable", "detonator" }},
-		{"flames", MathLib::EPathStats{ MathLib::EPathState::Powerup, MathLib::EPathType::Breakable, MathLib::EPowerupType::Flames, true, "breakable", "flames" }}
+		{"tile", MathLib::EPathStats{ MathLib::EPathState::Tile, MathLib::EPathType::Tile, false, "blocker", "none" }},
+		{"spawn", MathLib::EPathStats{ MathLib::EPathState::Spawn, MathLib::EPathType::Tile, false, "blocker", "none" }},
+		{"enemySpawn", MathLib::EPathStats{ MathLib::EPathState::EnemySpawn, MathLib::EPathType::Tile, false, "blocker", "none" }},
+		{"blocker", MathLib::EPathStats{ MathLib::EPathState::Blocker, MathLib::EPathType::Blocker, false, "blocker", "blocker" }},
+		{"breakable", MathLib::EPathStats{ MathLib::EPathState::Breakable, MathLib::EPathType::Breakable, false, "breakable", "breakable" }},
+		{"powerup", MathLib::EPathStats{ MathLib::EPathState::Powerup, MathLib::EPathType::Breakable, true, "breakable", "breakable" }},
 	};
 	HandleEntityTileOverlap();
 }

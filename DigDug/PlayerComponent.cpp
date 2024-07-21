@@ -29,26 +29,32 @@ void dae::PlayerComponent::Reposition()
 	GetGameObject()->GetTransform()->SetPosition(m_OriginalPosition);
 }
 
-void dae::PlayerComponent::ActivatePowerup(PathWay& pathway)
+void dae::PlayerComponent::ActivateUnderlyingThing(PathWay& pathway)
 {
-	switch (pathway.PathStats.PowerupType)
-	{
-	case MathLib::EPowerupType::ExtraBomb:
-		m_MaxBombs++;
-		break;
-	case MathLib::EPowerupType::Detonator:
-		break;
-	case MathLib::EPowerupType::Flames:
-		m_BombStrength++;
-		break;
-	case MathLib::EPowerupType::None:
-		break;
-	default:
-		break;
-	}
+	if (pathway.PathStats.PathState == MathLib::EPathState::Powerup) {
+		switch (pathway.PathStats.PowerupType)
+		{
+		case MathLib::EPowerupType::ExtraBomb:
+			m_MaxBombs++;
+			break;
+		case MathLib::EPowerupType::Detonator:
+			break;
+		case MathLib::EPowerupType::Flames:
+			m_BombStrength++;
+			break;
+		case MathLib::EPowerupType::None:
+			break;
+		default:
+			break;
+		}
 
-	pathway.PathStats.PathType = MathLib::EPathType::Tile;
-	pathway.PathStats.PathState = MathLib::EPathState::Tile;
-	pathway.PathStats.HasPowerup = false;
-	pathway.TextureComponent->SetIsVisible(false);
+		pathway.PathStats.PathType = MathLib::EPathType::Tile;
+		pathway.PathStats.PathState = MathLib::EPathState::Tile;
+		pathway.PathStats.HasUnderlyingThing = false;
+		pathway.PathStats.PowerupType = MathLib::EPowerupType::None;
+		pathway.TextureComponent->SetIsVisible(false);
+	}
+	else {
+		// TODO door functionality
+	}
 }
