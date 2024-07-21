@@ -1,36 +1,40 @@
 #pragma once
-#include "GameObject.h"
-#include <functional>
-#include "InputComponent.h"
-#include "TextureComponent.h"
-#include "../DigDug/EntityMovementComponent.h"
-#include "MathLib.h"
-#include "Command.h"
-#include "ValuesComponent.h"
-#include "AudioComponent.h"
 #include "../DigDug/BombComponent.h"
-#include "../DigDug/MenuComponent.h"
-#include "../DigDug/HighscoreComponent.h"
-#include "../DigDug/PlayerComponent.h"
 #include "../DigDug/EnemyComponent.h"
+#include "../DigDug/EntityMovementComponent.h"
+#include "../DigDug/HighscoreComponent.h"
+#include "../DigDug/MenuComponent.h"
+#include "../DigDug/PlayerComponent.h"
+#include "AudioComponent.h"
+#include "Command.h"
+#include "GameObject.h"
+#include "InputComponent.h"
+#include "MathLib.h"
+#include "TextureComponent.h"
+#include "ValuesComponent.h"
+#include <functional>
 
-namespace dae {
+namespace dae
+{
 
-	#pragma region EMovement
+#pragma region EMovement
 	class Move final : public Command
 	{
 	public:
-		Move(Scene* scene, dae::GameObject* object, MathLib::EMovement movement, std::string textureName, const glm::vec3& moveSpeed) : 
-			m_pObject(object), m_Movement{ movement }, m_MoveSpeed(moveSpeed), m_TextureName(textureName), m_Scene{scene} {}
+		Move(Scene* scene, dae::GameObject* object, MathLib::EMovement movement, std::string textureName, const glm::vec3& moveSpeed) : m_pObject(object), m_Movement{ movement }, m_MoveSpeed(moveSpeed), m_TextureName(textureName), m_Scene{ scene } {}
 		void Execute() override
 		{
-			if (!m_Scene->GetIsActive()) return;
+			if (!m_Scene->GetIsActive())
+				return;
 			auto player{ m_pObject->GetComponent<dae::EntityMovementComponent>() };
-			if (!player)return;
+			if (!player)
+				return;
 
-			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() }) {
+			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() })
+			{
 				auto state{ playerComp->GetState() };
-				if (state == MathLib::ELifeState::ALIVE) {
+				if (state == MathLib::ELifeState::ALIVE)
+				{
 					auto input{ m_pObject->GetComponent<dae::InputComponent>() };
 					auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
 
@@ -39,80 +43,98 @@ namespace dae {
 					tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 3);
 				}
 			}
-			else {
+			else
+			{
 				auto input{ m_pObject->GetComponent<dae::InputComponent>() };
 				auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
 
-				if (m_Movement == MathLib::EMovement::LEFT) {
+				if (m_Movement == MathLib::EMovement::LEFT)
+				{
 					player->SetLastDirection("Left");
 				}
-				else if (m_Movement == MathLib::EMovement::RIGHT) {
+				else if (m_Movement == MathLib::EMovement::RIGHT)
+				{
 					player->SetLastDirection("Right");
 				}
 				player->SetMovement(m_Movement);
 				input->SetMoveSpeed(m_MoveSpeed, m_Movement, false);
 				tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 3);
 			}
-			
 		}
-		void Execute(glm::vec2 pos) override {
-			if (!m_Scene->GetIsActive()) return;
+		void Execute(glm::vec2 pos) override
+		{
+			if (!m_Scene->GetIsActive())
+				return;
 			auto player{ m_pObject->GetComponent<dae::EntityMovementComponent>() };
-			if (!player)return;
+			if (!player)
+				return;
 
-			m_MoveSpeed = glm::vec3{ pos.x * 100,pos.y * -100, 0 };
-			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() }) {
-				if (pos.x > 0) {
+			m_MoveSpeed = glm::vec3{ pos.x * 100, pos.y * -100, 0 };
+			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() })
+			{
+				if (pos.x > 0)
+				{
 					m_Movement = MathLib::EMovement::RIGHT;
 					m_TextureName = "Character/moveRight";
 				}
-				else if (pos.x < 0) {
+				else if (pos.x < 0)
+				{
 					m_Movement = MathLib::EMovement::LEFT;
 					m_TextureName = "Character/moveLeft";
 				}
-				else if (pos.y > 0) {
+				else if (pos.y > 0)
+				{
 					m_Movement = MathLib::EMovement::UP;
 					m_TextureName = "Character/moveUp";
 				}
-				else if (pos.y < 0) {
+				else if (pos.y < 0)
+				{
 					m_Movement = MathLib::EMovement::DOWN;
 					m_TextureName = "Character/moveDown";
 				}
 
 				auto state{ playerComp->GetState() };
-				if (state == MathLib::ELifeState::ALIVE) {
+				if (state == MathLib::ELifeState::ALIVE)
+				{
 					auto input{ m_pObject->GetComponent<dae::InputComponent>() };
 					auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
 
 					player->SetMovement(m_Movement);
 					input->SetMoveSpeed(m_MoveSpeed, m_Movement, true);
-					tex->SetTexture(m_Movement, m_TextureName +".png", 0.1f, 3);
+					tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 3);
 				}
 			}
-			else {
-				if (pos.x > 0) {
+			else
+			{
+				if (pos.x > 0)
+				{
 					m_Movement = MathLib::EMovement::RIGHT;
 					m_TextureName = "Enemies/FygarRight";
 				}
-				else if (pos.x < 0) {
+				else if (pos.x < 0)
+				{
 					m_Movement = MathLib::EMovement::LEFT;
 					m_TextureName = "Enemies/FygarLeft";
 				}
-				else if (pos.y > 0) {
+				else if (pos.y > 0)
+				{
 					m_Movement = MathLib::EMovement::UP;
 					m_TextureName = "Enemies/FygarRight";
 				}
-				else if (pos.y < 0) {
+				else if (pos.y < 0)
+				{
 					m_Movement = MathLib::EMovement::DOWN;
 					m_TextureName = "Enemies/FygarLeft";
 				}
 				auto input{ m_pObject->GetComponent<dae::InputComponent>() };
 				auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
 
-				if (m_Movement == MathLib::EMovement::LEFT) {
+				if (m_Movement == MathLib::EMovement::LEFT)
+				{
 					player->SetLastDirection("Left");
 				}
-				else if (m_Movement == MathLib::EMovement::RIGHT) {
+				else if (m_Movement == MathLib::EMovement::RIGHT)
+				{
 					player->SetLastDirection("Right");
 				}
 				player->SetMovement(m_Movement);
@@ -124,9 +146,9 @@ namespace dae {
 	private:
 		Scene* m_Scene{ nullptr };
 
-		dae::GameObject* m_pObject;
-		glm::vec3 m_MoveSpeed;
-		std::string m_TextureName;
+		dae::GameObject*   m_pObject;
+		glm::vec3		   m_MoveSpeed;
+		std::string		   m_TextureName;
 		MathLib::EMovement m_Movement;
 	};
 
@@ -136,40 +158,43 @@ namespace dae {
 		StopMove(Scene* scene, dae::GameObject* object, MathLib::EMovement direction) : m_pObject(object), m_Movement{ direction }, m_Scene{ scene } {};
 		void Execute() override
 		{
-			if (!m_Scene->GetIsActive()) return;
+			if (!m_Scene->GetIsActive())
+				return;
 
-			if (auto comp{ m_pObject->GetComponent<dae::InputComponent>() }) comp->StopMovement(m_Movement);
-			if (auto comp{ m_pObject->GetComponent<dae::TextureComponent>() }) comp->RemoveTexture(m_Movement);
+			if (auto comp{ m_pObject->GetComponent<dae::InputComponent>() })
+				comp->StopMovement(m_Movement);
+			if (auto comp{ m_pObject->GetComponent<dae::TextureComponent>() })
+				comp->RemoveTexture(m_Movement);
 		}
-		void Execute(glm::vec2) override {};
+		void Execute(glm::vec2) override{};
 
 	private:
-		Scene* m_Scene{ nullptr };
-		dae::GameObject* m_pObject;
+		Scene*			   m_Scene{ nullptr };
+		dae::GameObject*   m_pObject;
 		MathLib::EMovement m_Movement;
 	};
-	#pragma endregion
+#pragma endregion
 
-	#pragma region values
+#pragma region values
 	class IncreaseScore final : public Command
 	{
 	public:
 		IncreaseScore(Scene* scene, GameObject* object) : m_pObject(object), m_Scene{ scene } {}
 		void Execute() override
 		{
-			if (!m_Scene->GetIsActive()) return;
+			if (!m_Scene->GetIsActive())
+				return;
 
 			m_pObject->GetComponent<ValuesComponent>()->IncreaseScore(100);
 		}
-		void Execute(glm::vec2) override {};
+		void Execute(glm::vec2) override{};
 
 	private:
 		Scene* m_Scene{ nullptr };
 
 		GameObject* m_pObject;
 	};
-	#pragma endregion
-
+#pragma endregion
 
 	class StartBomb final : public Command
 	{
@@ -177,13 +202,17 @@ namespace dae {
 		StartBomb(Scene* scene, GameObject* const object) : m_pObject(object), m_Scene{ scene } {}
 		void Execute() override
 		{
-			if (!m_Scene->GetIsActive()) return;
+			if (!m_Scene->GetIsActive())
+				return;
 
-			if (!m_pObject) return;
-			if (auto comp{ m_pObject->GetComponent<EntityMovementComponent>() }) {
+			if (!m_pObject)
+				return;
+			if (auto comp{ m_pObject->GetComponent<EntityMovementComponent>() })
+			{
 				auto bombs{ m_Scene->GetGameObjects(EnumStrings[Names::Bomb]) };
 				auto playerComp{ m_pObject->GetComponent<PlayerComponent>() };
-				if (bombs.size() >= playerComp->GetMaxBombs()) return;
+				if (bombs.size() >= playerComp->GetMaxBombs())
+					return;
 
 				auto pBombObject = std::make_unique<GameObject>();
 				pBombObject->SetName(EnumStrings[Names::Bomb]);
@@ -192,7 +221,7 @@ namespace dae {
 				m_Scene->Add(std::move(pBombObject));
 			}
 		}
-		void Execute(glm::vec2) override {};
+		void Execute(glm::vec2) override{};
 
 	private:
 		Scene* m_Scene{ nullptr };
@@ -207,17 +236,22 @@ namespace dae {
 		CycleGameMode(Scene* scene, GameObject* object, bool isMoveUp) : m_pObject(object), m_IsMoveUp{ isMoveUp }, m_Scene{ scene } {}
 		void Execute() override
 		{
-			if (!m_Scene->GetIsActive()) return;
+			if (!m_Scene->GetIsActive())
+				return;
 
 			m_pObject->GetComponent<MenuComponent>()->CycleGameMode(m_IsMoveUp);
 		}
-		void Execute(glm::vec2 pos) override {
-			if (!m_Scene->GetIsActive()) return;
+		void Execute(glm::vec2 pos) override
+		{
+			if (!m_Scene->GetIsActive())
+				return;
 
-			if (pos.y > 0) {
+			if (pos.y > 0)
+			{
 				m_pObject->GetComponent<MenuComponent>()->CycleGameMode(true);
 			}
-			else if(pos.y < 0) {
+			else if (pos.y < 0)
+			{
 				m_pObject->GetComponent<MenuComponent>()->CycleGameMode(false);
 			}
 		};
@@ -226,7 +260,7 @@ namespace dae {
 		Scene* m_Scene{ nullptr };
 
 		GameObject* m_pObject;
-		bool m_IsMoveUp{};
+		bool		m_IsMoveUp{};
 	};
 
 	class StartGame final : public Command
@@ -235,11 +269,12 @@ namespace dae {
 		StartGame(Scene* scene, GameObject* object) : m_pObject(object), m_Scene{ scene } {}
 		void Execute() override
 		{
-			if (!m_Scene->GetIsActive()) return;
+			if (!m_Scene->GetIsActive())
+				return;
 
 			m_pObject->GetComponent<MenuComponent>()->StartGame(m_pObject->GetParent());
 		}
-		void Execute(glm::vec2) override {};
+		void Execute(glm::vec2) override{};
 
 	private:
 		Scene* m_Scene{ nullptr };
@@ -255,39 +290,41 @@ namespace dae {
 		Skip(Scene* scene, GameObject* object) : m_pObject(object), m_Scene{ scene } {}
 		void Execute() override
 		{
-			if (!m_Scene->GetIsActive()) return;
+			if (!m_Scene->GetIsActive())
+				return;
 
 			m_pObject->GetComponent<MenuComponent>()->SkipLevel();
 		}
-		void Execute(glm::vec2) override {};
+		void Execute(glm::vec2) override{};
 
 	private:
-		Scene* m_Scene;
+		Scene*		m_Scene;
 		GameObject* m_pObject;
-
 	};
 #pragma endregion
-		
+
 #pragma region Highscore
 	class MoveKeyboardCursor final : public Command
 	{
 	public:
-		MoveKeyboardCursor(Scene* scene, GameObject* object, glm::vec2 key) : m_pObject(object), m_Scene{ scene }, m_Key{key} {}
+		MoveKeyboardCursor(Scene* scene, GameObject* object, glm::vec2 key) : m_pObject(object), m_Scene{ scene }, m_Key{ key } {}
 		void Execute() override
 		{
-			if (!m_Scene->GetIsActive()) return;
+			if (!m_Scene->GetIsActive())
+				return;
 			m_pObject->GetComponent<HighscoreComponent>()->MoveCursor(m_Key);
 		}
-		void Execute(glm::vec2) override {
-			if (!m_Scene->GetIsActive()) return;
+		void Execute(glm::vec2) override
+		{
+			if (!m_Scene->GetIsActive())
+				return;
 			m_pObject->GetComponent<HighscoreComponent>()->MoveCursor(m_Key);
 		};
 
 	private:
-		Scene* m_Scene;
+		Scene*		m_Scene;
 		GameObject* m_pObject;
-		glm::vec2 m_Key{};
-
+		glm::vec2	m_Key{};
 	};
 
 	class SelectKey final : public Command
@@ -296,15 +333,15 @@ namespace dae {
 		SelectKey(Scene* scene, GameObject* object) : m_pObject(object), m_Scene{ scene } {}
 		void Execute() override
 		{
-			if (!m_Scene->GetIsActive()) return;
+			if (!m_Scene->GetIsActive())
+				return;
 			m_pObject->GetComponent<HighscoreComponent>()->Select();
 		}
-		void Execute(glm::vec2) override {};
+		void Execute(glm::vec2) override{};
 
 	private:
-		Scene* m_Scene;
+		Scene*		m_Scene;
 		GameObject* m_pObject;
-
 	};
 
 	class BackToMenu final : public Command
@@ -313,19 +350,19 @@ namespace dae {
 		BackToMenu(Scene* scene, std::function<void()> makeMenuFn) : m_MakeMenuFn(makeMenuFn), m_Scene{ scene } {}
 		void Execute() override
 		{
-			if (!m_Scene->GetIsActive()) return;
+			if (!m_Scene->GetIsActive())
+				return;
 			auto scene{ SceneManager::GetInstance().GetActiveScene() };
 			scene->SetActive(false);
 			m_MakeMenuFn();
 			SceneManager::GetInstance().DeleteScene(scene);
 		}
-		void Execute(glm::vec2) override {};
+		void Execute(glm::vec2) override{};
 
 	private:
-		Scene* m_Scene;
+		Scene*				  m_Scene;
 		std::function<void()> m_MakeMenuFn;
-
 	};
 #pragma endregion
 
-}
+} // namespace dae

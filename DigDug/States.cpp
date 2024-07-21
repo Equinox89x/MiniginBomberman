@@ -1,36 +1,37 @@
 #include "States.h"
-#include "PlayerComponent.h"
-#include "PathwayCreatorComponent.h"
 #include "BombComponent.h"
-#include <AudioComponent.h>
 #include "EnemyComponent.h"
-#include <FPSCounterComponent.h>
-#include "FloatingScoreComponent.h"
-#include "ResourceManager.h"
 #include "EntityMovementComponent.h"
-#include <ValuesComponent.h>
+#include "FloatingScoreComponent.h"
+#include "PathwayCreatorComponent.h"
+#include "PlayerComponent.h"
+#include "ResourceManager.h"
+#include <AudioComponent.h>
+#include <FPSCounterComponent.h>
 #include <InputComponent.h>
+#include <ValuesComponent.h>
 
 #pragma region Bomb
-void dae::FuseState::OnStart(GameObject* gameObject)
+void		   dae::FuseState::OnStart(GameObject* gameObject)
 {
-	auto tileId{ gameObject->GetComponent<BombComponent>()->GetTileId() };
-	auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
-	auto& pathways{ comp->GetPathways() };
+	auto	   tileId{ gameObject->GetComponent<BombComponent>()->GetTileId() };
+	auto	   comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
+	auto&	   pathways{ comp->GetPathways() };
 	const auto path{ pathways.at(tileId) };
 
 	glm::vec2 pos2{ path.Rect.x - path.Rect.w, path.Rect.y };
 	gameObject->GetTransform()->SetPosition(pos2);
 	gameObject->AddComponent(std::make_unique<dae::AudioComponent>())->PlayBombSound();
 	gameObject->AddComponent(std::make_unique<TextureComponent>())->SetTexture("Character/bomb.png", 0.2f, 3);
-
 }
 
 void dae::FuseState::Update(GameObject* gameObject)
 {
-	if (auto bombComp{ gameObject->GetComponent<BombComponent>() }) {
+	if (auto bombComp{ gameObject->GetComponent<BombComponent>() })
+	{
 		m_FuseTimer -= Timer::GetInstance().GetDeltaTime();
-		if (m_FuseTimer <= 0) {
+		if (m_FuseTimer <= 0)
+		{
 			bombComp->SetState(new ExplosionState(m_Scene), MathLib::EBombState::Explosion);
 		}
 	}
@@ -39,8 +40,10 @@ void dae::FuseState::Update(GameObject* gameObject)
 void dae::ExplosionState::Update(GameObject* gameObject)
 {
 	m_ExplodeTimer -= Timer::GetInstance().GetDeltaTime();
-	if (m_ExplodeTimer <= 0) {
-		for (int i = 1; i <= m_BombStrength; i++) {
+	if (m_ExplodeTimer <= 0)
+	{
+		for (int i = 1; i <= m_BombStrength; i++)
+		{
 			int leftIndex = (m_TileId - i);
 			int rightIndex = (m_TileId + i);
 			int topIndex = (m_TileId - (GridSize * i));
@@ -59,13 +62,14 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 {
 	m_TileId = gameObject->GetComponent<BombComponent>()->GetTileId();
 	m_BombStrength = gameObject->GetComponent<BombComponent>()->GetBombStrength();
-	//if (!m_Scene && m_Ptr != reinterpret_cast<int*>(m_Scene)) return;
+	// if (!m_Scene && m_Ptr != reinterpret_cast<int*>(m_Scene)) return;
 	auto* comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
 	auto& pathways{ comp->GetPathways() };
 
 	const auto& path{ pathways.at(m_TileId) };
-	glm::vec2 pos2{ path.Rect.x - path.Rect.w, path.Rect.y };
-	for (int i = 1; i <= m_BombStrength; i++) {
+	glm::vec2	pos2{ path.Rect.x - path.Rect.w, path.Rect.y };
+	for (int i = 1; i <= m_BombStrength; i++)
+	{
 		int leftIndex = (m_TileId - i);
 		int rightIndex = (m_TileId + i);
 		int topIndex = (m_TileId - (GridSize * i));
@@ -87,9 +91,12 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 
 void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<int, dae::PathWay>& pathways, bool& outHitWall)
 {
-	if (pathways.find(index) == pathways.end()) return;
-	if (index >= 0 && index < GridSize * GridSize) {
-		if (pathways.at(index).PathStats.PathType == MathLib::EPathType::Tile && !outHitWall) {
+	if (pathways.find(index) == pathways.end())
+		return;
+	if (index >= 0 && index < GridSize * GridSize)
+	{
+		if (pathways.at(index).PathStats.PathType == MathLib::EPathType::Tile && !outHitWall)
+		{
 			auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
 			comp->ActivateBomb(index);
 
@@ -98,7 +105,8 @@ void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<in
 			pathways.at(index).TextureComponent->SetIsVisible(true);
 			pathways.at(index).TextureComponent->SetTexture("Character/explosion.png", 0.125f, 4);
 		}
-		else {
+		else
+		{
 			outHitWall = true;
 		}
 	}
@@ -106,7 +114,8 @@ void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<in
 
 void dae::ExplosionState::HandleExplosionEnd(int& index)
 {
-	if (index >= 0 && index < GridSize * GridSize) {
+	if (index >= 0 && index < GridSize * GridSize)
+	{
 		auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
 		comp->ActivatePathway(index);
 	}
@@ -114,9 +123,10 @@ void dae::ExplosionState::HandleExplosionEnd(int& index)
 #pragma endregion
 
 #pragma region Characters
-void dae::BombedState::OnStart(GameObject* pGameObject)
+void		   dae::BombedState::OnStart(GameObject* pGameObject)
 {
-	if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() }) {
+	if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() })
+	{
 
 		pGameObject->GetComponent<dae::AudioComponent>()->PlayPopSound();
 
@@ -129,12 +139,14 @@ void dae::BombedState::OnStart(GameObject* pGameObject)
 		go->AddComponent(std::make_unique<dae::FloatingScoreComponent>(m_Scene, stats.Points, pos));
 		m_Scene->Add(std::move(go));
 
-		if (auto player{ pGameObject->GetComponent<EnemyComponent>()->GetPlayer() }) {
+		if (auto player{ pGameObject->GetComponent<EnemyComponent>()->GetPlayer() })
+		{
 			player->GetComponent<ValuesComponent>()->IncreaseScore(stats.Points);
 		}
 	}
 
-	if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() }) {
+	if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
+	{
 		playerComp->Reposition();
 		pGameObject->GetComponent<TextureComponent>()->SetIsVisible(false);
 		pGameObject->GetComponent<InputComponent>()->DisableMovement(true);
@@ -146,15 +158,20 @@ void dae::BombedState::OnStart(GameObject* pGameObject)
 void dae::BombedState::Update(GameObject* pGameObject)
 {
 	m_DeathTimer -= Timer::GetInstance().GetDeltaTime();
-	if (m_DeathTimer <= 0) {
-		if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() }) {
+	if (m_DeathTimer <= 0)
+	{
+		if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() })
+		{
 			enemyComp->SetState(new DeathState(m_Scene), MathLib::ELifeState::DEAD);
 		}
-		if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() }) {
-			if (pGameObject->GetComponent<ValuesComponent>()->GetLives() > 0) {
+		if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
+		{
+			if (pGameObject->GetComponent<ValuesComponent>()->GetLives() > 0)
+			{
 				playerComp->SetState(new AliveState(m_Scene), MathLib::ELifeState::ALIVE);
 			}
-			else {
+			else
+			{
 				playerComp->SetState(new DeathState(m_Scene), MathLib::ELifeState::DEAD);
 			}
 		}
@@ -163,10 +180,13 @@ void dae::BombedState::Update(GameObject* pGameObject)
 
 void dae::AliveState::OnStart(GameObject* pGameObject)
 {
-	if (!pGameObject) return;
-	if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() }) {
+	if (!pGameObject)
+		return;
+	if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() })
+	{
 	}
-	if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() }) {
+	if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
+	{
 		pGameObject->GetComponent<TextureComponent>()->SetIsVisible(true);
 		pGameObject->GetComponent<InputComponent>()->DisableMovement(false);
 		pGameObject->GetComponent<EntityMovementComponent>()->DisableMovement(false);
@@ -175,15 +195,22 @@ void dae::AliveState::OnStart(GameObject* pGameObject)
 
 void dae::AliveState::Update(GameObject* pGameObject)
 {
-	if (m_Scene && pGameObject) {
-		if (pGameObject->IsMarkedForDestroy()) return;
+	if (m_Scene && pGameObject)
+	{
+		if (pGameObject->IsMarkedForDestroy())
+			return;
 		auto enemies{ m_Scene->GetGameObjects(EnumStrings[Names::EnemyGeneral], false) };
-		for (const auto& enemy : enemies) {
-			if (enemy && !enemy->IsMarkedForDestroy()) {
+		for (const auto& enemy : enemies)
+		{
+			if (enemy && !enemy->IsMarkedForDestroy())
+			{
 				auto lifestate{ enemy->GetComponent<EnemyComponent>()->GetState() };
-				if (lifestate != MathLib::ELifeState::BOMBED && lifestate != MathLib::ELifeState::DEAD) {
-					if (pGameObject && !pGameObject->IsMarkedForDestroy()) {
-						if (MathLib::IsOverlapping(pGameObject->GetComponent<TextureComponent>()->GetRect(), enemy->GetComponent<TextureComponent>()->GetRect())) {
+				if (lifestate != MathLib::ELifeState::BOMBED && lifestate != MathLib::ELifeState::DEAD)
+				{
+					if (pGameObject && !pGameObject->IsMarkedForDestroy())
+					{
+						if (MathLib::IsOverlapping(pGameObject->GetComponent<TextureComponent>()->GetRect(), enemy->GetComponent<TextureComponent>()->GetRect()))
+						{
 							pGameObject->GetComponent<PlayerComponent>()->SetState(new BombedState(m_Scene), MathLib::ELifeState::BOMBED);
 						}
 					}

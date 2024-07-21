@@ -1,37 +1,24 @@
 #include "PlayerComponent.h"
-#include <ValuesComponent.h>
-#include "MenuComponent.h"
-#include "EntityMovementComponent.h"
-#include <InputComponent.h>
 #include "EnemyComponent.h"
+#include "EntityMovementComponent.h"
+#include "MenuComponent.h"
+#include <InputComponent.h>
+#include <ValuesComponent.h>
 
-dae::PlayerComponent::~PlayerComponent()
-{
-	m_PlayerState.reset();
-}
+dae::PlayerComponent::~PlayerComponent() { m_PlayerState.reset(); }
 
-void dae::PlayerComponent::Init()
-{
-	SetState(new AliveState(m_Scene), MathLib::ELifeState::ALIVE);
-}
+void dae::PlayerComponent::Init() { SetState(new AliveState(m_Scene), MathLib::ELifeState::ALIVE); }
 
-void dae::PlayerComponent::Update()
-{
-	m_PlayerState->Update(GetGameObject());
-}
+void dae::PlayerComponent::Update() { m_PlayerState->Update(GetGameObject()); }
 
-void dae::PlayerComponent::Render() const
-{
-}
+void dae::PlayerComponent::Render() const {}
 
-void dae::PlayerComponent::Reposition()
-{
-	GetGameObject()->GetTransform()->SetPosition(m_OriginalPosition);
-}
+void dae::PlayerComponent::Reposition() { GetGameObject()->GetTransform()->SetPosition(m_OriginalPosition); }
 
 void dae::PlayerComponent::ActivateUnderlyingThing(PathWay& pathway)
 {
-	if (pathway.PathStats.PathState == MathLib::EPathState::Powerup) {
+	if (pathway.PathStats.PathState == MathLib::EPathState::Powerup)
+	{
 		switch (pathway.PathStats.PowerupType)
 		{
 		case MathLib::EPowerupType::ExtraBomb:
@@ -54,7 +41,8 @@ void dae::PlayerComponent::ActivateUnderlyingThing(PathWay& pathway)
 		pathway.PathStats.PowerupType = MathLib::EPowerupType::None;
 		pathway.TextureComponent->SetIsVisible(false);
 	}
-	else {
+	else
+	{
 		Event scoreEvent{ EventType::DoorTrigger };
 		Notify(GetGameObject(), scoreEvent);
 	}

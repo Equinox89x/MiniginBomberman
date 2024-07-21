@@ -4,26 +4,30 @@
 
 void dae::MenuComponent::CycleGameMode(bool isMoveUp)
 {
-	if (m_ControlTimer > 0) return;
-	if (!isMoveUp) {
-		if (m_SelectedGameMode != MathLib::GameMode::VERSUS) {
+	if (m_ControlTimer > 0)
+		return;
+	if (!isMoveUp)
+	{
+		if (m_SelectedGameMode != MathLib::GameMode::VERSUS)
+		{
 			m_SelectedGameMode = MathLib::GameMode(static_cast<int>(m_SelectedGameMode) + 1);
 		}
 	}
-	else {
-		if (m_SelectedGameMode != MathLib::GameMode::SOLO) {
+	else
+	{
+		if (m_SelectedGameMode != MathLib::GameMode::SOLO)
+		{
 			m_SelectedGameMode = MathLib::GameMode(static_cast<int>(m_SelectedGameMode) - 1);
 		}
 	}
 	m_ControlTimer = 0.2f;
 	GetGameObject()->GetTransform()->SetPosition(m_CursorLocations[static_cast<int>(m_SelectedGameMode)]);
-
 }
 
 void dae::MenuComponent::StartGame(GameObject* /*pMenu*/)
 {
 	auto& manager = SceneManager::GetInstance();
-	auto scene = manager.GetActiveScene();
+	auto  scene = manager.GetActiveScene();
 
 	Input::GetInstance().ClearKeys();
 	CreateLevel(m_SelectedGameMode, 0);
@@ -34,26 +38,33 @@ void dae::MenuComponent::StartGame(GameObject* /*pMenu*/)
 void dae::MenuComponent::SkipLevel()
 {
 	auto& manager = SceneManager::GetInstance();
-	auto scene = manager.GetActiveScene();
+	auto  scene = manager.GetActiveScene();
 	scene->SetActive(false);
 
 	Input::GetInstance().ClearKeys();
-	if (m_SelectedGameMode == MathLib::GameMode::SOLO) {
-		if (manager.GetScene(EnumStrings[SoloLevelName0])) {
+	if (m_SelectedGameMode == MathLib::GameMode::SOLO)
+	{
+		if (manager.GetScene(EnumStrings[SoloLevelName0]))
+		{
 			CreateLevel(m_SelectedGameMode, 1);
-		}		
-		else if (manager.GetScene(EnumStrings[SoloLevelName1])) {
+		}
+		else if (manager.GetScene(EnumStrings[SoloLevelName1]))
+		{
 			CreateLevel(m_SelectedGameMode, 2);
-		}	
-		else if (manager.GetScene(EnumStrings[SoloLevelName2])) {
-			if (auto go{ m_Scene->GetGameObject(EnumStrings[Names::Score1]) }) {
-				if (auto comp{ go->GetComponent<TextObjectComponent>() }) {
- 					CreateHighscoreMenu();
+		}
+		else if (manager.GetScene(EnumStrings[SoloLevelName2]))
+		{
+			if (auto go{ m_Scene->GetGameObject(EnumStrings[Names::Score1]) })
+			{
+				if (auto comp{ go->GetComponent<TextObjectComponent>() })
+				{
+					CreateHighscoreMenu();
 				}
 			}
 		}
 	}
-	else {
+	else
+	{
 		CreateHighscoreMenu();
 	}
 
@@ -63,13 +74,10 @@ void dae::MenuComponent::SkipLevel()
 void dae::MenuComponent::GameOver()
 {
 	auto& manager = SceneManager::GetInstance();
-	auto scene = manager.GetActiveScene();
+	auto  scene = manager.GetActiveScene();
 	Input::GetInstance().ClearKeys();
 	CreateHighscoreMenu();
 	manager.DeleteScene(scene);
 }
 
-void dae::MenuComponent::Update()
-{
-	m_ControlTimer -= Timer::GetInstance().GetDeltaTime();
-}
+void dae::MenuComponent::Update() { m_ControlTimer -= Timer::GetInstance().GetDeltaTime(); }

@@ -1,110 +1,54 @@
 #pragma once
 #include "Component.h"
-#include "TextureComponent.h"
-#include "Scene.h"
 #include "MathLib.h"
 #include "Scene.h"
 #include "States.h"
 #include "Subject.h"
+#include "TextureComponent.h"
 
-namespace dae {
-    /*class EntityState {
-    public:
-        virtual ~EntityState() = default;
-        virtual void Update() = 0;
-        virtual void Init() = 0;
+namespace dae
+{
+	class PlayerComponent final : public Component, public Subject
+	{
+	public:
+		PlayerComponent(Scene* scene, glm::vec2 startPos) : m_Scene{ scene }, m_OriginalPosition{ startPos } {};
+		~PlayerComponent();
+		PlayerComponent(const PlayerComponent&) = delete;
+		PlayerComponent(PlayerComponent&&) noexcept = delete;
+		PlayerComponent& operator=(const PlayerComponent&) = delete;
+		PlayerComponent& operator=(PlayerComponent&&) noexcept = delete;
 
-        void SetData(dae::Scene* scene, GameObject* go) {
-            if (scene) {
-                m_Scene = scene;
-            }
-            if (go) {
-                gameObject = go;
-            }
-        }
+		virtual void Init() override;
+		virtual void Update() override;
+		virtual void Render() const override;
 
-        void ClearGameObject() { gameObject = nullptr; }
+		void Reposition();
+		void ActivateUnderlyingThing(PathWay& pathway);
 
-    protected:
-        Scene* m_Scene{ nullptr };
-        GameObject* gameObject{ nullptr };
-    };
+		void SetState(EntityState* playerState, MathLib::ELifeState lifeState)
+		{
+			if (playerState)
+			{
+				if (m_PlayerState)
+					m_PlayerState->OnEnd(GetGameObject());
+				m_PlayerState = std::unique_ptr<EntityState>(playerState);
+				m_State = lifeState;
+				if (m_PlayerState)
+					m_PlayerState->OnStart(GetGameObject());
+			}
+		}
+		MathLib::ELifeState GetState() { return m_State; };
+		EntityState*		GetPlayerState() { return m_PlayerState.get(); };
+		int					GetBombStrength() { return m_BombStrength; };
+		int					GetMaxBombs() { return m_MaxBombs; };
 
-    class RespawnState : public EntityState {
-    public:
-        virtual void Init() override;
-        virtual void Update() override;
+	private:
+		Scene*						 m_Scene{ nullptr };
+		std::unique_ptr<EntityState> m_PlayerState{ nullptr };
+		MathLib::ELifeState			 m_State{ MathLib::ELifeState::ALIVE };
 
-    private:
-        float m_Timer{ 3 };
-    };    
-    
-    class DeadState : public EntityState {
-    public:
-        virtual void Init() override {};
-        virtual void Update() override{};
-
-    private:
-    };
-
-    class AliveState : public EntityState {
-    public:
-        virtual void Init() override {};
-        virtual void Update() override;
-    private:
-        int* m_Ptr = reinterpret_cast<int*>(0xdddddddddddddddd);
-
-    };
-
-    class InvincibleState : public EntityState {
-    public:
-        virtual void Init() override {};
-        virtual void Update() override;
-    private:
-        float m_Timer{ 3 };
-
-    };*/
-
-    class PlayerComponent final : public Component, public Subject
-    {
-    public:
-        PlayerComponent(Scene* scene, glm::vec2 startPos) : m_Scene{ scene }, m_OriginalPosition{ startPos } { };
-        ~PlayerComponent();
-        PlayerComponent(const PlayerComponent&) = delete;
-        PlayerComponent(PlayerComponent&&) noexcept = delete;
-        PlayerComponent& operator=(const PlayerComponent&) = delete;
-        PlayerComponent& operator=(PlayerComponent&&) noexcept = delete;
-        virtual void Init() override;
-        virtual void Update() override;
-        virtual void Render() const override;
-
-        void Reposition();
-        void ActivateUnderlyingThing(PathWay& pathway);
-
-        void SetState(EntityState* playerState, MathLib::ELifeState lifeState) {
-            if (playerState)
-            {
-                if(m_PlayerState) m_PlayerState->OnEnd(GetGameObject());
-                m_PlayerState = std::unique_ptr<EntityState>(playerState);
-                m_State = lifeState;
-                if(m_PlayerState) m_PlayerState->OnStart(GetGameObject());
-            }
-        }
-        MathLib::ELifeState GetState() { return m_State; };
-        EntityState* GetPlayerState() { return m_PlayerState.get(); };
-        int GetBombStrength() { return m_BombStrength; };
-        int GetMaxBombs() { return m_MaxBombs; };
-
-
-    private:
-        Scene* m_Scene{ nullptr };
-        std::unique_ptr<EntityState> m_PlayerState{ nullptr };
-        MathLib::ELifeState m_State{ MathLib::ELifeState::ALIVE };
-
-        glm::vec2 m_OriginalPosition;
-        int m_BombStrength{ 1 };
-        int m_MaxBombs{ 1 };
-
-    };
-}
-
+		glm::vec2 m_OriginalPosition;
+		int		  m_BombStrength{ 1 };
+		int		  m_MaxBombs{ 1 };
+	};
+} // namespace dae
