@@ -79,8 +79,10 @@ namespace dae
 		float m_ExplodeTimer{ 1.3f };
 		int m_BombStrength{ 2 };
 		int m_TileId{ 0 };
-
 		bool m_HitWallLeft{ false }, m_HitWallRight{ false }, m_HitWallTop{ false }, m_HitWallBottom{ false };
+
+		int* m_Ptr = reinterpret_cast<int*>(0xdddddddddddddddd);
+
 		void HandleExplosionPlacement(int& index, const std::map<int, PathWay>& pathways, bool& outHitWall);
 		void HandleExplosionEnd(int& index);
 	};

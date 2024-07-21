@@ -7,6 +7,7 @@
 #include "EnemyComponent.h"
 #include "PlayerComponent.h"
 #include <ValuesComponent.h>
+#include "BombComponent.h"
 
 dae::PathwayCreatorComponent::~PathwayCreatorComponent()
 {
@@ -60,7 +61,7 @@ void dae::PathwayCreatorComponent::ActivatePathway(int id)
 	if (m_Pathways.find(id) != m_Pathways.end()) {
 		auto& path{ m_Pathways[id] };
 		if (path.PathStats.PathType != MathLib::EPathType::Blocker) {
-			
+
 			path.PathStats.PathType = MathLib::EPathType::Tile;
 			if (path.PathStats.HasPowerup) {
 				path.TextureComponent->SetTexture("Levels/" + path.PathStats.PowerupName + ".png", 0.1f, 1, false, false);

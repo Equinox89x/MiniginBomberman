@@ -28,13 +28,6 @@ void dae::FuseState::OnStart(GameObject* gameObject)
 void dae::FuseState::Update(GameObject* gameObject)
 {
 	if (auto bombComp{ gameObject->GetComponent<BombComponent>() }) {
-
-		auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
-		auto pathways{ comp->GetPathways() };
-		if (pathways.at(bombComp->GetTileId()).PathStats.PathState == MathLib::EPathState::Explosion) {
-			bombComp->SetState(new ExplosionState(m_Scene), MathLib::EBombState::Explosion);
-		}
-
 		m_FuseTimer -= Timer::GetInstance().GetDeltaTime();
 		if (m_FuseTimer <= 0) {
 			bombComp->SetState(new ExplosionState(m_Scene), MathLib::EBombState::Explosion);
@@ -56,18 +49,16 @@ void dae::ExplosionState::Update(GameObject* gameObject)
 			HandleExplosionEnd(topIndex);
 			HandleExplosionEnd(bottomIndex);
 		}
+		HandleExplosionEnd(m_TileId);
 		gameObject->GetComponent<BombComponent>()->SetState(new DeathState(m_Scene), MathLib::EBombState::Death);
 	}
-
-	// TODO check overlaps for enemy or player death
-
 }
 
 void dae::ExplosionState::OnStart(GameObject* gameObject)
 {
 	m_TileId = gameObject->GetComponent<BombComponent>()->GetTileId();
 	m_BombStrength = gameObject->GetComponent<BombComponent>()->GetBombStrength();
-
+	//if (!m_Scene && m_Ptr != reinterpret_cast<int*>(m_Scene)) return;
 	auto* comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
 	auto& pathways{ comp->GetPathways() };
 
@@ -86,6 +77,11 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 		HandleExplosionPlacement(bottomIndex, pathways, m_HitWallBottom);
 	}
 
+	glm::vec2 pos{ pathways.at(m_TileId).Rect.x - pathways.at(m_TileId).Rect.w, pathways.at(m_TileId).Rect.y };
+	pathways.at(m_TileId).TextureComponent->SetPosition(pos.x, pos.y);
+	pathways.at(m_TileId).TextureComponent->SetTexture("Character/explosionCenter.png", 0.3f, 4);
+	gameObject->GetComponent<TextureComponent>()->SetIsVisible(false);
+	comp->ActivateBomb(m_TileId);;
 }
 
 void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<int, dae::PathWay>& pathways, bool& outHitWall)

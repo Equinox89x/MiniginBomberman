@@ -49,5 +49,6 @@ void dae::PlayerComponent::ActivatePowerup(PathWay& pathway)
 
 	pathway.PathStats.PathType = MathLib::EPathType::Tile;
 	pathway.PathStats.PathState = MathLib::EPathState::Tile;
+	pathway.PathStats.HasPowerup = false;
 	pathway.TextureComponent->SetIsVisible(false);
 }
