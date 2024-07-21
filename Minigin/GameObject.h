@@ -43,12 +43,13 @@ const enum Names {
 	CoopLevelName,
 	VersusLevelName,
 	HighScoreName,
+	Bomb,
 	NUM_ENUM_VALUES
 };
 
 const std::string EnumStrings[NUM_ENUM_VALUES] = {
 	"Player0", "Player1", "Player","Enemy", "EnemyHolder", "Pump", "Global", "PathCreator", "ScoreHolder", "Life", "Score", "Score0", "Score1", "Selector", "MainMenu", "Background",
-	"DigDugSolo", "DigDugSolo0", "DigDugSolo1", "DigDugSolo2", "DigDugCoop", "DigDugVersus","HighScoreScreen",
+	"BombermanSolo", "BombermanSolo1", "BombermanSolo2", "BombermanSolo3", "BombermanCoop", "BombermanVersus","HighScoreScreen", "Bomb",
 };
 
 namespace dae

@@ -84,7 +84,7 @@ void dae::EntityMovementComponent::Update()
 		}
 
 		GetGameObject()->GetTransform()->Translate(dx * 2.f, dy * 2.f);
-		GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Enemies/" + m_EnemyName + (m_IsGhostMode ? "Ghost" : m_LastDir) + ".png", 0.2f, 2);
+		GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Enemies/" + m_EnemyName + m_LastDir + ".png", 0.2f, 2);
 	}
 }
 
@@ -119,8 +119,8 @@ void dae::EntityMovementComponent::CheckMovement(const std::map<int, PathWay>& p
 	{
 		auto path{ pathways.find(item.second) };
 		if (path != pathways.end()) {
-			if (path->second.PathState == MathLib::EPathState::Tile) {
-					paths.push_back(path->second);
+			if (path->second.PathStats.PathType == MathLib::EPathType::Tile) {
+				paths.push_back(path->second);
 			}
 		}
 	}
@@ -132,32 +132,32 @@ void dae::EntityMovementComponent::CheckMovement(const std::map<int, PathWay>& p
 			m_CachedLocation = paths[randIndex].Middle;
 
 			if (m_CachedLocation.x > GetGameObject()->GetTransform()->GetWorld().Position.x) {
-				m_Movement = MathLib::RIGHT;
+				m_Movement = MathLib::EMovement::RIGHT;
 				m_LastDir = "Right";
 			}
 			else {
-				m_Movement = MathLib::LEFT;
+				m_Movement = MathLib::EMovement::LEFT;
 				m_LastDir = "Left";
 			}
 		}
 }
 
-void dae::EntityMovementComponent::SetMovement(MathLib::Movement movement)
+void dae::EntityMovementComponent::SetMovement(MathLib::EMovement movement)
 {
 	if (!m_CanMove) return;
 	m_Movement = movement;
 	switch (movement)
 	{
-	case MathLib::UP:
+	case MathLib::EMovement::UP:
 		m_PathwayColliderRect = m_TopRect;
 		break;
-	case MathLib::DOWN:
+	case MathLib::EMovement::DOWN:
 		m_PathwayColliderRect = m_BottomRect;
 		break;
-	case MathLib::LEFT:
+	case MathLib::EMovement::LEFT:
 		m_PathwayColliderRect = m_LeftRect;
 		break;
-	case MathLib::RIGHT:
+	case MathLib::EMovement::RIGHT:
 		m_PathwayColliderRect = m_RightRect;
 		break;
 	default:
@@ -169,27 +169,27 @@ void dae::EntityMovementComponent::SetCurrentTileId(int id)
 {
 	m_CurrentTileId = id;
 	m_CurrentSurroundingTiles = {
-		{ MathLib::Movement::DOWN, id + 14},
-		{ MathLib::Movement::UP, id - 14},
-		{ MathLib::Movement::RIGHT, id + 1},
-		{ MathLib::Movement::LEFT, id - 1},
+		{ MathLib::EMovement::DOWN, id + 14},
+		{ MathLib::EMovement::UP, id - 14},
+		{ MathLib::EMovement::RIGHT, id + 1},
+		{ MathLib::EMovement::LEFT, id - 1},
 	};
 }
 
-SDL_Rect dae::EntityMovementComponent::GetPathCollider(MathLib::Movement movement)
+SDL_Rect dae::EntityMovementComponent::GetPathCollider(MathLib::EMovement movement)
 {
 	switch (movement)
 	{
-	case MathLib::UP:
+	case MathLib::EMovement::UP:
 		return m_TopRect;
 		break;
-	case MathLib::DOWN:
+	case MathLib::EMovement::DOWN:
 		return m_BottomRect;
 		break;
-	case MathLib::LEFT:
+	case MathLib::EMovement::LEFT:
 		return m_LeftRect;
 		break;
-	case MathLib::RIGHT:
+	case MathLib::EMovement::RIGHT:
 		return m_RightRect;
 		break;
 	default:

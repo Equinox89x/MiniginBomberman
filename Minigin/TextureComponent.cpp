@@ -91,13 +91,13 @@ void dae::TextureComponent::SetTexture(TextureData& textureData)
     m_Texture = textureData;
 }
 
-void dae::TextureComponent::SetTexture(MathLib::Movement movement, const std::string& filename, float animSpeed, int nrOfFrames, bool resetAnim, bool canProgress)
+void dae::TextureComponent::SetTexture(MathLib::EMovement movement, const std::string& filename, float animSpeed, int nrOfFrames, bool resetAnim, bool canProgress)
 {
     SetTexture(filename, animSpeed, nrOfFrames, resetAnim, canProgress);
     FileNames.insert({ movement, m_Texture });
 }
 
-void dae::TextureComponent::RemoveTexture(MathLib::Movement movement)
+void dae::TextureComponent::RemoveTexture(MathLib::EMovement movement)
 {
     FileNames.erase(movement);
     if (FileNames.size() > 0) {

@@ -27,7 +27,7 @@ namespace dae {
         void SetStartPos(glm::vec2 startPos) { m_StartPos = startPos; };
         void Reposition() { GetGameObject()->GetComponent<TextureComponent>()->SetPosition(m_StartPos.x, m_StartPos.y); };
 
-        void SetMovement(MathLib::Movement movement);
+        void SetMovement(MathLib::EMovement movement);
 
         MathLib::ELifeState GetState() { return m_PlayerState; };
         SDL_Rect GetCollider() { return m_PathwayColliderRect; };
@@ -38,7 +38,7 @@ namespace dae {
         int GetNextTileId() { return m_NextTileId; };
         int GetCurrentTileId() { return m_CurrentTileId; };
 
-        SDL_Rect GetPathCollider(MathLib::Movement movement);
+        SDL_Rect GetPathCollider(MathLib::EMovement movement);
 
         void SetMapBorders(SDL_Rect LeftMapBorder, SDL_Rect RightMapBorder, SDL_Rect TopMapBorder, SDL_Rect BottomMapBorder) {
             m_LeftMapBorder = LeftMapBorder;
@@ -48,7 +48,7 @@ namespace dae {
         };
 
         void DisableMovement(bool isDisabled) { m_CanMove = !isDisabled; };
-        MathLib::Movement GetDirection() { return m_Movement; };
+        MathLib::EMovement GetDirection() { return m_Movement; };
         std::string GetLastDirection() { return m_LastDir; }
         void SetLastDirection(std::string dir) { m_LastDir = dir; }
 
@@ -57,20 +57,19 @@ namespace dae {
         }
         std::string GetEnemyName() { return m_EnemyName; };
 
-        void SetGhostModeEnabled(bool isEnabled) { m_IsGhostMode = isEnabled; };
         void SetGhostLocation(glm::vec2 loc) { m_CachedLocation = loc; };
 
     private:
         bool m_IsController{ false }, m_IsAutonomous{ false }, m_CanMove{ true };
         int m_NextTileId{ 0 }, m_CurrentTileId{ 0 };
-        std::map<MathLib::Movement, int> m_CurrentSurroundingTiles{};
+        std::map<MathLib::EMovement, int> m_CurrentSurroundingTiles{};
         Scene* m_Scene{ nullptr };
 
         SDL_Rect m_BottomRect{}, m_TopRect{}, m_Rect{}, m_LeftRect{}, m_RightRect{}, m_PathwayColliderRect{};
             
         MathLib::ELifeState m_PlayerState{ MathLib::ELifeState::ALIVE };
-        MathLib::Movement m_Movement{ MathLib::Movement::DOWN };
-        MathLib::Movement m_PrevMovement{};
+        MathLib::EMovement m_Movement{ MathLib::EMovement::DOWN };
+        MathLib::EMovement m_PrevMovement{};
         glm::vec2 m_StartPos{};
         glm::vec2 m_PrevLoc{};
 
@@ -78,7 +77,6 @@ namespace dae {
 
         //Autonomous
         float m_Speed{ 50 }, m_MoveTimer{ 2 };
-        bool m_CanChangeState{ false }, m_IsGhostMode{ false };
         SDL_Rect m_LeftMapBorder{}, m_RightMapBorder{}, m_TopMapBorder{}, m_BottomMapBorder{};
         MathLib::EMovingState m_State{ MathLib::EMovingState::MovingLeft };
         std::map<MathLib::EMovingState, bool> m_MovementDir{

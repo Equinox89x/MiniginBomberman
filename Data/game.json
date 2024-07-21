@@ -3,9 +3,9 @@
     "MapWidth" : 15,
     "Cellsize" : 10,
     "Levels" : { 
-        "DigDugSolo": [
+        "BombermanSolo": [
             {
-                "indexname": "DigDugSolo1",
+                "indexname": "BombermanSolo1",
                 "index": 0,
                 "tiles": [
                     "blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker",
@@ -13,18 +13,18 @@
                     "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|breakable|tile|blocker",
                     "blocker|tile|tile|tile|breakable|breakable|tile|tile|tile|tile|tile|tile|tile|tile|tile|blocker",
                     "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|tile|blocker",
-                    "blocker|tile|tile|tile|tile|tile|tile|tile|tile|tile|tile|breakable|tile|tile|tile|blocker",
+                    "blocker|tile|tile|tile|tile|spawn|tile|tile|tile|tile|tile|extraBomb|tile|tile|tile|blocker",
                     "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|breakable|tile|blocker",
                     "blocker|tile|tile|tile|tile|tile|tile|breakable|tile|breakable|tile|tile|tile|tile|tile|blocker",
                     "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|breakable|blocker",
-                    "blocker|tile|tile|tile|tile|tile|breakable|tile|tile|tile|tile|tile|breakable|spawn|tile|blocker",
+                    "blocker|tile|tile|tile|tile|tile|breakable|tile|tile|tile|tile|tile|breakable|tile|tile|blocker",
                     "blocker|tile|blocker|breakable|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|tile|blocker",
                     "blocker|tile|tile|breakable|tile|tile|tile|tile|tile|tile|breakable|tile|tile|tile|tile|blocker",
                     "blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker"
                 ]
             },
             {
-                "indexname": "DigDugSolo2",
+                "indexname": "BombermanSolo2",
                 "index": 1,
                 "tiles": [
                     "undug|undug|undug|undug|undug|undug|undug|undug|undug|undug|undug|undug|undug|undug",
@@ -40,7 +40,7 @@
                 ]
             },
             {
-                "indexname": "DigDugSolo3",
+                "indexname": "BombermanSolo3",
                 "index": 2,
                 "tiles": [
                     "undug|undug|undug|undug|undug|undug|undug|undug|undug|undug|undug|undug|undug|undug",
@@ -56,9 +56,9 @@
                 ]
             }    
         ],
-        "DigDugVersus":[
+        "BombermanVersus":[
             {
-                "indexname": "DigDugVersus",
+                "indexname": "BombermanVersus",
                 "index": 0,
                 "tiles": [
                     "undug|undug|undug|undug|undug|undug|undug|undug|rock|undug|undug|undug|undug|undug",
@@ -74,9 +74,9 @@
                 ]
             }
         ],
-        "DigDugCoop":[
+        "BombermanCoop":[
             {
-                "indexname": "DigDugCoop",
+                "indexname": "BombermanCoop",
                 "index": 0,
                 "tiles": [
                     "undug|undug|undug|undug|undug|undug|undug|undug|undug|undug|undug|undug|undug|undug",

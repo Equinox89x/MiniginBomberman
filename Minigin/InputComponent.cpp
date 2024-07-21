@@ -16,10 +16,10 @@ void dae::InputComponent::UpdatePos(float dt)
 
 		if (futurePosition.x < 0 || futurePosition.x >(WindowSizeX) - PlayerSize) return;
 
-		if (!m_Movement[MathLib::Side::Top] && m_Movespeed.y < 0) return;
-		if (!m_Movement[MathLib::Side::Bottom] && m_Movespeed.y > 0) return;
-		if (!m_Movement[MathLib::Side::Left] && m_Movespeed.x < 0) return;
-		if (!m_Movement[MathLib::Side::Right] && m_Movespeed.x > 0) return;
+		if (!m_Movement[MathLib::ESide::Top] && m_Movespeed.y < 0) return;
+		if (!m_Movement[MathLib::ESide::Bottom] && m_Movespeed.y > 0) return;
+		if (!m_Movement[MathLib::ESide::Left] && m_Movespeed.x < 0) return;
+		if (!m_Movement[MathLib::ESide::Right] && m_Movespeed.x > 0) return;
 		go->GetTransform()->SetPosition(futurePosition.x, futurePosition.y);
 		//m_Movespeed = glm::vec3{ 0,0,0 };
 	}
@@ -35,52 +35,52 @@ void dae::InputComponent::Update()
 	auto pathwayComp{ pathCreator->GetComponent<PathwayCreatorComponent>() };
 	auto playerComp{ GetGameObject()->GetComponent<EntityMovementComponent>()};
 
-	m_Movement[MathLib::Side::Left] = true;
-	m_Movement[MathLib::Side::Right] = true;
-	m_Movement[MathLib::Side::Bottom] = true;
-	m_Movement[MathLib::Side::Top] = true;
+	m_Movement[MathLib::ESide::Left] = true;
+	m_Movement[MathLib::ESide::Right] = true;
+	m_Movement[MathLib::ESide::Bottom] = true;
+	m_Movement[MathLib::ESide::Top] = true;
 
 	for (const auto& pathWay : pathwayComp->GetPathways()) {
 		const auto rect{ pathWay.second.Rect };
-		const auto canMove{ pathWay.second.PathState == MathLib::EPathState::Blocker || pathWay.second.PathState == MathLib::EPathState::Breakable };
-		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::LEFT), rect) && canMove) {
-			m_Movement[MathLib::Side::Left] = false;
+		const auto canMove{ pathWay.second.PathStats.PathType != MathLib::EPathType::Tile };
+		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::EMovement::LEFT), rect) && canMove) {
+			m_Movement[MathLib::ESide::Left] = false;
 		}
-		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::RIGHT), rect) && canMove) {
-			m_Movement[MathLib::Side::Right] = false;
+		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::EMovement::RIGHT), rect) && canMove) {
+			m_Movement[MathLib::ESide::Right] = false;
 		}
-		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::DOWN), rect) && canMove) {
-			m_Movement[MathLib::Side::Bottom] = false;
+		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::EMovement::DOWN), rect) && canMove) {
+			m_Movement[MathLib::ESide::Bottom] = false;
 		}
-		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::UP), rect) && canMove) {
-			m_Movement[MathLib::Side::Top] = false;
+		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::EMovement::UP), rect) && canMove) {
+			m_Movement[MathLib::ESide::Top] = false;
 		}
 
 	}
 	/*for (const auto& pathWay : pathwayComp->GetHorizontalPathways()) {
-		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::LEFT), pathWay)) {
-			m_Movement[MathLib::Side::Left] = true;
+		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::EMovement::LEFT), pathWay)) {
+			m_Movement[MathLib::ESide::Left] = true;
 		}
-		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::RIGHT), pathWay)) {
-			m_Movement[MathLib::Side::Right] = true;
+		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::EMovement::RIGHT), pathWay)) {
+			m_Movement[MathLib::ESide::Right] = true;
 		}
 	}
 	for (const auto& pathWay : pathwayComp->GetVerticalPathways()) {
-		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::DOWN), pathWay)) {
-			m_Movement[MathLib::Side::Bottom] = true;
+		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::EMovement::DOWN), pathWay)) {
+			m_Movement[MathLib::ESide::Bottom] = true;
 		}
-		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::Movement::UP), pathWay)) {
-			m_Movement[MathLib::Side::Top] = true;
+		if (MathLib::IsOverlapping(playerComp->GetPathCollider(MathLib::EMovement::UP), pathWay)) {
+			m_Movement[MathLib::ESide::Top] = true;
 		}
 	}*/
 
 	UpdatePos(dt);
 
 	if (m_IsController) {
-		StopMovement(MathLib::LEFT);
-		StopMovement(MathLib::RIGHT);
-		StopMovement(MathLib::UP);
-		StopMovement(MathLib::DOWN);
+		StopMovement(MathLib::EMovement::LEFT);
+		StopMovement(MathLib::EMovement::RIGHT);
+		StopMovement(MathLib::EMovement::UP);
+		StopMovement(MathLib::EMovement::DOWN);
 	}
 }
 
@@ -89,14 +89,14 @@ void dae::InputComponent::SetMoveSpeed(const glm::vec3& movespeed)
 	m_Movespeed = movespeed;
 }
 
-void dae::InputComponent::SetMoveSpeed(const glm::vec3& movespeed, MathLib::Movement direction, bool isController)
+void dae::InputComponent::SetMoveSpeed(const glm::vec3& movespeed, MathLib::EMovement direction, bool isController)
 {
-	m_MoveSpeedList.insert(std::pair<MathLib::Movement, const glm::vec3>{ direction, movespeed });
+	m_MoveSpeedList.insert(std::pair<MathLib::EMovement, const glm::vec3>{ direction, movespeed });
 	m_Movespeed = movespeed;
 	m_IsController = isController;
 }
 
-void dae::InputComponent::StopMovement(MathLib::Movement direction)
+void dae::InputComponent::StopMovement(MathLib::EMovement direction)
 {
 	m_MoveSpeedList.erase(direction);
 	m_Movespeed = m_MoveSpeedList.size() > 0 ? m_MoveSpeedList.begin()->second : glm::vec3{ 0,0,0 };

@@ -10,7 +10,7 @@ namespace dae {
 	struct PathWay {
 		int id{ 0 };
 		dae::TextureComponent* TextureComponent{ nullptr };
-		MathLib::EPathState PathState{ MathLib::EPathState::Blocker };
+		MathLib::EPathStats PathStats{};
 		const glm::vec2 Middle{};
 		const SDL_Rect Rect{};
 
@@ -52,6 +52,7 @@ namespace dae {
 		std::map<int, PathWay> m_Pathways{};
 		std::vector<PathWay> m_Spawns{};
 		std::vector<PathWay> m_EnemySpawns{};
+		std::map<std::string, MathLib::EPathStats> m_PathStats{};
 
 		SDL_Rect m_LeftMapBorder{}, m_RightMapBorder{}, m_TopMapBorder{}, m_BottomMapBorder{};
 

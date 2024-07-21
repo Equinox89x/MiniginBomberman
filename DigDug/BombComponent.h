@@ -43,7 +43,7 @@ namespace dae {
         std::unique_ptr<EntityState> m_BombState{ nullptr };
         MathLib::EBombState m_State{ MathLib::EBombState::Fuse };
         Scene* m_Scene{ nullptr };
-        int m_BombStrength{ 2 };
+        int m_BombStrength{ 1 };
         int m_TileId{ 0 };
     };
 }

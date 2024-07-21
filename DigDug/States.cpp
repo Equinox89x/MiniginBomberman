@@ -27,10 +27,18 @@ void dae::FuseState::OnStart(GameObject* gameObject)
 
 void dae::FuseState::Update(GameObject* gameObject)
 {
-	m_FuseTimer -= Timer::GetInstance().GetDeltaTime();
-	if (m_FuseTimer <= 0) {
-		
-		gameObject->GetComponent<BombComponent>()->SetState(new ExplosionState(m_Scene), MathLib::EBombState::Explosion);
+	if (auto bombComp{ gameObject->GetComponent<BombComponent>() }) {
+
+		auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
+		auto pathways{ comp->GetPathways() };
+		if (pathways.at(bombComp->GetTileId()).PathStats.PathState == MathLib::EPathState::Explosion) {
+			bombComp->SetState(new ExplosionState(m_Scene), MathLib::EBombState::Explosion);
+		}
+
+		m_FuseTimer -= Timer::GetInstance().GetDeltaTime();
+		if (m_FuseTimer <= 0) {
+			bombComp->SetState(new ExplosionState(m_Scene), MathLib::EBombState::Explosion);
+		}
 	}
 }
 
@@ -50,6 +58,9 @@ void dae::ExplosionState::Update(GameObject* gameObject)
 		}
 		gameObject->GetComponent<BombComponent>()->SetState(new DeathState(m_Scene), MathLib::EBombState::Death);
 	}
+
+	// TODO check overlaps for enemy or player death
+
 }
 
 void dae::ExplosionState::OnStart(GameObject* gameObject)
@@ -57,7 +68,6 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 	m_TileId = gameObject->GetComponent<BombComponent>()->GetTileId();
 	m_BombStrength = gameObject->GetComponent<BombComponent>()->GetBombStrength();
 
-	// TODO trigger explosion & animation sequence
 	auto* comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
 	auto& pathways{ comp->GetPathways() };
 
@@ -76,14 +86,13 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 		HandleExplosionPlacement(bottomIndex, pathways, m_HitWallBottom);
 	}
 
-	// TODO check overlaps for enemy or player death
 }
 
 void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<int, dae::PathWay>& pathways, bool& outHitWall)
 {
 	if (pathways.find(index) == pathways.end()) return;
 	if (index >= 0 && index < GridSize * GridSize) {
-		if (pathways.at(index).PathState == MathLib::EPathState::Tile && !outHitWall) {
+		if (pathways.at(index).PathStats.PathType == MathLib::EPathType::Tile && !outHitWall) {
 			auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
 			comp->ActivateBomb(index);
 
@@ -115,19 +124,14 @@ void dae::BombedState::OnStart(GameObject* pGameObject)
 		auto font{ ResourceManager::GetInstance().LoadFont("Emulogic.ttf", 10) };
 		auto pos{ pGameObject->GetTransform()->GetWorld().Position };
 
-		auto rect{ pGameObject->GetComponent<TextureComponent>()->GetRect() };
-
-		int score{ 0 };
-		// TODO change score based on stats
-		//enemyComp->GetEnemyType() == EEnemyType::Pooka ? score = 200 : score = 400;
-
+		auto stats{ enemyComp->GetEnemyStats() };
 		auto go{ std::make_shared<dae::GameObject>() };
-		go->AddComponent(std::make_unique<dae::TextObjectComponent>(std::to_string(score), font));
-		go->AddComponent(std::make_unique<dae::FloatingScoreComponent>(m_Scene, score, pos));
+		go->AddComponent(std::make_unique<dae::TextObjectComponent>(std::to_string(stats.Points), font));
+		go->AddComponent(std::make_unique<dae::FloatingScoreComponent>(m_Scene, stats.Points, pos));
 		m_Scene->Add(go);
 
 		if (auto player{ pGameObject->GetComponent<EnemyComponent>()->GetPlayer() }) {
-			player->GetComponent<ValuesComponent>()->IncreaseScore(score);
+			player->GetComponent<ValuesComponent>()->IncreaseScore(stats.Points);
 		}
 	}
 
@@ -178,7 +182,7 @@ void dae::AliveState::Update(GameObject* pGameObject)
 		for (const auto& enemy : enemies) {
 			if (enemy && !enemy->IsMarkedForDestroy()) {
 				auto lifestate{ enemy->GetComponent<EnemyComponent>()->GetState() };
-				if (lifestate != MathLib::BOMBED && lifestate != MathLib::DEAD) {
+				if (lifestate != MathLib::ELifeState::BOMBED && lifestate != MathLib::ELifeState::DEAD) {
 					if (pGameObject && m_Ptr != reinterpret_cast<int*>(pGameObject) && !pGameObject->IsMarkedForDestroy()) {
 						if (MathLib::IsOverlapping(pGameObject->GetComponent<TextureComponent>()->GetRect(), enemy->GetComponent<TextureComponent>()->GetRect())) {
 							pGameObject->GetComponent<PlayerComponent>()->SetState(new BombedState(m_Scene), MathLib::ELifeState::BOMBED);

@@ -101,11 +101,11 @@ namespace MathLib {
 			rect1.h == rect.h);
 	}
 
-	enum Movement {
+	enum class EMovement {
 		UP, DOWN, LEFT, RIGHT
 	};	
 	
-	enum EMovingState {
+	enum class EMovingState {
 		MovingLeft,
 		MovingRight,
 		MovingUp,
@@ -113,7 +113,7 @@ namespace MathLib {
 		Still
 	};
 
-	enum class Side {
+	enum class ESide {
 		None,
 		Top,
 		Bottom,
@@ -125,19 +125,51 @@ namespace MathLib {
 		SOLO, COOP, VERSUS
 	};
 
-	enum ELifeState {
+	enum class ELifeState {
 		ALIVE, DEAD, RESPAWN, BOMBED
 	};
 
-	enum EBombState {
+	enum class EBombState {
 		Fuse, Explosion, Death
 	};
 
 	enum class EPathState {
-		Tile, Blocker, Spawn, EnemySpawn, Breakable, Bomb, Explosion
+		Tile, Blocker, Spawn, EnemySpawn, Breakable, Bomb, Explosion, Powerup
 	};
 
-	inline Side GetNonOverlappingSide(const SDL_Rect& rect1, const SDL_Rect& rect2) {
+	enum class EPathType {
+		Tile, Blocker, Breakable
+	};
+
+	enum class EPowerupType {
+		ExtraBomb, Detonator, Flames, None
+	};
+
+	enum class EEnemyType {
+		Balloom,
+		Oneal,
+		Doll,
+		Minvo
+	};
+
+	struct EPathStats {
+		EPathState PathState{ EPathState::Blocker };
+		EPathType PathType{ EPathType::Blocker };
+		EPowerupType PowerupType{ EPowerupType::None };
+		bool HasPowerup{ false };
+		std::string TextureName{ "Blocker" };
+		std::string PowerupName{ "None" };
+	};
+
+	struct FEnemyStats {
+		EEnemyType EnemyType{ EEnemyType::Balloom };
+		bool IsSmart{ false };
+		float SpeedModifier{ 1 };
+		int Points{ 100 };
+		std::string Name{ "Balloom" };
+	};
+
+	inline ESide GetNonOverlappingSide(const SDL_Rect& rect1, const SDL_Rect& rect2) {
 		//// Calculate the coordinates of the edges for both rectangles
 		//int rect1Right = rect1.x + rect1.w;
 		//int rect1Bottom = rect1.y + rect1.h;
@@ -147,26 +179,26 @@ namespace MathLib {
 
 		//// Check if rect1 is completely to the left of rect2
 		//if (rect1Right <= rect2.x) {
-		//	return Side::Left;
+		//	return ESide::Left;
 		//}
 
 		//// Check if rect1 is completely to the right of rect2
 		//if (rect1.x >= rect2Right) {
-		//	return Side::Right;
+		//	return ESide::Right;
 		//}
 
 		//// Check if rect1 is completely above rect2
 		//if (rect1Bottom <= rect2.y) {
-		//	return Side::Top;
+		//	return ESide::Top;
 		//}
 
 		//// Check if rect1 is completely below rect2
 		//if (rect1.y >= rect2Bottom) {
-		//	return Side::Bottom;
+		//	return ESide::Bottom;
 		//}
 
 		//// If none of the above conditions are met, the squares are overlapping or intersecting
-		//return Side::None;
+		//return ESide::None;
 
 		const auto xLeft{ rect1.x };
 		const auto xRight{ rect1.x + rect1.w };
@@ -180,19 +212,19 @@ namespace MathLib {
 
 		//if (rect1.y + 10 > rect2.y && rect1.y - 10 < rect2.y) {
 		if (!IsOverlapping(one, rect2)) {
-			return Side::Left;
+			return ESide::Left;
 		}
 		else if (!IsOverlapping(two, rect2)) {
-			return Side::Right;
+			return ESide::Right;
 		}
 		/*else if (!IsOverlapping(SDL_Point(rect1.x, yTop), rect2)) {
-			return Side::Top;
+			return ESide::Top;
 		}
 		else if (!IsOverlapping(SDL_Point(rect1.x, yBottom), rect2)) {
-			return Side::Bottom;
+			return ESide::Bottom;
 		}*/
 		else {
-			return Side::None;
+			return ESide::None;
 		}
 		//}
 	}

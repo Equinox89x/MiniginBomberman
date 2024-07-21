@@ -25,12 +25,12 @@ namespace dae
 		void Render() const override {};
 
 		void SetMoveSpeed(const glm::vec3& movespeed);
-		void SetMoveSpeed(const glm::vec3& movespeed, MathLib::Movement direction, bool isController);
-		void StopMovement(MathLib::Movement direction);
-		void SetCanMove(MathLib::Side side, bool canMove) {
+		void SetMoveSpeed(const glm::vec3& movespeed, MathLib::EMovement direction, bool isController);
+		void StopMovement(MathLib::EMovement direction);
+		void SetCanMove(MathLib::ESide side, bool canMove) {
 			m_Movement[side] = canMove;
 		};
-		const std::map<MathLib::Side, bool>& GetCanMove() { return m_Movement; };
+		const std::map<MathLib::ESide, bool>& GetCanMove() { return m_Movement; };
 		void DisableMovement(bool IsDisabled) { m_CanMove = !IsDisabled; };
 
 	private:
@@ -40,13 +40,13 @@ namespace dae
 
 		bool m_CanMove{ true }, m_IsController{false};
 
-		std::map<MathLib::Movement, const glm::vec3> m_MoveSpeedList{};
+		std::map<MathLib::EMovement, const glm::vec3> m_MoveSpeedList{};
 
-		std::map<MathLib::Side, bool> m_Movement{
-			  std::make_pair(MathLib::Side::Top, true),
-			  std::make_pair(MathLib::Side::Left, true),
-			  std::make_pair(MathLib::Side::Right, true),
-			  std::make_pair(MathLib::Side::Bottom, true),
+		std::map<MathLib::ESide, bool> m_Movement{
+			  std::make_pair(MathLib::ESide::Top, true),
+			  std::make_pair(MathLib::ESide::Left, true),
+			  std::make_pair(MathLib::ESide::Right, true),
+			  std::make_pair(MathLib::ESide::Bottom, true),
 		};
 
 		void UpdatePos(float dt);

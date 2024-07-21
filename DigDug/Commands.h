@@ -16,11 +16,11 @@
 
 namespace dae {
 
-	#pragma region Movement
+	#pragma region EMovement
 	class Move final : public Command
 	{
 	public:
-		Move(Scene* scene, dae::GameObject* object, MathLib::Movement movement, std::string textureName, const glm::vec3& moveSpeed) : 
+		Move(Scene* scene, dae::GameObject* object, MathLib::EMovement movement, std::string textureName, const glm::vec3& moveSpeed) : 
 			m_pObject(object), m_Movement{ movement }, m_MoveSpeed(moveSpeed), m_TextureName(textureName), m_Scene{scene} {}
 		void Execute() override
 		{
@@ -43,10 +43,10 @@ namespace dae {
 				auto input{ m_pObject->GetComponent<dae::InputComponent>() };
 				auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
 
-				if (m_Movement == MathLib::Movement::LEFT) {
+				if (m_Movement == MathLib::EMovement::LEFT) {
 					player->SetLastDirection("Left");
 				}
-				else if (m_Movement == MathLib::Movement::RIGHT) {
+				else if (m_Movement == MathLib::EMovement::RIGHT) {
 					player->SetLastDirection("Right");
 				}
 				player->SetMovement(m_Movement);
@@ -63,19 +63,19 @@ namespace dae {
 			m_MoveSpeed = glm::vec3{ pos.x * 100,pos.y * -100, 0 };
 			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() }) {
 				if (pos.x > 0) {
-					m_Movement = MathLib::RIGHT;
+					m_Movement = MathLib::EMovement::RIGHT;
 					m_TextureName = "Character/moveRight";
 				}
 				else if (pos.x < 0) {
-					m_Movement = MathLib::LEFT;
+					m_Movement = MathLib::EMovement::LEFT;
 					m_TextureName = "Character/moveLeft";
 				}
 				else if (pos.y > 0) {
-					m_Movement = MathLib::UP;
+					m_Movement = MathLib::EMovement::UP;
 					m_TextureName = "Character/moveUp";
 				}
 				else if (pos.y < 0) {
-					m_Movement = MathLib::DOWN;
+					m_Movement = MathLib::EMovement::DOWN;
 					m_TextureName = "Character/moveDown";
 				}
 
@@ -91,28 +91,28 @@ namespace dae {
 			}
 			else {
 				if (pos.x > 0) {
-					m_Movement = MathLib::RIGHT;
+					m_Movement = MathLib::EMovement::RIGHT;
 					m_TextureName = "Enemies/FygarRight";
 				}
 				else if (pos.x < 0) {
-					m_Movement = MathLib::LEFT;
+					m_Movement = MathLib::EMovement::LEFT;
 					m_TextureName = "Enemies/FygarLeft";
 				}
 				else if (pos.y > 0) {
-					m_Movement = MathLib::UP;
+					m_Movement = MathLib::EMovement::UP;
 					m_TextureName = "Enemies/FygarRight";
 				}
 				else if (pos.y < 0) {
-					m_Movement = MathLib::DOWN;
+					m_Movement = MathLib::EMovement::DOWN;
 					m_TextureName = "Enemies/FygarLeft";
 				}
 				auto input{ m_pObject->GetComponent<dae::InputComponent>() };
 				auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
 
-				if (m_Movement == MathLib::Movement::LEFT) {
+				if (m_Movement == MathLib::EMovement::LEFT) {
 					player->SetLastDirection("Left");
 				}
-				else if (m_Movement == MathLib::Movement::RIGHT) {
+				else if (m_Movement == MathLib::EMovement::RIGHT) {
 					player->SetLastDirection("Right");
 				}
 				player->SetMovement(m_Movement);
@@ -127,13 +127,13 @@ namespace dae {
 		dae::GameObject* m_pObject;
 		glm::vec3 m_MoveSpeed;
 		std::string m_TextureName;
-		MathLib::Movement m_Movement;
+		MathLib::EMovement m_Movement;
 	};
 
 	class StopMove final : public Command
 	{
 	public:
-		StopMove(Scene* scene, dae::GameObject* object, MathLib::Movement direction) : m_pObject(object), m_Movement{ direction }, m_Scene{ scene } {};
+		StopMove(Scene* scene, dae::GameObject* object, MathLib::EMovement direction) : m_pObject(object), m_Movement{ direction }, m_Scene{ scene } {};
 		void Execute() override
 		{
 			if (!m_Scene->GetIsActive()) return;
@@ -146,7 +146,7 @@ namespace dae {
 	private:
 		Scene* m_Scene{ nullptr };
 		dae::GameObject* m_pObject;
-		MathLib::Movement m_Movement;
+		MathLib::EMovement m_Movement;
 	};
 	#pragma endregion
 
@@ -181,10 +181,15 @@ namespace dae {
 
 			if (!m_pObject) return;
 			if (auto comp{ m_pObject->GetComponent<EntityMovementComponent>() }) {
+				auto bombs{ m_Scene->GetGameObjects(EnumStrings[Names::Bomb]) };
+				auto playerComp{ m_pObject->GetComponent<PlayerComponent>() };
+				if (bombs.size() >= playerComp->GetMaxBombs()) return;
+
 				auto pBombObject = std::make_shared<GameObject>();
+				pBombObject->SetName(EnumStrings[Names::Bomb]);
 				m_Scene->Add(pBombObject);
 				int tileId{ comp->GetCurrentTileId() };
-				pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene))->StartBomb(tileId, 2);
+				pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene))->StartBomb(tileId, playerComp->GetBombStrength());
 			}
 		}
 		void Execute(glm::vec2) override {};

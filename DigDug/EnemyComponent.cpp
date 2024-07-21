@@ -51,16 +51,16 @@ void dae::EnemyComponent::Render() const
 //
 //	auto rect{ gameObject->GetComponent<TextureComponent>()->GetRect() };
 //
-//	EnemyType == EEnemyType::Pooka ? m_Score = 200 : m_Score = 400;
+//	EnemyType == EEnemyType::Balloom ? m_Score = 200 : m_Score = 400;
 //
 //	if (MathLib::IsCompletelyOverlapping(m_ScoreRect1, rect)) {
-//		EnemyType == EEnemyType::Pooka ? m_Score += 100 : m_Score += 200;
+//		EnemyType == EEnemyType::Balloom ? m_Score += 100 : m_Score += 200;
 //	}
 //	if (MathLib::IsCompletelyOverlapping(m_ScoreRect2, rect)) {
-//		EnemyType == EEnemyType::Pooka ? m_Score += 200 : m_Score += 400;
+//		EnemyType == EEnemyType::Balloom ? m_Score += 200 : m_Score += 400;
 //	}
 //	if (MathLib::IsCompletelyOverlapping(m_ScoreRect3, rect)) {
-//		EnemyType == EEnemyType::Pooka ? m_Score += 300 : m_Score += 600;
+//		EnemyType == EEnemyType::Balloom ? m_Score += 300 : m_Score += 600;
 //	}
 //
 //	auto go{ std::make_shared<dae::GameObject>() };
@@ -86,7 +86,7 @@ void dae::EnemyComponent::Render() const
 //{
 //	m_Timer = static_cast<float>(MathLib::CalculateChance(10));
 //	if (gameObject) {
-//		std::string enemy{ EnemyType == EEnemyType::Fygar ? "Fygar" : "Pooka" };
+//		std::string enemy{ EnemyType == EEnemyType::Oneal ? "Oneal" : "Balloom" };
 //		gameObject->GetComponent<TextureComponent>()->SetTexture("Enemies/" + enemy + "Left.png", 0.1f, 2);
 //		gameObject->GetComponent<EntityMovementComponent>()->SetGhostModeEnabled(false);
 //		gameObject->GetComponent<EntityMovementComponent>()->DisableMovement(false);
@@ -103,7 +103,7 @@ void dae::EnemyComponent::Render() const
 //	m_Timer -= Timer::GetInstance().GetDeltaTime();
 //	if (m_Timer > 0) return;
 //	if (MathLib::CalculateChance() >= 80) {
-//		if (EnemyType == EEnemyType::Fygar) {
+//		if (EnemyType == EEnemyType::Oneal) {
 //			gameObject->GetComponent<EnemyComponent>()->SetState(new GhostState());
 //		}
 //		else {

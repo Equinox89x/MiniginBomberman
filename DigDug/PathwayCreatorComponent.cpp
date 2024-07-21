@@ -25,16 +25,18 @@ void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string
 
 	auto comp{ std::make_unique<TextureComponent>() };
 	comp->SetName(std::to_string(id));
-	comp->SetTexture("Levels/blocker.png");
+	comp->SetTexture("Levels/" + m_PathStats[type].TextureName + ".png", 0.1f, 1, false, false);
 	auto component{ go->AddComponent(std::move(comp)) };
 	//component->SetPosition(pos.x, pos.y);
-	component->SetIsVisible(false);
+	if (m_PathStats[type].PathType == MathLib::EPathType::Tile) {
+		component->SetIsVisible(false);
+	}
 
-	SDL_Rect rect{ static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(Cellsize), static_cast<int>(Cellsize )};
+	SDL_Rect rect{ static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(Cellsize), static_cast<int>(Cellsize) };
 	PathWay pathWay{
 		id,
 		component,
-		MathLib::EPathState::Blocker,
+		m_PathStats[type],
 		{ rect.x + rect.w / 2, rect.y + rect.h / 2 },
 		rect,
 	};
@@ -43,25 +45,11 @@ void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string
 	//pathWay.TextureComponent->SetPosition(pos);
 
 
-	if(type == "tile"){
-		pathWay.PathState = MathLib::EPathState::Tile;
-	}
-	else if (type == "spawn") {
-		pathWay.PathState = MathLib::EPathState::Spawn;
+	if (type == "spawn") {
 		m_Spawns.push_back(pathWay);
 	}
-	else if(type == "enemySpawn"){
-		pathWay.PathState = MathLib::EPathState::EnemySpawn;
+	else if (type == "enemySpawn") {
 		m_EnemySpawns.push_back(pathWay);
-	}
-	else if (type == "blocker") {
-		pathWay.PathState = MathLib::EPathState::Blocker;
-		component->SetIsVisible(true);
-	}	
-	else if (type == "breakable") {
-		pathWay.PathState = MathLib::EPathState::Breakable;
-		component->SetTexture("Levels/breakable.png");
-		component->SetIsVisible(true);
 	}
 
 	m_Pathways.insert({ id, pathWay });
@@ -71,9 +59,16 @@ void dae::PathwayCreatorComponent::ActivatePathway(int id)
 {
 	if (m_Pathways.find(id) != m_Pathways.end()) {
 		auto& path{ m_Pathways[id] };
-		if (path.PathState != MathLib::EPathState::Blocker) {
-			path.TextureComponent->SetIsVisible(false);
-			path.PathState = MathLib::EPathState::Tile;
+		if (path.PathStats.PathType != MathLib::EPathType::Blocker) {
+			
+			path.PathStats.PathType = MathLib::EPathType::Tile;
+			if (path.PathStats.HasPowerup) {
+				path.TextureComponent->SetTexture("Levels/" + path.PathStats.PowerupName + ".png", 0.1f, 1, false, false);
+			}
+			else {
+				path.PathStats.PathState = MathLib::EPathState::Tile;
+				path.TextureComponent->SetIsVisible(false);
+			}
 		}
 	}
 }
@@ -81,8 +76,10 @@ void dae::PathwayCreatorComponent::ActivatePathway(int id)
 void dae::PathwayCreatorComponent::ActivateBomb(int id)
 {
 	if (m_Pathways.find(id) != m_Pathways.end()) {
-		m_Pathways[id].TextureComponent->SetIsVisible(true);
-		m_Pathways[id].PathState = MathLib::EPathState::Explosion;
+		auto& path{ m_Pathways[id] };
+		path.TextureComponent->SetIsVisible(true);
+		path.PathStats.PathType = MathLib::EPathType::Tile;
+		path.PathStats.PathState = MathLib::EPathState::Explosion;
 	}
 }
 
@@ -128,7 +125,7 @@ void dae::PathwayCreatorComponent::HandleTileChange(std::shared_ptr<GameObject> 
 		moveComp->SetCurrentTileId(std::stoi(path->GetName()));
 	}
 
-	if (m_Pathways.at(moveComp->GetCurrentTileId()).PathState == MathLib::EPathState::Explosion) {
+	if (m_Pathways.at(moveComp->GetCurrentTileId()).PathStats.PathState == MathLib::EPathState::Explosion) {
 		if (auto enemyComp{ entity->GetComponent<EnemyComponent>() }) {
 			if (enemyComp->GetState() == MathLib::ELifeState::ALIVE) {
 				enemyComp->SetState(new BombedState(m_pScene), MathLib::ELifeState::BOMBED);
@@ -140,12 +137,29 @@ void dae::PathwayCreatorComponent::HandleTileChange(std::shared_ptr<GameObject> 
 			}
 		}
 	}
+	else if (m_Pathways.at(moveComp->GetCurrentTileId()).PathStats.PathState == MathLib::EPathState::Powerup) {
+		if (auto playerComp{ entity->GetComponent<PlayerComponent>() }) {
+			if (playerComp->GetState() == MathLib::ELifeState::ALIVE) {
+				playerComp->ActivatePowerup(m_Pathways.at(moveComp->GetCurrentTileId()));
+			}
+		}
+	}
 }
 
 void dae::PathwayCreatorComponent::Init()
 {
 	m_pCharacters = m_pScene->GetGameObjects(EnumStrings[PlayerGeneral], false);
 	m_pEnemies = m_pScene->GetGameObjects(EnumStrings[EnemyGeneral], false);
+	m_PathStats = std::map<std::string, MathLib::EPathStats>{
+		{"tile", MathLib::EPathStats{ MathLib::EPathState::Tile, MathLib::EPathType::Tile, MathLib::EPowerupType::None, false, "blocker", "none" }},
+		{"spawn", MathLib::EPathStats{ MathLib::EPathState::Spawn, MathLib::EPathType::Tile, MathLib::EPowerupType::None, false, "blocker", "none" }},
+		{"enemySpawn", MathLib::EPathStats{ MathLib::EPathState::EnemySpawn, MathLib::EPathType::Tile, MathLib::EPowerupType::None, false, "blocker", "none" }},
+		{"blocker", MathLib::EPathStats{ MathLib::EPathState::Blocker, MathLib::EPathType::Blocker, MathLib::EPowerupType::None, false, "blocker", "blocker" }},
+		{"breakable", MathLib::EPathStats{ MathLib::EPathState::Breakable, MathLib::EPathType::Breakable, MathLib::EPowerupType::None, false, "breakable", "breakable" }},
+		{"extraBomb", MathLib::EPathStats{ MathLib::EPathState::Powerup, MathLib::EPathType::Breakable, MathLib::EPowerupType::ExtraBomb, true, "breakable", "extraBomb" }},
+		{"detonator", MathLib::EPathStats{ MathLib::EPathState::Powerup, MathLib::EPathType::Breakable, MathLib::EPowerupType::Detonator, true, "breakable", "detonator" }},
+		{"flames", MathLib::EPathStats{ MathLib::EPathState::Powerup, MathLib::EPathType::Breakable, MathLib::EPowerupType::Flames, true, "breakable", "flames" }}
+	};
 	HandleEntityTileOverlap();
 }
 
@@ -153,10 +167,10 @@ void dae::PathwayCreatorComponent::Render() const
 {
 	for (auto path : m_Pathways) {
 		auto rrect = path.second.Rect;
-		if (path.second.PathState == MathLib::EPathState::Blocker) {
+		if (path.second.PathStats.PathType == MathLib::EPathType::Blocker) {
 			SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 255, 0, 0, 255);
 		}
-		else if(path.second.PathState == MathLib::EPathState::Tile){
+		else if (path.second.PathStats.PathType == MathLib::EPathType::Tile) {
 			SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 0, 200, 0, 200);
 		}
 		else {

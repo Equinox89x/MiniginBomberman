@@ -78,6 +78,7 @@ namespace dae {
         virtual void Render() const override;
 
         void Reposition();
+        void ActivatePowerup(PathWay& pathway);
 
         void SetState(EntityState* playerState, MathLib::ELifeState lifeState) {
             if (playerState)
@@ -90,6 +91,8 @@ namespace dae {
         }
         MathLib::ELifeState GetState() { return m_State; };
         EntityState* GetPlayerState() { return m_PlayerState.get(); };
+        int GetBombStrength() { return m_BombStrength; };
+        int GetMaxBombs() { return m_MaxBombs; };
 
 
     private:
@@ -98,6 +101,9 @@ namespace dae {
         MathLib::ELifeState m_State{ MathLib::ELifeState::ALIVE };
 
         glm::vec2 m_OriginalPosition;
+        int m_BombStrength{ 1 };
+        int m_MaxBombs{ 1 };
+
     };
 }
 

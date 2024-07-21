@@ -42,9 +42,9 @@ namespace dae {
 		void Render() const;
 
 		void SetTexture(const std::string& filename, float animSpeed = 0.1f, int nrOfFrames = 1, bool resetAnim = true, bool canProgress = true);
-		void SetTexture(MathLib::Movement movement, const std::string& filename, float animSpeed = 0.1f, int nrOfFrames = 1, bool resetAnim = true, bool canProgress = true);
+		void SetTexture(MathLib::EMovement movement, const std::string& filename, float animSpeed = 0.1f, int nrOfFrames = 1, bool resetAnim = true, bool canProgress = true);
 		void SetTexture(TextureData& textureData);
-		void RemoveTexture(MathLib::Movement movement);
+		void RemoveTexture(MathLib::EMovement movement);
 		void SetPosition(const float x, const float y);
 		void AddPosition(const float x, const float y);
 		void SetWorldPosition(const float x, const float y);
@@ -67,7 +67,7 @@ namespace dae {
 	private:
 		TextureData m_Texture{};
 		//std::string FileName{""};
-		std::map<MathLib::Movement, TextureData> FileNames{};
+		std::map<MathLib::EMovement, TextureData> FileNames{};
 		//std::shared_ptr<Texture2D> m_pTexture{};
 		bool m_needsUpdate{ false }, m_IsVisible{ true };
 		float Angle{ 0 };
