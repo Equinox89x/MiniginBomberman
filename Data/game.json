@@ -11,7 +11,7 @@
                     "blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker",
                     "blocker|tile|breakable|breakable|tile|tile|tile|tile|tile|tile|tile|breakable|tile|tile|tile|blocker",
                     "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|breakable|tile|blocker",
-                    "blocker|tile|tile|tile|powerup|breakable|tile|tile|tile|tile|tile|tile|tile|tile|tile|blocker",
+                    "blocker|tile|enemySpawn|tile|powerup|breakable|tile|tile|tile|tile|tile|tile|tile|tile|tile|blocker",
                     "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|tile|blocker",
                     "blocker|tile|tile|tile|tile|spawn|tile|tile|tile|tile|tile|powerup|tile|tile|tile|blocker",
                     "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|breakable|tile|blocker",
@@ -19,7 +19,7 @@
                     "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|breakable|blocker",
                     "blocker|tile|tile|tile|tile|tile|breakable|tile|tile|tile|tile|tile|breakable|tile|tile|blocker",
                     "blocker|tile|blocker|breakable|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|tile|blocker",
-                    "blocker|tile|tile|breakable|tile|tile|tile|tile|tile|tile|breakable|tile|tile|tile|tile|blocker",
+                    "blocker|tile|tile|breakable|tile|tile|tile|tile|tile|tile|breakable|tile|tile|tile|enemySpawn|blocker",
                     "blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker"
                 ]
             },

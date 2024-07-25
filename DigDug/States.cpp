@@ -199,19 +199,22 @@ void dae::AliveState::Update(GameObject* pGameObject)
 	{
 		if (pGameObject->IsMarkedForDestroy())
 			return;
-		auto enemies{ m_Scene->GetGameObjects(EnumStrings[Names::EnemyGeneral], false) };
-		for (const auto& enemy : enemies)
+		if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
 		{
-			if (enemy && !enemy->IsMarkedForDestroy())
+			auto enemies{ m_Scene->GetGameObjects(EnumStrings[Names::EnemyGeneral], false) };
+			for (const auto& enemy : enemies)
 			{
-				auto lifestate{ enemy->GetComponent<EnemyComponent>()->GetState() };
-				if (lifestate != MathLib::ELifeState::BOMBED && lifestate != MathLib::ELifeState::DEAD)
+				if (enemy && !enemy->IsMarkedForDestroy())
 				{
-					if (pGameObject && !pGameObject->IsMarkedForDestroy())
+					auto lifestate{ enemy->GetComponent<EnemyComponent>()->GetState() };
+					if (lifestate != MathLib::ELifeState::BOMBED && lifestate != MathLib::ELifeState::DEAD)
 					{
-						if (MathLib::IsOverlapping(pGameObject->GetComponent<TextureComponent>()->GetRect(), enemy->GetComponent<TextureComponent>()->GetRect()))
+						if (pGameObject && !pGameObject->IsMarkedForDestroy())
 						{
-							pGameObject->GetComponent<PlayerComponent>()->SetState(new BombedState(m_Scene), MathLib::ELifeState::BOMBED);
+							if (MathLib::IsOverlapping(pGameObject->GetComponent<TextureComponent>()->GetRect(), enemy->GetComponent<TextureComponent>()->GetRect()))
+							{
+								pGameObject->GetComponent<PlayerComponent>()->SetState(new BombedState(m_Scene), MathLib::ELifeState::BOMBED);
+							}
 						}
 					}
 				}

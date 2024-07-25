@@ -90,7 +90,7 @@ void dae::EntityMovementComponent::Update()
 		}
 
 		GetGameObject()->GetTransform()->Translate(dx * 2.f, dy * 2.f);
-		GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Enemies/" + m_EnemyName + m_LastDir + ".png", 0.2f, 2);
+		GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Enemies/" + m_EnemyName + /*m_LastDir +*/ ".png", 0.2f, 2);
 	}
 }
 
@@ -180,8 +180,8 @@ void dae::EntityMovementComponent::SetCurrentTileId(int id)
 {
 	m_CurrentTileId = id;
 	m_CurrentSurroundingTiles = {
-		{ MathLib::EMovement::DOWN, id + 14 },
-		{ MathLib::EMovement::UP, id - 14 },
+		{ MathLib::EMovement::DOWN, id + GridSize },
+		{ MathLib::EMovement::UP, id - GridSize },
 		{ MathLib::EMovement::RIGHT, id + 1 },
 		{ MathLib::EMovement::LEFT, id - 1 },
 	};
