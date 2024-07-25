@@ -205,7 +205,6 @@ xcopy "$(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\*.dll" "$(O
   <ItemGroup>
     <ClCompile Include="EnemyComponent.cpp" />
     <ClCompile Include="EntityMovementComponent.cpp" />
-    <ClCompile Include="FloatingScoreComponent.cpp" />
     <ClCompile Include="HighscoreComponent.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuComponent.cpp" />
@@ -219,7 +218,6 @@ xcopy "$(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\*.dll" "$(O
     <ClInclude Include="Commands.h" />
     <ClInclude Include="EnemyComponent.h" />
     <ClInclude Include="EntityMovementComponent.h" />
-    <ClInclude Include="FloatingScoreComponent.h" />
     <ClInclude Include="HighscoreComponent.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="MenuComponent.h" />

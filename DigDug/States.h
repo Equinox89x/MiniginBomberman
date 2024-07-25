@@ -50,8 +50,12 @@ namespace dae
 	{
 	public:
 		DeathState(Scene* scene) : EntityState(scene){};
-		void OnStart(GameObject* pGameObject) override { pGameObject->MarkForDestroy(); };
-		void Update(GameObject* /*pGameObject*/) override {}
+		void OnStart(GameObject* pGameObject) override;
+		void Update(GameObject* pGameObject) override;
+
+	private:
+		bool m_hasDeathSequence{ true };
+		float m_DeathTimer{ 0.7f };
 	};
 
 	class FuseState : public EntityState

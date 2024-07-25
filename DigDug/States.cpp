@@ -2,7 +2,7 @@
 #include "BombComponent.h"
 #include "EnemyComponent.h"
 #include "EntityMovementComponent.h"
-#include "FloatingScoreComponent.h"
+//#include "FloatingScoreComponent.h"
 #include "PathwayCreatorComponent.h"
 #include "PlayerComponent.h"
 #include "ResourceManager.h"
@@ -129,15 +129,15 @@ void		   dae::BombedState::OnStart(GameObject* pGameObject)
 	{
 
 		pGameObject->GetComponent<dae::AudioComponent>()->PlayPopSound();
+		pGameObject->GetComponent<EntityMovementComponent>()->DisableMovement(true);
+
 
 		auto font{ ResourceManager::GetInstance().LoadFont("Emulogic.ttf", 10) };
 		auto pos{ pGameObject->GetTransform()->GetWorld().Position };
 
 		auto stats{ enemyComp->GetEnemyStats() };
-		auto go{ std::make_unique<dae::GameObject>() };
-		go->AddComponent(std::make_unique<dae::TextObjectComponent>(std::to_string(stats.Points), font));
-		go->AddComponent(std::make_unique<dae::FloatingScoreComponent>(m_Scene, stats.Points, pos));
-		m_Scene->Add(std::move(go));
+		std::string deathTextureName{ stats.Name + "Bombed.png" };
+		pGameObject->GetComponent<TextureComponent>()->SetTexture("Enemies/" + deathTextureName);
 
 		if (auto player{ pGameObject->GetComponent<EnemyComponent>()->GetPlayer() })
 		{
@@ -220,6 +220,29 @@ void dae::AliveState::Update(GameObject* pGameObject)
 				}
 			}
 		}
+	}
+}
+
+void dae::DeathState::OnStart(GameObject* pGameObject)
+{
+	if (pGameObject->GetComponent<PlayerComponent>())
+	{
+		pGameObject->MarkForDestroy();
+		m_hasDeathSequence = false;
+	}
+	else if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() })
+	{
+		pGameObject->GetComponent<TextureComponent>()->SetTexture("Enemies/EnemyDeath.png", 0.2f, 4);
+	}
+};
+
+void dae::DeathState::Update(GameObject* pGameObject)
+{
+	m_DeathTimer -= Timer::GetInstance().GetDeltaTime();
+	if (m_DeathTimer < 0)
+	{
+		pGameObject->MarkForDestroy();
+		m_DeathTimer = 999;
 	}
 }
 #pragma endregion

@@ -1,6 +1,6 @@
 #include "EnemyComponent.h"
 #include "EntityMovementComponent.h"
-#include "FloatingScoreComponent.h"
+//#include "FloatingScoreComponent.h"
 #include "GameObject.h"
 #include "Observers.h"
 #include "PlayerComponent.h"
