@@ -92,13 +92,12 @@ void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
 
-	auto& renderer = Renderer::GetInstance();
-	auto& sceneManager = SceneManager::GetInstance();
-	//auto& input = InputManager::GetInstance();
-
 	auto sound{ new AudioMaker() };
 	ServiceLocator::provide(sound);
 
+	auto& renderer = Renderer::GetInstance();
+	auto& sceneManager = SceneManager::GetInstance();
+	//auto& input = InputManager::GetInstance();
 
 	auto input = InputCollection(3);
 

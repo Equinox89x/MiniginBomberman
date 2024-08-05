@@ -11,7 +11,10 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-
+#pragma warning(push)
+#pragma warning(disable : 6031) // Disable warning C6031
+#pragma warning(disable : 6239) // Disable warning C6239
+#pragma warning(disable : 6313) // Disable warning C6313
 #ifndef RAPIDJSON_WRITER_H_
 #define RAPIDJSON_WRITER_H_
 

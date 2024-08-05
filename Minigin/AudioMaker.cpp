@@ -29,8 +29,6 @@ void AudioMaker::Initialize()
 	}
 	// 8 mixing channels get created
 	MIX_CHANNELS;
-
-
 }
 
 void AudioMaker::Update()
@@ -119,5 +117,6 @@ void AudioMaker::SetEffectVolume(int volume)
 
 void AudioMaker::SetMusicVolume(int volume)
 {
-	Mix_VolumeMusic(volume);
-}
+	Mix_VolumeMusic(volume); }
+
+bool AudioMaker::IsPlaying() { return Mix_PlayingMusic(); }

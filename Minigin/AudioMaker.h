@@ -26,6 +26,8 @@ public:
     virtual void SetEffectVolume(int volume) override;
     virtual void SetMusicVolume(int volume) override;
 
+    virtual bool IsPlaying() override;
+
 private:
     void Initialize();
 
@@ -57,4 +59,6 @@ public:
 
     virtual void SetEffectVolume(int) override {}
     virtual void SetMusicVolume(int) override {}
+    
+    virtual bool IsPlaying() override { return false; };
 };

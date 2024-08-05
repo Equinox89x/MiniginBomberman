@@ -2,17 +2,18 @@
 
 void dae::AudioComponent::Init()
 {
-	m_pAudioService = ServiceLocator::getAudio();
-	if (m_pAudioService == nullptr) return;
+	
+	if (m_pAudioService == nullptr)
+		m_pAudioService = ServiceLocator::getAudio();
+	
+	if (m_pAudioService == nullptr)
+		return;
 
-	m_PumpSoundId = m_pAudioService->LoadSound("../Data/Sound/Pump.wav");
-	m_ShootSoundId = m_pAudioService->LoadSound("../Data/Sound/ShootSound.wav");
-	m_FiresoundId = m_pAudioService->LoadSound("../Data/Sound/Fire.wav");
-	m_GhostSoundId = m_pAudioService->LoadSound("../Data/Sound/EnemyMoving.wav");
-	m_PopSoundId = m_pAudioService->LoadSound("../Data/Sound/EnemyPop.wav");
+	m_IsInit = true;
+
 	m_PlayerDeathSoundId = m_pAudioService->LoadSound("../Data/Sound/PlayerDeathSound.wav");
-	m_RockSoundId = m_pAudioService->LoadSound("../Data/Sound/RockSound.mp3");
-	m_pAudioService->LoadMusic(std::string("../Data/Sound/GameMusic.mp3").c_str());
+	m_BombExplosionSoundId = m_pAudioService->LoadSound("../Data/Sound/Explosion.mp3");
+	m_BombDropSoundId = m_pAudioService->LoadSound("../Data/Sound/BombDropSound.wav");
 }
 
 void dae::AudioComponent::Update()
@@ -21,16 +22,15 @@ void dae::AudioComponent::Update()
 		m_pAudioService = ServiceLocator::getAudio();
 		if (m_pAudioService == nullptr) return;
 
-		m_PumpSoundId = m_pAudioService->LoadSound("../Data/Sound/Pump.wav");
-		m_ShootSoundId = m_pAudioService->LoadSound("../Data/Sound/ShootSound.wav");
-		m_FiresoundId = m_pAudioService->LoadSound("../Data/Sound/Fire.wav");
-		m_GhostSoundId = m_pAudioService->LoadSound("../Data/Sound/EnemyMoving.wav");
-		m_PopSoundId = m_pAudioService->LoadSound("../Data/Sound/EnemyPop.wav");
+		m_IsInit = true;
+
 		m_PlayerDeathSoundId = m_pAudioService->LoadSound("../Data/Sound/PlayerDeathSound.wav");
-		m_RockSoundId = m_pAudioService->LoadSound("../Data/Sound/RockSound.mp3");
-		m_pAudioService->LoadMusic(std::string("../Data/Sound/GameMusic.mp3").c_str());
-		PlayGameMusicSound();
+		m_BombExplosionSoundId = m_pAudioService->LoadSound("../Data/Sound/Explosion.mp3");
+		m_BombDropSoundId = m_pAudioService->LoadSound("../Data/Sound/BombDropSound.wav");
+
 	}
+
+	PlayMusic(m_SelectedMusicFile);
 }
 
 void dae::AudioComponent::PlayPlayerDeathSound(bool shouldStopPreviousSound)
@@ -44,48 +44,25 @@ void dae::AudioComponent::PlayBombSound(bool shouldStopPreviousSound)
 {
 	if (shouldStopPreviousSound) m_pAudioService->StopSound();
 	m_pAudioService->SetEffectVolume(60);
-	m_pAudioService->PlaySound(m_PumpSoundId);
+	m_pAudioService->PlaySound(m_BombDropSoundId);
 }
 
-void dae::AudioComponent::PlayShootSound(bool shouldStopPreviousSound)
+void dae::AudioComponent::PlayExplosionSound(bool shouldStopPreviousSound)
 {
 	if (shouldStopPreviousSound) m_pAudioService->StopSound();
-	m_pAudioService->SetEffectVolume(60);
-	m_pAudioService->PlaySound(m_ShootSoundId);
+	m_pAudioService->SetEffectVolume(100);
+	m_pAudioService->PlaySound(m_BombExplosionSoundId);
 }
 
-void dae::AudioComponent::PlayFireSound(bool shouldStopPreviousSound)
+void dae::AudioComponent::PlayMusic(std::string musicFile)
 {
-	if (shouldStopPreviousSound) m_pAudioService->StopSound();
-	m_pAudioService->SetEffectVolume(60);
-	m_pAudioService->PlaySound(m_FiresoundId);
-}
-
-void dae::AudioComponent::PlayGhostSound(bool shouldStopPreviousSound)
-{
-	if (shouldStopPreviousSound) m_pAudioService->StopSound();
-	m_pAudioService->SetEffectVolume(60);
-	m_pAudioService->PlaySound(m_GhostSoundId);
-}
-
-void dae::AudioComponent::PlayPopSound(bool shouldStopPreviousSound)
-{
-	if (shouldStopPreviousSound) m_pAudioService->StopSound();
-	m_pAudioService->SetEffectVolume(60);
-	m_pAudioService->PlaySound(m_PopSoundId);
-}
-
-void dae::AudioComponent::PlayGameMusicSound()
-{
-	m_pAudioService->PlayMusic();
-	m_pAudioService->SetEffectVolume(60);
-}
-
-void dae::AudioComponent::PlayRockSound(bool shouldStopPreviousSound)
-{
-	if (shouldStopPreviousSound) m_pAudioService->StopSound();
-	m_pAudioService->SetEffectVolume(60);
-	m_pAudioService->PlaySound(m_RockSoundId);
+	if (m_IsInit && musicFile != "")
+	{
+		m_pAudioService->LoadMusic(musicFile.c_str());
+		m_pAudioService->PlayMusic();
+		m_pAudioService->SetEffectVolume(60);
+		m_IsInit = false;
+	}
 }
 
 void dae::AudioComponent::StopSound()

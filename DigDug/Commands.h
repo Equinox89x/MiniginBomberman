@@ -202,6 +202,11 @@ namespace dae
 		StartBomb(Scene* scene, GameObject* const object) : m_pObject(object), m_Scene{ scene } {}
 		void Execute() override
 		{
+			if (!m_CanDrop)
+			{
+				m_CanDrop = true;
+				return;
+			}
 			if (!m_Scene->GetIsActive())
 				return;
 
@@ -225,8 +230,8 @@ namespace dae
 
 	private:
 		Scene* m_Scene{ nullptr };
-
 		GameObject* m_pObject;
+		bool		m_CanDrop{ false };
 	};
 
 #pragma region Menu

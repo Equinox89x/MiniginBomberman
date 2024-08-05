@@ -60,6 +60,7 @@ void dae::ExplosionState::Update(GameObject* gameObject)
 
 void dae::ExplosionState::OnStart(GameObject* gameObject)
 {
+	gameObject->GetComponent<AudioComponent>()->PlayExplosionSound();
 	m_TileId = gameObject->GetComponent<BombComponent>()->GetTileId();
 	m_BombStrength = gameObject->GetComponent<BombComponent>()->GetBombStrength();
 	// if (!m_Scene && m_Ptr != reinterpret_cast<int*>(m_Scene)) return;
@@ -128,7 +129,7 @@ void		   dae::BombedState::OnStart(GameObject* pGameObject)
 	if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() })
 	{
 
-		pGameObject->GetComponent<dae::AudioComponent>()->PlayPopSound();
+		//pGameObject->GetComponent<dae::AudioComponent>()->PlayPopSound();
 		pGameObject->GetComponent<EntityMovementComponent>()->DisableMovement(true);
 
 
@@ -233,6 +234,15 @@ void dae::DeathState::OnStart(GameObject* pGameObject)
 	else if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() })
 	{
 		pGameObject->GetComponent<TextureComponent>()->SetTexture("Enemies/EnemyDeath.png", 0.2f, 4);
+		auto children{ m_Scene->GetGameObjects(EnumStrings[Names::EnemyGeneral], false) };
+		if (children.size() <= 1)
+		{
+			m_Scene->GetGameObject(EnumStrings[Names::Global])->GetComponent<AudioComponent>()->QueueMusic(FindDoorMusic, true);
+		}
+	}
+	else
+	{
+		m_DeathTimer = 0.1f;
 	}
 };
 
