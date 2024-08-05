@@ -222,7 +222,7 @@ namespace dae
 				auto pBombObject = std::make_unique<GameObject>();
 				pBombObject->SetName(EnumStrings[Names::Bomb]);
 				int tileId{ comp->GetCurrentTileId() };
-				pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene))->StartBomb(tileId, playerComp->GetBombStrength());
+				pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene, m_pObject))->StartBomb(tileId, playerComp->GetBombStrength());
 				m_Scene->Add(std::move(pBombObject));
 			}
 		}

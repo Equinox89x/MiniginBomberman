@@ -14,11 +14,17 @@ namespace dae
 		MathLib::EPathStats	   PathStats{};
 		const glm::vec2		   Middle{};
 		const SDL_Rect		   Rect{};
+		mutable dae::GameObject*	   BombDropper{ nullptr };
+
+		void SetBombDropper(GameObject* bombDropper) { BombDropper = bombDropper; };
 
 		void Clean()
 		{
 			delete TextureComponent;
 			TextureComponent = nullptr;
+
+			delete BombDropper;
+			BombDropper = nullptr;
 		}
 	};
 

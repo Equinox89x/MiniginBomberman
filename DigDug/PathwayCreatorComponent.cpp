@@ -208,6 +208,7 @@ void dae::PathwayCreatorComponent::HandleTileChange(GameObject* entity, GameObje
 		{
 			if (enemyComp->GetState() == MathLib::ELifeState::ALIVE)
 			{
+				enemyComp->SetPlayer(pathway.BombDropper);
 				enemyComp->SetState(new BombedState(m_pScene), MathLib::ELifeState::BOMBED);
 			}
 		}

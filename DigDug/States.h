@@ -82,7 +82,7 @@ namespace dae
 		int	  m_TileId{ 0 };
 		bool  m_HitWallLeft{ false }, m_HitWallRight{ false }, m_HitWallTop{ false }, m_HitWallBottom{ false };
 
-		void HandleExplosionPlacement(int& index, const std::map<int, PathWay>& pathways, bool& outHitWall);
+		void HandleExplosionPlacement(int& index, const std::map<int, PathWay>& pathways, bool& outHitWall, float rotationOffset = 0.f);
 		void HandleExplosionEnd(int& index);
 	};
 

@@ -12,8 +12,9 @@ namespace dae
 
 	{
 	public:
-		BombComponent(Scene* scene)
-			: m_Scene{ scene } {
+		BombComponent(Scene* scene, GameObject* bombDropper)
+			: m_Scene{ scene },
+			  BombDropper{ bombDropper } {
 
 			  };
 		~BombComponent() = default;
@@ -44,6 +45,9 @@ namespace dae
 		EntityState*		GetBombState() { return m_BombState.get(); };
 		int					GetBombStrength() { return m_BombStrength; };
 		int					GetTileId() { return m_TileId; };
+
+		GameObject* BombDropper{ nullptr };
+
 
 	private:
 		std::unique_ptr<EntityState> m_BombState{ nullptr };

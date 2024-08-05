@@ -2,7 +2,7 @@
 #include "BombComponent.h"
 #include "EnemyComponent.h"
 #include "EntityMovementComponent.h"
-//#include "FloatingScoreComponent.h"
+// #include "FloatingScoreComponent.h"
 #include "PathwayCreatorComponent.h"
 #include "PlayerComponent.h"
 #include "ResourceManager.h"
@@ -12,12 +12,14 @@
 #include <ValuesComponent.h>
 
 #pragma region Bomb
-void		   dae::FuseState::OnStart(GameObject* gameObject)
+
+void dae::FuseState::OnStart(GameObject* gameObject)
 {
-	auto	   tileId{ gameObject->GetComponent<BombComponent>()->GetTileId() };
-	auto	   comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
-	auto&	   pathways{ comp->GetPathways() };
-	const auto path{ pathways.at(tileId) };
+	auto  bombComp{ gameObject->GetComponent<BombComponent>() };
+	auto  comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
+	auto& pathways{ comp->GetPathways() };
+	auto& path{ pathways.at(bombComp->GetTileId()) };
+	path.BombDropper = bombComp->BombDropper;
 
 	glm::vec2 pos2{ path.Rect.x - path.Rect.w, path.Rect.y };
 	gameObject->GetTransform()->SetPosition(pos2);
@@ -77,8 +79,8 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 		int bottomIndex = (m_TileId + (GridSize * i));
 
 		// Check left index (same row)
-		HandleExplosionPlacement(leftIndex, pathways, m_HitWallLeft);
-		HandleExplosionPlacement(rightIndex, pathways, m_HitWallRight);
+		HandleExplosionPlacement(leftIndex, pathways, m_HitWallLeft, 90.f);
+		HandleExplosionPlacement(rightIndex, pathways, m_HitWallRight, 90.f);
 		HandleExplosionPlacement(topIndex, pathways, m_HitWallTop);
 		HandleExplosionPlacement(bottomIndex, pathways, m_HitWallBottom);
 	}
@@ -90,7 +92,7 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 	comp->ActivateBomb(m_TileId);
 }
 
-void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<int, dae::PathWay>& pathways, bool& outHitWall)
+void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<int, dae::PathWay>& pathways, bool& outHitWall, float rotationOffset)
 {
 	if (pathways.find(index) == pathways.end())
 		return;
@@ -102,8 +104,10 @@ void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<in
 			comp->ActivateBomb(index);
 
 			glm::vec2 pos{ pathways.at(index).Rect.x - pathways.at(index).Rect.w, pathways.at(index).Rect.y };
+			pathways.at(index).BombDropper = pathways.at(m_TileId).BombDropper;
 			pathways.at(index).TextureComponent->SetPosition(pos.x, pos.y);
 			pathways.at(index).TextureComponent->SetIsVisible(true);
+			pathways.at(index).TextureComponent->Rotate(rotationOffset);
 			pathways.at(index).TextureComponent->SetTexture("Character/explosion.png", 0.125f, 4);
 		}
 		else
@@ -124,23 +128,23 @@ void dae::ExplosionState::HandleExplosionEnd(int& index)
 #pragma endregion
 
 #pragma region Characters
-void		   dae::BombedState::OnStart(GameObject* pGameObject)
+
+void dae::BombedState::OnStart(GameObject* pGameObject)
 {
 	if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() })
 	{
 
-		//pGameObject->GetComponent<dae::AudioComponent>()->PlayPopSound();
+		// pGameObject->GetComponent<dae::AudioComponent>()->PlayPopSound();
 		pGameObject->GetComponent<EntityMovementComponent>()->DisableMovement(true);
-
 
 		auto font{ ResourceManager::GetInstance().LoadFont("Emulogic.ttf", 10) };
 		auto pos{ pGameObject->GetTransform()->GetWorld().Position };
 
-		auto stats{ enemyComp->GetEnemyStats() };
+		auto		stats{ enemyComp->GetEnemyStats() };
 		std::string deathTextureName{ stats.Name + "Bombed.png" };
 		pGameObject->GetComponent<TextureComponent>()->SetTexture("Enemies/" + deathTextureName);
 
-		if (auto player{ pGameObject->GetComponent<EnemyComponent>()->GetPlayer() })
+		if (auto player{ enemyComp->GetPlayer() })
 		{
 			player->GetComponent<ValuesComponent>()->IncreaseScore(stats.Points);
 		}
@@ -148,8 +152,7 @@ void		   dae::BombedState::OnStart(GameObject* pGameObject)
 
 	if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
 	{
-		playerComp->Reposition();
-		pGameObject->GetComponent<TextureComponent>()->SetIsVisible(false);
+		pGameObject->GetComponent<TextureComponent>()->SetTexture("Character/PlayerDeath.png", 0.2f, 6);
 		pGameObject->GetComponent<InputComponent>()->DisableMovement(true);
 		pGameObject->GetComponent<EntityMovementComponent>()->DisableMovement(true);
 		pGameObject->GetComponent<ValuesComponent>()->Damage();
@@ -188,7 +191,8 @@ void dae::AliveState::OnStart(GameObject* pGameObject)
 	}
 	if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
 	{
-		pGameObject->GetComponent<TextureComponent>()->SetIsVisible(true);
+		pGameObject->GetComponent<TextureComponent>()->SetTexture("Character/moveDown.png", 0.2f, 3);
+		playerComp->Reposition();
 		pGameObject->GetComponent<InputComponent>()->DisableMovement(false);
 		pGameObject->GetComponent<EntityMovementComponent>()->DisableMovement(false);
 	}
