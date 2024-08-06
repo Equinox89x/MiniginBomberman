@@ -9,7 +9,14 @@
 #include "Timer.h"
 #include <chrono>
 
+namespace
+{
+	int GridSize = 30;
+	int GridSizeX = 30;
+}
+
 namespace MathLib {
+
 
 	inline float Square(float val) {
 		return val * val;

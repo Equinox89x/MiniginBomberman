@@ -11,12 +11,12 @@ dae::PlayerComponent::~PlayerComponent() { m_PlayerState.reset(); }
 void dae::PlayerComponent::Init() { SetState(new AliveState(m_Scene), MathLib::ELifeState::ALIVE); }
 
 void dae::PlayerComponent::Update() { m_PlayerState->Update(GetGameObject()); }
-
-void dae::PlayerComponent::Render() const {
-
-	 SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 255, 0, 0, 255); // Set the color to red
-	 SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &GetGameObject()->GetComponent<TextureComponent>()->GetRect()); // D
-}
+//
+//void dae::PlayerComponent::Render() const {
+//
+//	 SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 255, 0, 0, 255); // Set the color to red
+//	 SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &GetGameObject()->GetComponent<TextureComponent>()->GetRect()); // D
+//}
 
 void dae::PlayerComponent::Reposition()
 {

@@ -20,7 +20,7 @@ namespace dae
 
 		virtual void Init() override;
 		virtual void Update() override;
-		virtual void Render() const override;
+		virtual void Render() const override{};
 
 		void Reposition();
 		void ActivateUnderlyingThing(PathWay& pathway);

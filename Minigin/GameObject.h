@@ -5,10 +5,14 @@
 #include "Component.h"
 #include "TransformComponent.h"
 
+
+//int GridSize = 30;
+//int GridSizeX = 30;
+
 #define WindowSizeX 640
 #define WindowSizeY 640
-#define GridSize 30
-#define GridSizeX 30
+//#define GridSize 30
+//#define GridSizeX 30
 #define GridSizeY 13
 //#define WindowBuffer 80
 

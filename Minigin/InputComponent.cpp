@@ -34,6 +34,8 @@ void dae::InputComponent::UpdatePos(float dt)
 
 void dae::InputComponent::MoveCameraOverlapper(float dt)
 {
+	if (!m_HasOverlaps)
+		return;
 	if (MathLib::IsOverlapping(m_MoveOverlap, GetGameObject()->GetComponent<TextureComponent>()->GetRect()))
 	{
 		const auto& gameObjects{ m_Scene->GetGameObjects() };
@@ -67,6 +69,8 @@ void dae::InputComponent::MoveCameraOverlapper(float dt)
 }
 
 void dae::InputComponent::ResetOverlap(glm::vec2 originalPos) {
+	if (!m_HasOverlaps)
+		return;
 	const auto distance = GetGameObject()->GetTransform()->GetWorld().Position - glm::vec3{ originalPos.x, originalPos.y, 0 };
 
 	const auto& gameObjects{ m_Scene->GetGameObjects() };
@@ -146,13 +150,13 @@ void dae::InputComponent::Update()
 	}
 }
 
-void dae::InputComponent::Render() const
-{
-	SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 0, 0, 255, 200);
-
-		SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &m_MoveOverlap);
-	
-}
+//void dae::InputComponent::Render() const
+//{
+//	SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 0, 0, 255, 200);
+//
+//		SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &m_MoveOverlap);
+//	
+//}
 
 void dae::InputComponent::SetMoveSpeed(const glm::vec3& movespeed) { m_Movespeed = movespeed; }
 
