@@ -1,8 +1,10 @@
 #pragma once
 #include "Component.h"
 #include "Scene.h"
-#include "TextureComponent.h"
 #include <map>
+#include "ResourceManager.h"
+#include "TextObjectComponent.h"
+#include "TextureComponent.h"
 
 namespace dae
 {
@@ -10,18 +12,18 @@ namespace dae
 	struct PathWay
 	{
 		int					   id{ 0 };
-		dae::TextureComponent* TextureComponent{ nullptr };
+		dae::GameObject* PathObject{ nullptr };
 		MathLib::EPathStats	   PathStats{};
-		const glm::vec2		   Middle{};
-		const SDL_Rect		   Rect{};
+		glm::vec2		   Middle{};
+		SDL_Rect		   Rect{};
 		mutable dae::GameObject*	   BombDropper{ nullptr };
 
 		void SetBombDropper(GameObject* bombDropper) { BombDropper = bombDropper; };
 
 		void Clean()
 		{
-			delete TextureComponent;
-			TextureComponent = nullptr;
+			delete PathObject;
+			PathObject = nullptr;
 
 			delete BombDropper;
 			BombDropper = nullptr;

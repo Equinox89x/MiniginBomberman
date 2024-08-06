@@ -596,6 +596,8 @@ GL3W_API extern union GL3WProcs imgl3wProcs;
 #endif
 
 #endif
+#pragma warning(push)
+#pragma warning(disable : 6031)
 
 #ifdef IMGL3W_IMPL
 #ifdef __cplusplus

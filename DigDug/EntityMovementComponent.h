@@ -13,7 +13,11 @@ namespace dae
 
 	public:
 		EntityMovementComponent(Scene* scene, glm::vec2 startPos, bool isAutonomous = false) : m_Scene{ scene }, m_StartPos{ startPos }, m_IsAutonomous{ isAutonomous } {};
-		~EntityMovementComponent() = default;
+		~EntityMovementComponent()
+		{
+			delete m_CachedLocation;
+			m_CachedLocation = nullptr;
+		};
 		EntityMovementComponent(const EntityMovementComponent&) = delete;
 		EntityMovementComponent(EntityMovementComponent&&) noexcept = delete;
 		EntityMovementComponent& operator=(const EntityMovementComponent&) = delete;
@@ -25,7 +29,7 @@ namespace dae
 
 		void SetIsController(bool isController) { m_IsController = isController; };
 		void SetStartPos(glm::vec2 startPos) { m_StartPos = startPos; };
-		void Reposition() { GetGameObject()->GetComponent<TextureComponent>()->SetPosition(m_StartPos.x, m_StartPos.y); };
+		void Reposition() { GetGameObject()->GetTransform()->SetPosition(m_StartPos.x, m_StartPos.y); };
 
 		void SetMovement(MathLib::EMovement movement);
 
@@ -37,6 +41,8 @@ namespace dae
 		void SetCurrentTileId(int id);
 		int	 GetNextTileId() { return m_NextTileId; };
 		int	 GetCurrentTileId() { return m_CurrentTileId; };
+		void CheckMovement(const std::map<int, PathWay>& pathways);
+
 
 		SDL_Rect GetPathCollider(MathLib::EMovement movement);
 
@@ -56,8 +62,6 @@ namespace dae
 		void		SetEnemyName(std::string enemyName) { m_EnemyName = enemyName; }
 		std::string GetEnemyName() { return m_EnemyName; };
 
-		void SetGhostLocation(glm::vec2 loc) { m_CachedLocation = loc; };
-
 	private:
 		bool							  m_IsController{ false }, m_IsAutonomous{ false }, m_CanMove{ true };
 		int								  m_NextTileId{ 0 }, m_CurrentTileId{ 0 };
@@ -72,8 +76,6 @@ namespace dae
 		glm::vec2			m_StartPos{};
 		glm::vec2			m_PrevLoc{};
 
-		void CheckMovement(const std::map<int, PathWay>& pathways);
-
 		// Autonomous
 		float								  m_Speed{ 50 }, m_MoveTimer{ 2 };
 		SDL_Rect							  m_LeftMapBorder{}, m_RightMapBorder{}, m_TopMapBorder{}, m_BottomMapBorder{};
@@ -86,7 +88,8 @@ namespace dae
 		};
 		std::string m_EnemyName{ "Pooka" };
 		std::string m_LastDir{ "Left" };
-		glm::vec2	m_CachedLocation{ 0, 0 };
+		PathWay*	m_CachedLocation{ nullptr };
 		PathWay		m_Target;
+		int			m_PathId{ 0 };
 	};
 } // namespace dae

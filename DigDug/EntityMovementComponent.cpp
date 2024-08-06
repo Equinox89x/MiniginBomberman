@@ -40,34 +40,15 @@ void dae::EntityMovementComponent::Update()
 		return;
 	if (m_IsAutonomous)
 	{
-		// switch (m_State)
-		//{
-		// case MathLib::EMovingState::MovingUp:
-		//	m_PathwayColliderRect = m_TopRect;
-		//	break;
-		// case MathLib::EMovingState::MovingLeft:
-		//	m_PathwayColliderRect = m_LeftRect;
-		//	m_Movement = MathLib::LEFT;
-		//	break;
-		// case MathLib::EMovingState::MovingRight:
-		//	m_PathwayColliderRect = m_RightRect;
-		//	m_Movement = MathLib::RIGHT;
-		//	break;
-		// case MathLib::EMovingState::MovingDown:
-		//	m_PathwayColliderRect = m_BottomRect;
-		//	break;
-		// default:
-		//	break;
-		// }
-
-		if (m_CachedLocation == glm::vec2{ 0, 0 })
+		auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
+		auto& path = comp->GetPathways().find(m_PathId)->second;
+		if (path.Middle == glm::vec2{ 0, 0 })
 		{
-			auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
-			CheckMovement(comp->GetPathways());
+			//CheckMovement(comp->GetPathways());
 		}
 
-		float dx = m_CachedLocation.x - GetGameObject()->GetCenter().x;
-		float dy = m_CachedLocation.y - GetGameObject()->GetCenter().y;
+		float dx = path.Middle.x - GetGameObject()->GetCenter().x;
+		float dy = path.Middle.y - GetGameObject()->GetCenter().y;
 		float distanceToTarget = std::sqrt(dx * dx + dy * dy);
 		if (distanceToTarget > 1)
 		{
@@ -76,7 +57,6 @@ void dae::EntityMovementComponent::Update()
 		}
 		else if (distanceToTarget < 1)
 		{
-			auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
 			CheckMovement(comp->GetPathways());
 		}
 
@@ -89,7 +69,7 @@ void dae::EntityMovementComponent::Update()
 			m_LastDir = "Right";
 		}
 
-		GetGameObject()->GetTransform()->Translate(dx * 2.f, dy * 2.f);
+		GetGameObject()->GetTransform()->Translate(dx * 1.5f, dy * 1.5f);
 		GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Enemies/" + m_EnemyName + /*m_LastDir +*/ ".png", 0.2f, 2);
 	}
 }
@@ -110,7 +90,7 @@ void dae::EntityMovementComponent::Render() const
 
 	// auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
 	// auto pathways{ comp->GetPathways() };
-	// auto rrect2 = pathways.at(m_CurrentTileId).TextureComponent->GetRect();
+	// auto rrect2 = pathways.at(m_CurrentTileId).PathObject->GetRect();
 	// SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 0, 255, 255, 255); // Set the color to red
 	////auto rrect = SDL_Rect{ int(m_CachedLocation.x), int(m_CachedLocation.y), 1,1 };
 	////SDL_RenderFillRect(Renderer::GetInstance().GetSDLRenderer(), &rrect);
@@ -120,26 +100,24 @@ void dae::EntityMovementComponent::Render() const
 void dae::EntityMovementComponent::CheckMovement(const std::map<int, PathWay>& pathways)
 {
 
-	std::vector<PathWay> paths;
-	for (auto item : m_CurrentSurroundingTiles)
+	std::vector<int> paths;
+	for (auto& item : m_CurrentSurroundingTiles)
 	{
-		auto path{ pathways.find(item.second) };
+		const auto& path{ pathways.find(item.second) };
 		if (path != pathways.end())
 		{
 			if (path->second.PathStats.PathType == MathLib::EPathType::Tile)
 			{
-				paths.push_back(path->second);
+				paths.push_back(path->second.id);
 			}
 		}
 	}
 
-	int randIndex{ MathLib::CalculateChance(static_cast<int>(paths.size()) - 1) };
-
 	if (paths.size() > 0)
 	{
-		m_CachedLocation = paths[randIndex].Middle;
-
-		if (m_CachedLocation.x > GetGameObject()->GetTransform()->GetWorld().Position.x)
+		int randIndex{ MathLib::CalculateChance(static_cast<int>(paths.size()) - 1) };
+		m_PathId = paths[randIndex];
+		if (pathways.find(m_PathId)->second.Middle.x > GetGameObject()->GetTransform()->GetWorld().Position.x)
 		{
 			m_Movement = MathLib::EMovement::RIGHT;
 			m_LastDir = "Right";

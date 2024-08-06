@@ -13,7 +13,7 @@ void dae::BombComponent::Update()
 	auto pathways{ comp->GetPathways() };
 
 	auto bombTexComp{ GetGameObject()->GetComponent<TextureComponent>() };
-	if (MathLib::IsOverlapping(pathways.at(m_TileId).TextureComponent->GetRect(), bombTexComp->GetRect()))
+	if (MathLib::IsOverlapping(pathways.at(m_TileId).PathObject->GetComponent<TextureComponent>()->GetRect(), bombTexComp->GetRect()))
 	{
 		if (pathways.at(m_TileId).PathStats.PathState == MathLib::EPathState::Explosion && GetState() == MathLib::EBombState::Fuse)
 		{

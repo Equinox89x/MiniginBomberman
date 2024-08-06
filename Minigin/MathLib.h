@@ -138,11 +138,11 @@ namespace MathLib {
 	};
 
 	enum class EPathType {
-		Tile, Blocker, Breakable
+		Tile = 1, Blocker = 2, Breakable = 3
 	};
 
 	enum class EPowerupType {
-		ExtraBomb, Detonator, Flames, Door, None
+		ExtraBomb=1, Detonator=2, Flames=3, Door=4, None=-1
 	};
 
 	enum class EEnemyType {
@@ -156,8 +156,6 @@ namespace MathLib {
 		EPathState PathState{ EPathState::Blocker };
 		EPathType PathType{ EPathType::Blocker };
 		bool HasUnderlyingThing{ false };
-		std::string TextureName{ "Blocker" };
-		std::string UnderlyingName{ "None" };
 		EPowerupType PowerupType{ EPowerupType::None };
 	};
 

@@ -4,6 +4,7 @@
 #include "MenuComponent.h"
 #include <InputComponent.h>
 #include <ValuesComponent.h>
+#include <Renderer.h>
 
 dae::PlayerComponent::~PlayerComponent() { m_PlayerState.reset(); }
 
@@ -11,7 +12,11 @@ void dae::PlayerComponent::Init() { SetState(new AliveState(m_Scene), MathLib::E
 
 void dae::PlayerComponent::Update() { m_PlayerState->Update(GetGameObject()); }
 
-void dae::PlayerComponent::Render() const {}
+void dae::PlayerComponent::Render() const {
+
+	 SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 255, 0, 0, 255); // Set the color to red
+	 SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &GetGameObject()->GetComponent<TextureComponent>()->GetRect()); // D
+}
 
 void dae::PlayerComponent::Reposition() { GetGameObject()->GetTransform()->SetPosition(m_OriginalPosition); }
 
@@ -39,7 +44,7 @@ void dae::PlayerComponent::ActivateUnderlyingThing(PathWay& pathway)
 		pathway.PathStats.PathState = MathLib::EPathState::Tile;
 		pathway.PathStats.HasUnderlyingThing = false;
 		pathway.PathStats.PowerupType = MathLib::EPowerupType::None;
-		pathway.TextureComponent->SetIsVisible(false);
+		pathway.PathObject->GetComponent<TextureComponent>()->SetIsVisible(false);
 	}
 	else
 	{

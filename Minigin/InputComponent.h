@@ -37,11 +37,11 @@ namespace dae
 		Scene* m_Scene{ nullptr };
 		glm::vec3 m_StartPos;
 		glm::vec3 m_Movespeed;
+		SDL_Rect  moveOverlap{};
 
 		bool m_CanMove{ true }, m_IsController{false};
 
 		std::map<MathLib::EMovement, const glm::vec3> m_MoveSpeedList{};
-
 		std::map<MathLib::ESide, bool> m_Movement{
 			  std::make_pair(MathLib::ESide::Top, true),
 			  std::make_pair(MathLib::ESide::Left, true),

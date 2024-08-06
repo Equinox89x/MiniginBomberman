@@ -21,7 +21,7 @@ void dae::FuseState::OnStart(GameObject* gameObject)
 	auto& path{ pathways.at(bombComp->GetTileId()) };
 	path.BombDropper = bombComp->BombDropper;
 
-	glm::vec2 pos2{ path.Rect.x - path.Rect.w, path.Rect.y };
+	glm::vec2 pos2{ path.Rect.x, path.Rect.y };
 	gameObject->GetTransform()->SetPosition(pos2);
 	gameObject->AddComponent(std::make_unique<dae::AudioComponent>())->PlayBombSound();
 	gameObject->AddComponent(std::make_unique<TextureComponent>())->SetTexture("Character/bomb.png", 0.2f, 3);
@@ -69,8 +69,6 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 	auto* comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
 	auto& pathways{ comp->GetPathways() };
 
-	const auto& path{ pathways.at(m_TileId) };
-	glm::vec2	pos2{ path.Rect.x - path.Rect.w, path.Rect.y };
 	for (int i = 1; i <= m_BombStrength; i++)
 	{
 		int leftIndex = (m_TileId - i);
@@ -86,13 +84,13 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 	}
 
 	glm::vec2 pos{ pathways.at(m_TileId).Rect.x - pathways.at(m_TileId).Rect.w, pathways.at(m_TileId).Rect.y };
-	pathways.at(m_TileId).TextureComponent->SetPosition(pos.x, pos.y);
-	pathways.at(m_TileId).TextureComponent->SetTexture("Character/explosionCenter.png", 0.125f, 4);
+	//pathways.at(m_TileId).PathObject->GetComponent<PathObject>()->SetPosition(pos.x, pos.y);
+	pathways.at(m_TileId).PathObject->GetComponent<TextureComponent>()->SetTexture("Character/explosionCenter.png", 0.125f, 4);
 	gameObject->GetComponent<TextureComponent>()->SetIsVisible(false);
 	comp->ActivateBomb(m_TileId);
 }
 
-void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<int, dae::PathWay>& pathways, bool& outHitWall, float rotationOffset)
+void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<int, dae::PathWay>& pathways, bool& outHitWall, float /*rotationOffset*/)
 {
 	if (pathways.find(index) == pathways.end())
 		return;
@@ -105,10 +103,10 @@ void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<in
 
 			glm::vec2 pos{ pathways.at(index).Rect.x - pathways.at(index).Rect.w, pathways.at(index).Rect.y };
 			pathways.at(index).BombDropper = pathways.at(m_TileId).BombDropper;
-			pathways.at(index).TextureComponent->SetPosition(pos.x, pos.y);
-			pathways.at(index).TextureComponent->SetIsVisible(true);
-			pathways.at(index).TextureComponent->Rotate(rotationOffset);
-			pathways.at(index).TextureComponent->SetTexture("Character/explosion.png", 0.125f, 4);
+			//pathways.at(index).PathObject->SetPosition(pos.x, pos.y);
+			//pathways.at(index).PathObject->GetComponent<TextureComponent>()->SetIsVisible(true);
+			//pathways.at(index).PathObject->GetComponent<TextureComponent>()->Rotate(rotationOffset);
+			pathways.at(index).PathObject->GetComponent<TextureComponent>()->SetTexture("Character/explosion.png", 0.125f, 4);
 		}
 		else
 		{
@@ -133,13 +131,10 @@ void dae::BombedState::OnStart(GameObject* pGameObject)
 {
 	if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() })
 	{
-
-		// pGameObject->GetComponent<dae::AudioComponent>()->PlayPopSound();
 		pGameObject->GetComponent<EntityMovementComponent>()->DisableMovement(true);
 
-		auto font{ ResourceManager::GetInstance().LoadFont("Emulogic.ttf", 10) };
-		auto pos{ pGameObject->GetTransform()->GetWorld().Position };
-
+		auto		font{ ResourceManager::GetInstance().LoadFont("Emulogic.ttf", 10) };
+		auto		pos{ pGameObject->GetTransform()->GetWorld().Position };
 		auto		stats{ enemyComp->GetEnemyStats() };
 		std::string deathTextureName{ stats.Name + "Bombed.png" };
 		pGameObject->GetComponent<TextureComponent>()->SetTexture("Enemies/" + deathTextureName);
@@ -168,7 +163,7 @@ void dae::BombedState::Update(GameObject* pGameObject)
 		{
 			enemyComp->SetState(new DeathState(m_Scene), MathLib::ELifeState::DEAD);
 		}
-		if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
+		else if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
 		{
 			if (pGameObject->GetComponent<ValuesComponent>()->GetLives() > 0)
 			{
@@ -189,7 +184,7 @@ void dae::AliveState::OnStart(GameObject* pGameObject)
 	if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() })
 	{
 	}
-	if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
+	else if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
 	{
 		pGameObject->GetComponent<TextureComponent>()->SetTexture("Character/moveDown.png", 0.2f, 3);
 		playerComp->Reposition();

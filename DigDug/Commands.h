@@ -70,27 +70,29 @@ namespace dae
 				return;
 
 			m_MoveSpeed = glm::vec3{ pos.x * 100, pos.y * -100, 0 };
+
 			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() })
 			{
 				if (pos.x > 0)
 				{
 					m_Movement = MathLib::EMovement::RIGHT;
-					m_TextureName = "Character/moveRight";
+					m_TextureName = "Character/moveRight.png";
 				}
 				else if (pos.x < 0)
 				{
 					m_Movement = MathLib::EMovement::LEFT;
-					m_TextureName = "Character/moveLeft";
+					m_TextureName = "Character/moveLeft.png";
+
 				}
 				else if (pos.y > 0)
 				{
 					m_Movement = MathLib::EMovement::UP;
-					m_TextureName = "Character/moveUp";
+					m_TextureName = "Character/moveUp.png";
 				}
 				else if (pos.y < 0)
 				{
 					m_Movement = MathLib::EMovement::DOWN;
-					m_TextureName = "Character/moveDown";
+					m_TextureName = "Character/moveDown.png";
 				}
 
 				auto state{ playerComp->GetState() };
@@ -101,7 +103,7 @@ namespace dae
 
 					player->SetMovement(m_Movement);
 					input->SetMoveSpeed(m_MoveSpeed, m_Movement, true);
-					tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 3);
+					tex->SetTexture(m_Movement, m_TextureName, 0.1f, 3);
 				}
 			}
 			else
@@ -109,22 +111,22 @@ namespace dae
 				if (pos.x > 0)
 				{
 					m_Movement = MathLib::EMovement::RIGHT;
-					m_TextureName = "Enemies/FygarRight";
+					m_TextureName = "Enemies/Balloom.png";
 				}
 				else if (pos.x < 0)
 				{
 					m_Movement = MathLib::EMovement::LEFT;
-					m_TextureName = "Enemies/FygarLeft";
+					m_TextureName = "Enemies/Balloom.png";
 				}
 				else if (pos.y > 0)
 				{
 					m_Movement = MathLib::EMovement::UP;
-					m_TextureName = "Enemies/FygarRight";
+					m_TextureName = "Enemies/Balloom.png";
 				}
 				else if (pos.y < 0)
 				{
 					m_Movement = MathLib::EMovement::DOWN;
-					m_TextureName = "Enemies/FygarLeft";
+					m_TextureName = "Enemies/Balloom.png";
 				}
 				auto input{ m_pObject->GetComponent<dae::InputComponent>() };
 				auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
@@ -139,7 +141,7 @@ namespace dae
 				}
 				player->SetMovement(m_Movement);
 				input->SetMoveSpeed(m_MoveSpeed, m_Movement, true);
-				tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 3);
+				tex->SetTexture(m_Movement, m_TextureName, 0.1f, 3);
 			}
 		};
 

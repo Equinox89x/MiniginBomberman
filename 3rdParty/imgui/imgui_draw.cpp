@@ -612,6 +612,9 @@ void ImDrawList::PopTextureID()
     _CmdHeader.TextureId = (_TextureIdStack.Size == 0) ? (ImTextureID)NULL : _TextureIdStack.Data[_TextureIdStack.Size - 1];
     _OnChangedTextureID();
 }
+	#pragma warning(push)
+
+	#pragma warning(disable : 6239)
 
 // Reserve space for a number of vertices and indices.
 // You must finish filling your reserved data before calling PrimReserve() again, as it may reallocate or

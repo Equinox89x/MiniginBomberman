@@ -22,6 +22,33 @@ void dae::InputComponent::UpdatePos(float dt)
 		if (!m_Movement[MathLib::ESide::Right] && m_Movespeed.x > 0) return;
 		go->GetTransform()->SetPosition(futurePosition.x, futurePosition.y);
 		//m_Movespeed = glm::vec3{ 0,0,0 };
+
+		//for (const SDL_Rect& moveOverlap : m_CameraOverlaps)
+		//{
+			//if (MathLib::IsOverlapping(moveOverlap, GetGameObject()->GetComponent<PathObject>()->GetRect()) {
+				const auto& gameObjects{ m_Scene->GetGameObjects() };
+				if (m_Movement[MathLib::ESide::Left])
+				{
+					for (const auto& obj : gameObjects)
+					{
+						if (obj->GetName() != EnumStrings[Names::Global])
+						{
+							obj->GetTransform()->Translate({ -m_Movespeed.x * dt,0,0 });
+						}
+					}
+				}
+				else if (m_Movement[MathLib::ESide::Right])
+				{
+					for (const auto& obj : gameObjects)
+					{
+						if (obj->GetName() != EnumStrings[Names::Global])
+						{
+							obj->GetTransform()->Translate({ -m_Movespeed.x * dt,0,0 });
+						}
+					}
+				}
+			//}
+		//}
 	}
 }
 

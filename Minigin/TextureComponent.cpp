@@ -39,15 +39,13 @@ void dae::TextureComponent::HandleAnimation() {
     const auto& scale{ GetGameObject()->GetTransform()->GetWorld().Scale };
 
     SDL_QueryTexture(m_Texture.m_pTexture->GetSDLTexture(), nullptr, nullptr, &m_SrcRect.w, &m_SrcRect.h);
-    if (m_Texture.NrOfFrames > 1) {
-        m_SrcRect.w /= m_Texture.NrOfFrames;
-        m_SrcRect.x = m_SrcRect.w * (m_Texture.CurrentFrame - 1);
-    }
+    m_SrcRect.w /= m_Texture.NrOfFrames;
+    m_SrcRect.x = m_SrcRect.w * (m_Texture.CurrentFrame - 1);
     m_DstRect = { 0, 0, m_SrcRect.w, m_SrcRect.h };
 
-    if (m_Texture.NrOfFrames > 1) m_DstRect.x = m_SrcRect.w * m_Texture.CurrentFrame;
-    m_DstRect.x += static_cast<int>(pos.x + Offset.x) - m_SrcRect.x;
-    m_DstRect.y = static_cast<int>(pos.y + Offset.y);
+    m_DstRect.x = m_SrcRect.w * (m_Texture.CurrentFrame-1);
+    m_DstRect.x += static_cast<int>(pos.x) - m_SrcRect.x;
+    m_DstRect.y = static_cast<int>(pos.y);
 
     m_DstRect.w = static_cast<int>(m_SrcRect.w * scale.x);
     m_DstRect.h = static_cast<int>(m_SrcRect.h * scale.y);
@@ -58,17 +56,8 @@ void dae::TextureComponent::HandleAnimation() {
 void dae::TextureComponent::Render() const
 {
     if (m_IsVisible) {
-        if (m_Texture.NrOfFrames > 1) {
-            SDL_Point center = { m_SrcRect.w / 2, m_SrcRect.h / 2 };
-            SDL_RenderCopyEx(Renderer::GetInstance().GetSDLRenderer(), m_Texture.m_pTexture->GetSDLTexture(), &m_SrcRect, &m_DstRect, Angle, nullptr, SDL_FLIP_NONE);
-        }
-        else {
-            SDL_RenderCopyEx(Renderer::GetInstance().GetSDLRenderer(), m_Texture.m_pTexture->GetSDLTexture(), nullptr, &m_DstRect, Angle, nullptr, SDL_FLIP_NONE);
-        }
+        SDL_RenderCopyEx(Renderer::GetInstance().GetSDLRenderer(), m_Texture.m_pTexture->GetSDLTexture(), &m_SrcRect, &m_DstRect, Angle, nullptr, SDL_FLIP_NONE);
     }
-
-    //SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 255, 0, 0, 255); // Set the color to red
-    //SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &m_Rect); // D
 }
 
 void dae::TextureComponent::SetTexture(const std::string& filename, float animSpeed, int nrOfFrames, bool resetAnim, bool canProgress)
@@ -105,36 +94,3 @@ void dae::TextureComponent::RemoveTexture(MathLib::EMovement movement)
         SetTexture(FileNames.begin()->second);
     }
 }
-
-void dae::TextureComponent::SetPosition(const float x, const float y)
-{
-    GetGameObject()->GetTransform()->SetPosition(x, y, 0.0f);
-    m_needsUpdate = true;
-}
-
-void dae::TextureComponent::AddPosition(const float x, const float y)
-{
-    GetGameObject()->GetTransform()->Translate(x, y);
-    m_needsUpdate = true;
-}
-
-void dae::TextureComponent::SetWorldPosition(const float /*x*/, const float /*y*/)
-{
-    //GetGameObject()->GetTransform()->Translate(x, y, 0.0f);
-    //m_needsUpdate = true;
-}
-
-void dae::TextureComponent::Scale(const float x, const float y)
-{
-    GetGameObject()->GetTransform()->SetScale(x, y);
-    m_needsUpdate = true;
-}
-
-
-void dae::TextureComponent::Rotate(const float angle)
-{
-    GetGameObject()->GetTransform()->Rotate(angle);
-    Angle = angle;
-    m_needsUpdate = true;
-}
-

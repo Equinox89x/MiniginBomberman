@@ -7,15 +7,15 @@
 
 #define WindowSizeX 640
 #define WindowSizeY 640
-#define GridSize 16
-#define GridSizeX 16
+#define GridSize 30
+#define GridSizeX 30
 #define GridSizeY 13
 //#define WindowBuffer 80
 
 #define Margin 40.f
 #define SubMargin Margin * 2
 
-#define Cellsize WindowSizeX/GridSize
+#define Cellsize WindowSizeX/16
 #define PlayerSize 14.f
 
 const enum Names {
