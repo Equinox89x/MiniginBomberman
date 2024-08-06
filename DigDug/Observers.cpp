@@ -13,17 +13,20 @@
 void dae::HealthObserver::Notify(GameObject* go, Event& event)
 {
 	auto i{ go->GetComponent<ValuesComponent>()->GetLives() };
+	auto* global{ m_Scene->GetGameObject(EnumStrings[Names::Global]) };
+	auto* livesHolder{ global->GetChild(EnumStrings[Names::Life]) };
+
 	switch (event.GetEvent())
 	{
 	case EventType::Live:
-		if (auto child{ m_Scene->GetGameObject(EnumStrings[Names::Life]) })
+		if (livesHolder)
 		{
-			child->GetComponent<TextObjectComponent>()->SetText(child->GetName() + " Lives: " + std::to_string(i));
+			livesHolder->GetComponent<TextObjectComponent>()->SetText(go->GetName() + " Lives: " + std::to_string(i));
 		}
-		if (i < 0)
-		{
-			m_Scene->GetGameObject(EnumStrings[Names::Global])->GetComponent<MenuComponent>()->GameOver();
-		}
+		//if (i <= 0)
+		//{
+		//	global->GetComponent<MenuComponent>()->GameOver();
+		//}
 
 		break;
 	case EventType::Reset:
@@ -43,10 +46,12 @@ void dae::ScoreObserver::Notify(GameObject* player, Event& event)
 {
 	ValuesComponent* comp{ player->GetComponent<ValuesComponent>() };
 	auto			 score{ comp->GetScores() };
+	auto*			 global{ m_Scene->GetGameObject(EnumStrings[Names::Global]) };
+	auto			 scoreHolder{ global->GetChild(EnumStrings[Names::ScoreGeneral] + std::to_string(m_Id)) };
 	switch (event.GetEvent())
 	{
 	case EventType::Score:
-		if (auto scoreHolder{ m_Scene->GetGameObject(EnumStrings[Names::ScoreGeneral] + std::to_string(m_Id)) })
+		if (scoreHolder)
 		{
 			scoreHolder->GetComponent<TextObjectComponent>()->SetText(player->GetName() + " Score: " + std::to_string(score));
 			scoreHolder->GetComponent<TextObjectComponent>()->SetName(std::to_string(score));
@@ -56,7 +61,7 @@ void dae::ScoreObserver::Notify(GameObject* player, Event& event)
 		}
 		break;
 	case EventType::Reset:
-		if (auto scoreHolder{ m_Scene->GetGameObject(EnumStrings[Names::ScoreGeneral] + std::to_string(m_Id)) })
+		if (scoreHolder)
 		{
 			scoreHolder->GetComponent<TextObjectComponent>()->SetText(player->GetName() + " Score: " + std::to_string(score));
 			scoreHolder->GetComponent<TextObjectComponent>()->SetName(std::to_string(score));

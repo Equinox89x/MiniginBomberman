@@ -38,7 +38,7 @@ namespace MathLib {
 
 		//Apply the quadtratic bezier formula as many times as there are controlPoint values
 		for (int i = 0; i <= n; i++) {
-			float blend{ static_cast<float>(BinomialCoeff(n, i) * pow(1 - t, n - i) * pow(t, i)) };
+			const float blend{ static_cast<float>(BinomialCoeff(n, i) * pow(1 - t, n - i) * pow(t, i)) };
 			x += controlPoints[i].x * blend;
 			y += controlPoints[i].y * blend;
 		}
@@ -227,7 +227,7 @@ namespace MathLib {
 		//}
 	}
 
-	inline glm::vec2 MoveRectTowards(SDL_Rect& rect1, const SDL_Rect& rect2, float speed)
+	inline glm::vec2 MoveRectTowards(const SDL_Rect& rect1, const SDL_Rect& rect2, float speed)
 	{
 		const glm::vec2 rect1Center(rect1.x + rect1.w / 2, rect1.y + rect1.h / 2);
 		const glm::vec2 rect2Center(rect2.x + rect2.w / 2, rect2.y + rect2.h / 2);

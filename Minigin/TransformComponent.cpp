@@ -13,10 +13,6 @@ void dae::TransformComponent::Init()
 	Update();
 }
 
-void dae::TransformComponent::Render() const
-{
-}
-
 void dae::TransformComponent::Update()
 {
 	if (m_TransformChanges == TransformChange::None)
@@ -45,7 +41,7 @@ void dae::TransformComponent::Translate(float x, float y)
 	m_Local.Position.y += y;
 	m_TransformChanges |= TransformChange::Translation;
 
-	for (GameObject* pChild : GetGameObject()->GetChildren())
+	for (const GameObject* const pChild : GetGameObject()->GetChildren())
 		pChild->GetTransform()->m_TransformChanges |= TransformChange::Translation;
 }
 
@@ -54,7 +50,7 @@ void dae::TransformComponent::Translate(const glm::vec2& vec2)
 	m_Local.Position += glm::vec3{vec2.x,vec2.y,0.f};
 	m_TransformChanges |= TransformChange::Translation;
 
-	for (GameObject* pChild : GetGameObject()->GetChildren())
+	for (const GameObject* const pChild : GetGameObject()->GetChildren())
 		pChild->GetTransform()->m_TransformChanges |= TransformChange::Translation;
 }
 
@@ -63,7 +59,7 @@ void dae::TransformComponent::Translate(const glm::vec3& vec3)
 	m_Local.Position += vec3;
 	m_TransformChanges |= TransformChange::Translation;
 
-	for (GameObject* pChild : GetGameObject()->GetChildren())
+	for (const GameObject* const pChild : GetGameObject()->GetChildren())
 		pChild->GetTransform()->m_TransformChanges |= TransformChange::Translation;
 }
 
@@ -74,7 +70,7 @@ void dae::TransformComponent::SetPosition(float x, float y, float z)
 	m_Local.Position.z = z;
 	m_TransformChanges |= TransformChange::Translation;
 
-	for (GameObject* pChild : GetGameObject()->GetChildren())
+	for (const GameObject* const pChild : GetGameObject()->GetChildren())
 		pChild->GetTransform()->m_TransformChanges |= TransformChange::Translation;
 }
 
@@ -85,7 +81,7 @@ void dae::TransformComponent::SetPosition(const glm::vec2& vec2, float z)
 	m_Local.Position.z = z;
 	m_TransformChanges |= TransformChange::Translation;
 
-	for (GameObject* pChild : GetGameObject()->GetChildren())
+	for (const GameObject* const pChild : GetGameObject()->GetChildren())
 		pChild->GetTransform()->m_TransformChanges |= TransformChange::Translation;
 }
 
@@ -94,7 +90,7 @@ void dae::TransformComponent::SetPosition(const glm::vec3& vec3)
 	m_Local.Position = vec3;
 	m_TransformChanges |= TransformChange::Translation;
 
-	for (GameObject* pChild : GetGameObject()->GetChildren())
+	for (const GameObject* const pChild : GetGameObject()->GetChildren())
 		pChild->GetTransform()->m_TransformChanges |= TransformChange::Translation;
 }
 
@@ -103,7 +99,7 @@ void dae::TransformComponent::Rotate(float r)
 	m_Local.Rotation += r;
 	m_TransformChanges |= TransformChange::Rotation;
 
-	for (GameObject* pChild : GetGameObject()->GetChildren())
+	for (const GameObject* const pChild : GetGameObject()->GetChildren())
 		pChild->GetTransform()->m_TransformChanges |= TransformChange::Rotation;
 }
 
@@ -112,7 +108,7 @@ void dae::TransformComponent::SetRotation(float r)
 	m_Local.Rotation = r;
 	m_TransformChanges |= TransformChange::Rotation;
 
-	for (GameObject* pChild : GetGameObject()->GetChildren())
+	for (const GameObject* const pChild : GetGameObject()->GetChildren())
 		pChild->GetTransform()->m_TransformChanges |= TransformChange::Rotation;
 }
 
@@ -122,7 +118,7 @@ void dae::TransformComponent::SetScale(float x, float y)
 	m_Local.Scale.y = y;
 	m_TransformChanges |= TransformChange::Scale;
 
-	for (GameObject* pChild : GetGameObject()->GetChildren())
+	for (const GameObject* const pChild : GetGameObject()->GetChildren())
 		pChild->GetTransform()->m_TransformChanges |= TransformChange::Scale;
 }
 
@@ -131,13 +127,13 @@ void dae::TransformComponent::SetScale(const glm::vec2& scale)
 	m_Local.Scale = scale;
 	m_TransformChanges |= TransformChange::Scale;
 
-	for (GameObject* pChild : GetGameObject()->GetChildren())
+	for (const GameObject* const pChild : GetGameObject()->GetChildren())
 		pChild->GetTransform()->m_TransformChanges |= TransformChange::Scale;
 }
 
 void dae::TransformComponent::CalculateWorldPosition()
 {
-	GameObject* pParent{ GetGameObject()->GetParent() };
+	const GameObject* pParent{ GetGameObject()->GetParent() };
 
 	if (!pParent)
 	{
@@ -163,7 +159,7 @@ void dae::TransformComponent::CalculateWorldPosition()
 
 void dae::TransformComponent::CalculateWorldRotation()
 {
-	GameObject* pParent{ GetGameObject()->GetParent() };
+	const GameObject* pParent{ GetGameObject()->GetParent() };
 
 	if (!pParent)
 	{
@@ -183,7 +179,7 @@ void dae::TransformComponent::CalculateWorldRotation()
 
 void dae::TransformComponent::CalculateWorldScale()
 {
-	GameObject* pParent{ GetGameObject()->GetParent() };
+	const GameObject* pParent{ GetGameObject()->GetParent() };
 
 	if (!pParent)
 	{

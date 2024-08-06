@@ -43,9 +43,10 @@ namespace dae {
 
 		void SetTexture(const std::string& filename, float animSpeed = 0.1f, int nrOfFrames = 1, bool resetAnim = true, bool canProgress = true);
 		void SetTexture(MathLib::EMovement movement, const std::string& filename, float animSpeed = 0.1f, int nrOfFrames = 1, bool resetAnim = true, bool canProgress = true);
-		void SetTexture(TextureData& textureData);
+		void SetTexture(const TextureData& textureData);
 		void RemoveTexture(MathLib::EMovement movement);
 		void SetIsVisible(bool isVisible) { m_IsVisible = isVisible; };
+		void Rotate(const float angle);
 
 		void SetNrOfFrames(int nrOfFrames) { m_Texture.NrOfFrames = nrOfFrames; };
 		const SDL_Rect& GetRect() { HandleAnimation(); return m_Rect; };

@@ -46,7 +46,7 @@ namespace dae {
 		TransformComponent& operator=(TransformComponent&& other) = default;
 
 		void Init() override;
-		void Render() const override;
+		void Render() const override{};
 		void Update() override;
 
 		const Transform& GetLocal() const { return m_Local; }

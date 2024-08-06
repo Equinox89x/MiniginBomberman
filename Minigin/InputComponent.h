@@ -22,7 +22,7 @@ namespace dae
 
 		void Update() override;
 		virtual void FixedUpdate() override {};
-		void Render() const override {};
+		void Render() const override;
 
 		void SetMoveSpeed(const glm::vec3& movespeed);
 		void SetMoveSpeed(const glm::vec3& movespeed, MathLib::EMovement direction, bool isController);
@@ -33,11 +33,14 @@ namespace dae
 		const std::map<MathLib::ESide, bool>& GetCanMove() { return m_Movement; };
 		void DisableMovement(bool IsDisabled) { m_CanMove = !IsDisabled; };
 
+		void ResetOverlap(glm::vec2 originalPos);
+
 	private:
 		Scene* m_Scene{ nullptr };
 		glm::vec3 m_StartPos;
 		glm::vec3 m_Movespeed;
-		SDL_Rect  moveOverlap{};
+		SDL_Rect  m_MoveOverlap{ SDL_Rect{ Cellsize * 9, 0, Cellsize * 7, WindowSizeY } };
+		float	  m_Offset{ 0 };
 
 		bool m_CanMove{ true }, m_IsController{false};
 
@@ -50,5 +53,6 @@ namespace dae
 		};
 
 		void UpdatePos(float dt);
+		void MoveCameraOverlapper(float dt);
 	};
 }

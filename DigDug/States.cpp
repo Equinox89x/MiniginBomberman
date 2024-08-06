@@ -10,6 +10,7 @@
 #include <FPSCounterComponent.h>
 #include <InputComponent.h>
 #include <ValuesComponent.h>
+#include "MenuComponent.h"
 
 #pragma region Bomb
 
@@ -84,13 +85,12 @@ void dae::ExplosionState::OnStart(GameObject* gameObject)
 	}
 
 	glm::vec2 pos{ pathways.at(m_TileId).Rect.x - pathways.at(m_TileId).Rect.w, pathways.at(m_TileId).Rect.y };
-	//pathways.at(m_TileId).PathObject->GetComponent<PathObject>()->SetPosition(pos.x, pos.y);
 	pathways.at(m_TileId).PathObject->GetComponent<TextureComponent>()->SetTexture("Character/explosionCenter.png", 0.125f, 4);
 	gameObject->GetComponent<TextureComponent>()->SetIsVisible(false);
 	comp->ActivateBomb(m_TileId);
 }
 
-void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<int, dae::PathWay>& pathways, bool& outHitWall, float /*rotationOffset*/)
+void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<int, dae::PathWay>& pathways, bool& outHitWall, float rotationOffset)
 {
 	if (pathways.find(index) == pathways.end())
 		return;
@@ -103,9 +103,7 @@ void dae::ExplosionState::HandleExplosionPlacement(int& index, const std::map<in
 
 			glm::vec2 pos{ pathways.at(index).Rect.x - pathways.at(index).Rect.w, pathways.at(index).Rect.y };
 			pathways.at(index).BombDropper = pathways.at(m_TileId).BombDropper;
-			//pathways.at(index).PathObject->SetPosition(pos.x, pos.y);
-			//pathways.at(index).PathObject->GetComponent<TextureComponent>()->SetIsVisible(true);
-			//pathways.at(index).PathObject->GetComponent<TextureComponent>()->Rotate(rotationOffset);
+			pathways.at(index).PathObject->GetComponent<TextureComponent>()->Rotate(rotationOffset);
 			pathways.at(index).PathObject->GetComponent<TextureComponent>()->SetTexture("Character/explosion.png", 0.125f, 4);
 		}
 		else
@@ -150,7 +148,6 @@ void dae::BombedState::OnStart(GameObject* pGameObject)
 		pGameObject->GetComponent<TextureComponent>()->SetTexture("Character/PlayerDeath.png", 0.2f, 6);
 		pGameObject->GetComponent<InputComponent>()->DisableMovement(true);
 		pGameObject->GetComponent<EntityMovementComponent>()->DisableMovement(true);
-		pGameObject->GetComponent<ValuesComponent>()->Damage();
 	}
 }
 
@@ -165,6 +162,7 @@ void dae::BombedState::Update(GameObject* pGameObject)
 		}
 		else if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
 		{
+			pGameObject->GetComponent<ValuesComponent>()->Damage();
 			if (pGameObject->GetComponent<ValuesComponent>()->GetLives() > 0)
 			{
 				playerComp->SetState(new AliveState(m_Scene), MathLib::ELifeState::ALIVE);
@@ -227,8 +225,11 @@ void dae::DeathState::OnStart(GameObject* pGameObject)
 {
 	if (pGameObject->GetComponent<PlayerComponent>())
 	{
-		pGameObject->MarkForDestroy();
+
 		m_hasDeathSequence = false;
+		//pGameObject->MarkForDestroy();
+		auto* global{ m_Scene->GetGameObject(EnumStrings[Names::Global]) };
+		global->GetComponent<MenuComponent>()->GameOver();
 	}
 	else if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() })
 	{

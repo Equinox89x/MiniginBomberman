@@ -14,7 +14,7 @@ dae::TextureComponent::~TextureComponent()
 
 void dae::TextureComponent::Update()
 {
-    auto dt{ Timer::GetInstance().GetDeltaTime() };
+    const auto dt{ Timer::GetInstance().GetDeltaTime() };
 
     if (m_Texture.CanProgress) {
         m_Texture.AnimTimer -= dt;
@@ -76,7 +76,7 @@ void dae::TextureComponent::SetTexture(const std::string& filename, float animSp
     }
 }
 
-void dae::TextureComponent::SetTexture(TextureData& textureData)
+void dae::TextureComponent::SetTexture(const TextureData& textureData)
 {
     m_Texture = textureData;
 }
@@ -93,4 +93,11 @@ void dae::TextureComponent::RemoveTexture(MathLib::EMovement movement)
     if (FileNames.size() > 0) {
         SetTexture(FileNames.begin()->second);
     }
+}
+
+void dae::TextureComponent::Rotate(const float angle)
+{
+	GetGameObject()->GetTransform()->Rotate(angle);
+	Angle = angle;
+	m_needsUpdate = true;
 }

@@ -35,10 +35,6 @@ void dae::PathwayCreatorComponent::AddPathway(int id, glm::vec2 pos, std::string
 	comp->SetFrame(static_cast<int>(m_PathStats[type].PathType));
 	go->AddComponent(std::move(comp));
 
-	auto font = ResourceManager::GetInstance().LoadFont("Emulogic.ttf", 10);
-	auto comp2{ std::make_unique<TextObjectComponent>(std::to_string(id), font) };
-	go->AddComponent(std::move(comp2));
-
 	if (m_PathStats[type].PathState == MathLib::EPathState::Powerup)
 	{
 		m_PathStats[type].HasUnderlyingThing = true;

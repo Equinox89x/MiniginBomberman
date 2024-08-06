@@ -18,7 +18,11 @@ void dae::PlayerComponent::Render() const {
 	 SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &GetGameObject()->GetComponent<TextureComponent>()->GetRect()); // D
 }
 
-void dae::PlayerComponent::Reposition() { GetGameObject()->GetTransform()->SetPosition(m_OriginalPosition); }
+void dae::PlayerComponent::Reposition()
+{
+	 GetGameObject()->GetComponent<InputComponent>()->ResetOverlap(m_OriginalPosition);
+	 GetGameObject()->GetTransform()->SetPosition(m_OriginalPosition);
+}
 
 void dae::PlayerComponent::ActivateUnderlyingThing(PathWay& pathway)
 {
