@@ -18,6 +18,7 @@ public:
 
     virtual void StopSound(int channelId = -1) = 0;
     virtual void StopAllSounds() = 0;
+	virtual void StopMusic() = 0;
 
     virtual void PlaySound(int soundID) = 0;
     virtual void PlayMusic() = 0;

@@ -1,6 +1,6 @@
 #include "InputComponent.h"
-#include "../DigDug/EntityMovementComponent.h"
-#include "../DigDug/PathwayCreatorComponent.h"
+#include "../Bomberman/EntityMovementComponent.h"
+#include "../Bomberman/PathwayCreatorComponent.h"
 #include "GameObject.h"
 #include "Renderer.h"
 #include "Timer.h"

@@ -9,11 +9,13 @@ class AudioMaker final : public Audio
 {
 public:
     AudioMaker();
+	virtual ~AudioMaker() override { Mix_Quit(); };
 
     virtual void Update() override;
 
     virtual void StopSound(int channelId = -1) override;
     virtual void StopAllSounds() override;
+	virtual void StopMusic() override;
 
     virtual void PlaySound(int soundID) override;
     virtual void PlayMusic() override;
@@ -52,6 +54,7 @@ public:
 
     virtual void StopSound(int /*channelId = -1*/) override {}
     virtual void StopAllSounds() override {}
+	virtual void StopMusic() override {}
     virtual void PauseMusic() override {}
 
     virtual int LoadSound(const char*) override { return 0; };

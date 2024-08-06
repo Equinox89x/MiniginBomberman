@@ -140,4 +140,5 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	input.Cleanup();
 	Timer::GetInstance().Stop();
 	ServiceLocator::getAudio()->StopAllSounds();
+	ServiceLocator::getAudio()->StopMusic();
 }

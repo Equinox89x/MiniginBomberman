@@ -78,6 +78,10 @@ void AudioMaker::StopAllSounds()
 		m_AudioThread.join();
 }
 
+void AudioMaker::StopMusic() { 
+	Mix_HaltMusic(); 
+}
+
 void AudioMaker::PlayMusic()
 {
 	Mix_PlayMusic(m_pMusic, -1);

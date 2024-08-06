@@ -182,6 +182,11 @@ bool dae::InputManager::HandleInput()
 				break;
 
 			case ButtonStates::BUTTON_PRESSED:
+				if (IsPressed(ControllerButton::Start))
+				{
+					SDL_Quit();
+					return false;
+				}
 				if (IsPressed(button))
 					action->Execute();
 				break;
@@ -213,6 +218,11 @@ bool dae::InputManager::HandleInput()
 			case ButtonStates::BUTTON_DOWN:
 				if (e.key.type == SDL_KEYDOWN)
 				{
+					if (e.key.keysym.sym == SDLK_ESCAPE)
+					{
+						SDL_Quit();
+						return false;
+					}
 					if (e.key.repeat == 0)
 					{
 						if (button == e.key.keysym.sym) action->Execute();
@@ -220,13 +230,13 @@ bool dae::InputManager::HandleInput()
 				}
 				break;
 			case ButtonStates::BUTTON_PRESSED:
-				if (e.key.type == SDL_KEYDOWN)
-				{
-					if (button == e.key.keysym.sym) action->Execute();
-				}
 				if (e.key.keysym.sym == SDLK_ESCAPE) {
 					SDL_Quit();
 					return false;
+				}
+				if (e.key.type == SDL_KEYDOWN)
+				{
+					if (button == e.key.keysym.sym) action->Execute();
 				}
 				break;
 			case ButtonStates::BUTTON_UP:
