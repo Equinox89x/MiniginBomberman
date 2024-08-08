@@ -40,7 +40,7 @@ namespace dae
 		SDL_Rect  m_MoveOverlap{ SDL_Rect{ Cellsize * 9, 0, Cellsize * 7, WindowSizeY } };
 		float	  m_Offset{ 0 };
 
-		bool m_CanMove{ true }, m_IsController{ false }, m_HasOverlaps;
+		bool m_CanMove{ true }, m_IsController{ false }, m_HasOverlaps{ true };
 
 		std::map<MathLib::EMovement, const glm::vec3> m_MoveSpeedList{};
 		std::map<MathLib::ESide, bool>				  m_Movement{

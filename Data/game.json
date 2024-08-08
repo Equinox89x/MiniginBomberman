@@ -67,19 +67,19 @@
                 "indexname": "BombermanVersus",
                 "index": 0,
                 "tiles": [
-                    "blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker",
-                    "blocker|tile|breakable|breakable|tile|tile|tile|tile|tile|tile|tile|breakable|tile|spawn|tile|blocker",
-                    "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|breakable|tile|blocker",
-                    "blocker|tile|tile|tile|powerup|breakable|tile|tile|tile|tile|tile|tile|tile|tile|tile|blocker",
-                    "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|tile|blocker",
-                    "blocker|tile|tile|tile|tile|tile|tile|tile|tile|tile|tile|powerup|tile|tile|tile|blocker",
-                    "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|breakable|tile|blocker",
-                    "blocker|tile|tile|tile|tile|tile|tile|breakable|tile|breakable|tile|tile|tile|tile|tile|blocker",
-                    "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|breakable|blocker",
-                    "blocker|tile|tile|tile|tile|tile|breakable|tile|tile|tile|tile|tile|breakable|tile|tile|blocker",
-                    "blocker|tile|blocker|breakable|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|tile|blocker",
-                    "blocker|tile|spawn|breakable|tile|tile|tile|tile|tile|tile|breakable|tile|tile|tile|tile|blocker",
-                    "blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker"
+                    "blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker",
+                    "blocker|tile|breakable|breakable|tile|tile|tile|tile|tile|tile|tile|breakable|tile|spawn|tile|blocker|tile|breakable|breakable|tile|tile|tile|tile|tile|tile|tile|breakable|tile|tile|tile",
+                    "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|breakable|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|breakable|tile",
+                    "blocker|tile|tile|tile|powerup|breakable|tile|tile|tile|tile|tile|tile|tile|tile|tile|blocker|tile|tile|tile|powerup|breakable|tile|tile|tile|tile|tile|tile|tile|tile|tile",
+                    "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|tile",
+                    "blocker|tile|tile|tile|tile|tile|tile|tile|tile|tile|tile|powerup|tile|tile|tile|blocker|tile|tile|tile|tile|tile|tile|tile|tile|tile|tile|powerup|tile|tile|tile",
+                    "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|breakable|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|breakable|tile",
+                    "blocker|tile|tile|tile|tile|tile|tile|breakable|tile|breakable|tile|tile|tile|tile|tile|blocker|tile|tile|tile|tile|tile|tile|breakable|tile|breakable|tile|tile|tile|tile|tile",
+                    "blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|breakable|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|breakable",
+                    "blocker|tile|tile|tile|tile|tile|breakable|tile|tile|tile|tile|tile|breakable|tile|tile|blocker|tile|tile|tile|tile|tile|breakable|tile|tile|tile|tile|tile|breakable|tile|tile",
+                    "blocker|tile|blocker|breakable|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|tile|blocker|tile|blocker|breakable|blocker|tile|blocker|tile|blocker|tile|blocker|tile|blocker|tile|tile",
+                    "blocker|tile|spawn|breakable|tile|tile|tile|tile|tile|tile|breakable|tile|tile|tile|tile|blocker|tile|tile|breakable|tile|tile|tile|tile|tile|tile|breakable|tile|tile|tile|tile",
+                    "blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker|blocker"
                 ]
             }
         ],
