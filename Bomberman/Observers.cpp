@@ -14,7 +14,7 @@ void dae::HealthObserver::Notify(GameObject* go, Event& event)
 {
 	auto i{ go->GetComponent<ValuesComponent>()->GetLives() };
 	auto* global{ m_Scene->GetGameObject(EnumStrings[Names::Global]) };
-	auto* livesHolder{ global->GetChild(EnumStrings[Names::Life]) };
+	auto* livesHolder{ global->GetChild(EnumStrings[Names::Life] + std::to_string(m_Id)) };
 
 	switch (event.GetEvent())
 	{

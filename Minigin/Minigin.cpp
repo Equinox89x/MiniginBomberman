@@ -58,7 +58,7 @@ dae::Minigin::Minigin(const std::string &dataPath)
 	}
 
 	g_window = SDL_CreateWindow(
-		"DigDug - Bram Robyn - Prog4 Exam",
+		"Bomberman - Bram Robyn - Prog4 Retake",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		WindowSizeX,

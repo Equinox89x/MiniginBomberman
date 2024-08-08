@@ -264,7 +264,7 @@
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
     <ClCompile Include="MathLib.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Misc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

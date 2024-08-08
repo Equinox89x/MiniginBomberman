@@ -40,37 +40,40 @@ void dae::EntityMovementComponent::Update()
 		return;
 	if (m_IsAutonomous)
 	{
-		auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
-		auto& path = comp->GetPathways().find(m_PathId)->second;
-		if (path.Middle == glm::vec2{ 0, 0 })
+		if (m_Stats.IsSmart)
 		{
-			//CheckMovement(comp->GetPathways());
+			// TODO smart movement (follow player when close)
 		}
+		else
+		{
+			auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
+			auto& path = comp->GetPathways().find(m_PathId)->second;
 
-		float dx = path.Middle.x - GetGameObject()->GetCenter().x;
-		float dy = path.Middle.y - GetGameObject()->GetCenter().y;
-		float distanceToTarget = std::sqrt(dx * dx + dy * dy);
-		if (distanceToTarget > 1)
-		{
-			dx /= distanceToTarget;
-			dy /= distanceToTarget;
-		}
-		else if (distanceToTarget < 1)
-		{
-			CheckMovement(comp->GetPathways());
-		}
+			float dx = path.Middle.x - GetGameObject()->GetCenter().x;
+			float dy = path.Middle.y - GetGameObject()->GetCenter().y;
+			float distanceToTarget = std::sqrt(dx * dx + dy * dy);
+			if (distanceToTarget > 1)
+			{
+				dx /= distanceToTarget;
+				dy /= distanceToTarget;
+			}
+			else if (distanceToTarget < 1)
+			{
+				CheckMovement(comp->GetPathways());
+			}
 
-		if (dx < 0)
-		{
-			m_LastDir = "Left";
-		}
-		else if (dx > 0)
-		{
-			m_LastDir = "Right";
-		}
+			if (dx < 0)
+			{
+				m_LastDir = "Left";
+			}
+			else if (dx > 0)
+			{
+				m_LastDir = "Right";
+			}
 
-		GetGameObject()->GetTransform()->Translate(dx * 1.5f, dy * 1.5f);
-		GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Enemies/" + m_EnemyName + /*m_LastDir +*/ ".png", 0.2f, 2);
+			GetGameObject()->GetTransform()->Translate(dx * 1.5f, dy * 1.5f);
+			GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Enemies/" + m_EnemyName + /*m_LastDir +*/ ".png", 0.2f, 2);
+		}
 	}
 }
 

@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "TextureComponent.h"
 #include <map>
+#include "EnemyComponent.h"
 
 namespace dae
 {
@@ -12,7 +13,7 @@ namespace dae
 	{
 
 	public:
-		EntityMovementComponent(Scene* scene, glm::vec2 startPos, bool isAutonomous = false) : m_Scene{ scene }, m_StartPos{ startPos }, m_IsAutonomous{ isAutonomous } {};
+		EntityMovementComponent(Scene* scene, glm::vec2 startPos, bool isAutonomous = false) : m_Scene{ scene }, m_StartPos{ startPos }, m_IsAutonomous{ isAutonomous } { };
 		~EntityMovementComponent()
 		{
 			delete m_CachedLocation;
@@ -25,7 +26,13 @@ namespace dae
 
 		virtual void Update() override;
 		virtual void Render() const override;
-		virtual void Init() override{};
+		virtual void Init() override
+		{
+			if (auto comp{ GetGameObject()->GetComponent<EnemyComponent>() })
+			{
+				m_Stats = comp->GetEnemyStats();
+			}
+		};
 
 		void SetIsController(bool isController) { m_IsController = isController; };
 		void SetStartPos(glm::vec2 startPos) { m_StartPos = startPos; };
@@ -91,5 +98,6 @@ namespace dae
 		PathWay*	m_CachedLocation{ nullptr };
 		PathWay		m_Target;
 		int			m_PathId{ 0 };
+		MathLib::FEnemyStats m_Stats{};
 	};
 } // namespace dae
