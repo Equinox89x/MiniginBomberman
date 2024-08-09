@@ -12,6 +12,10 @@ void dae::EntityMovementComponent::Update()
 {
 
 	m_Rect = GetGameObject()->GetComponent<TextureComponent>()->GetRect();
+	m_EnemyDetectionOverlapper = SDL_Rect{ m_Rect.x, m_Rect.y, m_Rect.w * 6, m_Rect.h * 6 };
+	m_EnemyDetectionOverlapper.x -= static_cast<int>(m_EnemyDetectionOverlapper.w / 2.65f);
+	m_EnemyDetectionOverlapper.y -= static_cast<int>(m_EnemyDetectionOverlapper.h / 2.65f);
+
 	SDL_Rect smallerRect{ m_Rect.x, m_Rect.y, m_Rect.w - 4, m_Rect.h / 10 };
 	SDL_Rect smallerRect2{ m_Rect.x, m_Rect.y, m_Rect.w / 10, m_Rect.h - 4 };
 	m_LeftRect = smallerRect2;
@@ -42,39 +46,63 @@ void dae::EntityMovementComponent::Update()
 	{
 		if (m_Stats.IsSmart)
 		{
-			// TODO smart movement (follow player when close)
+			HandleTargetAquisition();
+
+			if (!m_Target)
+			{
+				HandleSimpleMovement();
+			}
+			else
+			{
+				// TODO smart movement (follow player when close)
+			
+			}
+
 		}
 		else
 		{
-			auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
-			auto& path = comp->GetPathways().find(m_PathId)->second;
-
-			float dx = path.Middle.x - GetGameObject()->GetCenter().x;
-			float dy = path.Middle.y - GetGameObject()->GetCenter().y;
-			float distanceToTarget = std::sqrt(dx * dx + dy * dy);
-			if (distanceToTarget > 1)
-			{
-				dx /= distanceToTarget;
-				dy /= distanceToTarget;
-			}
-			else if (distanceToTarget < 1)
-			{
-				CheckMovement(comp->GetPathways());
-			}
-
-			if (dx < 0)
-			{
-				m_LastDir = "Left";
-			}
-			else if (dx > 0)
-			{
-				m_LastDir = "Right";
-			}
-
-			GetGameObject()->GetTransform()->Translate(dx * 1.5f, dy * 1.5f);
-			GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Enemies/" + m_EnemyName + /*m_LastDir +*/ ".png", 0.2f, 2);
+			HandleSimpleMovement();
 		}
 	}
+}
+
+void dae::EntityMovementComponent::HandleTargetAquisition()
+{
+	auto players{ m_Scene->GetGameObjects(EnumStrings[Names::PlayerGeneral], false) };
+	for (auto& player : players)
+	{
+		if (MathLib::IsOverlapping(m_EnemyDetectionOverlapper, player->GetComponent<TextureComponent>()->GetRect()))
+		{
+			m_Target = player;
+		}
+		else
+		{
+			if (m_Target == player)
+				m_Target = nullptr;
+		}
+	}
+}
+
+void dae::EntityMovementComponent::HandleSimpleMovement()
+{
+	auto  comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
+	auto& path = comp->GetPathways().find(m_PathId)->second;
+
+	float dx = path.Middle.x - GetGameObject()->GetCenter().x;
+	float dy = path.Middle.y - GetGameObject()->GetCenter().y;
+	float distanceToTarget = std::sqrt(dx * dx + dy * dy);
+	if (distanceToTarget > 1)
+	{
+		dx /= distanceToTarget;
+		dy /= distanceToTarget;
+	}
+	else if (distanceToTarget < 1)
+	{
+		CheckMovement(comp->GetPathways());
+	}
+
+	GetGameObject()->GetTransform()->Translate((dx * 1.5f) * m_Stats.SpeedModifier, (dy * 1.5f) * m_Stats.SpeedModifier);
+	GetGameObject()->GetComponent<TextureComponent>()->SetTexture("Enemies/" + m_EnemyName + ".png", 0.2f, 2);
 }
 
 void dae::EntityMovementComponent::Render() const
@@ -98,6 +126,7 @@ void dae::EntityMovementComponent::Render() const
 	////auto rrect = SDL_Rect{ int(m_CachedLocation.x), int(m_CachedLocation.y), 1,1 };
 	////SDL_RenderFillRect(Renderer::GetInstance().GetSDLRenderer(), &rrect);
 	// SDL_RenderFillRect(Renderer::GetInstance().GetSDLRenderer(), &rrect2);
+	//SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &m_EnemyDetectionOverlapper);
 }
 
 void dae::EntityMovementComponent::CheckMovement(const std::map<int, PathWay>& pathways)
@@ -123,12 +152,10 @@ void dae::EntityMovementComponent::CheckMovement(const std::map<int, PathWay>& p
 		if (pathways.find(m_PathId)->second.Middle.x > GetGameObject()->GetTransform()->GetWorld().Position.x)
 		{
 			m_Movement = MathLib::EMovement::RIGHT;
-			m_LastDir = "Right";
 		}
 		else
 		{
 			m_Movement = MathLib::EMovement::LEFT;
-			m_LastDir = "Left";
 		}
 	}
 }

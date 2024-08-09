@@ -16,8 +16,8 @@ namespace dae
 		EntityMovementComponent(Scene* scene, glm::vec2 startPos, bool isAutonomous = false) : m_Scene{ scene }, m_StartPos{ startPos }, m_IsAutonomous{ isAutonomous } { };
 		~EntityMovementComponent()
 		{
-			delete m_CachedLocation;
-			m_CachedLocation = nullptr;
+			//delete m_CachedLocation;
+			//m_CachedLocation = nullptr;
 		};
 		EntityMovementComponent(const EntityMovementComponent&) = delete;
 		EntityMovementComponent(EntityMovementComponent&&) noexcept = delete;
@@ -25,6 +25,7 @@ namespace dae
 		EntityMovementComponent& operator=(EntityMovementComponent&&) noexcept = delete;
 
 		virtual void Update() override;
+		void		 HandleSimpleMovement();
 		virtual void Render() const override;
 		virtual void Init() override
 		{
@@ -50,21 +51,11 @@ namespace dae
 		int	 GetCurrentTileId() { return m_CurrentTileId; };
 		void CheckMovement(const std::map<int, PathWay>& pathways);
 
-
-		SDL_Rect GetPathCollider(MathLib::EMovement movement);
-
-		void SetMapBorders(SDL_Rect LeftMapBorder, SDL_Rect RightMapBorder, SDL_Rect TopMapBorder, SDL_Rect BottomMapBorder)
-		{
-			m_LeftMapBorder = LeftMapBorder;
-			m_RightMapBorder = RightMapBorder;
-			m_TopMapBorder = TopMapBorder;
-			m_BottomMapBorder = BottomMapBorder;
-		};
-
 		void			   DisableMovement(bool isDisabled) { m_CanMove = !isDisabled; };
 		MathLib::EMovement GetDirection() { return m_Movement; };
-		std::string		   GetLastDirection() { return m_LastDir; }
-		void			   SetLastDirection(std::string dir) { m_LastDir = dir; }
+		//std::string		   GetLastDirection() { return m_LastDir; }
+		//void			   SetLastDirection(std::string dir) { m_LastDir = dir; }
+		SDL_Rect GetPathCollider(MathLib::EMovement movement);
 
 		void		SetEnemyName(std::string enemyName) { m_EnemyName = enemyName; }
 		std::string GetEnemyName() { return m_EnemyName; };
@@ -84,8 +75,8 @@ namespace dae
 		glm::vec2			m_PrevLoc{};
 
 		// Autonomous
-		float								  m_Speed{ 50 }, m_MoveTimer{ 2 };
-		SDL_Rect							  m_LeftMapBorder{}, m_RightMapBorder{}, m_TopMapBorder{}, m_BottomMapBorder{};
+		float								  m_MoveTimer{ 2 };
+		SDL_Rect							  m_EnemyDetectionOverlapper{};
 		MathLib::EMovingState				  m_State{ MathLib::EMovingState::MovingLeft };
 		std::map<MathLib::EMovingState, bool> m_MovementDir{
 			std::make_pair(MathLib::EMovingState::MovingUp, true),
@@ -93,11 +84,12 @@ namespace dae
 			std::make_pair(MathLib::EMovingState::MovingRight, true),
 			std::make_pair(MathLib::EMovingState::MovingDown, true),
 		};
-		std::string m_EnemyName{ "Pooka" };
-		std::string m_LastDir{ "Left" };
-		PathWay*	m_CachedLocation{ nullptr };
-		PathWay		m_Target;
+		std::string m_EnemyName{ "Balloom" };
+		//std::string m_LastDir{ "Left" };
+		//PathWay*	m_CachedLocation{ nullptr };
+		//PathWay		m_Target;
 		int			m_PathId{ 0 };
 		MathLib::FEnemyStats m_Stats{};
+		GameObject*			 m_Target{ nullptr };
 	};
 } // namespace dae

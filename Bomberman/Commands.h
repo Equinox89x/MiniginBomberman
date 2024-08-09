@@ -30,36 +30,19 @@ namespace dae
 			if (!player)
 				return;
 
+			auto input{ m_pObject->GetComponent<dae::InputComponent>() };
+			auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
+
 			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() })
 			{
 				auto state{ playerComp->GetState() };
-				if (state == MathLib::ELifeState::ALIVE)
-				{
-					auto input{ m_pObject->GetComponent<dae::InputComponent>() };
-					auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
-
-					player->SetMovement(m_Movement);
-					input->SetMoveSpeed(m_MoveSpeed, m_Movement, false);
-					tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 3);
-				}
+				if (state != MathLib::ELifeState::ALIVE)
+					return;
 			}
-			else
-			{
-				auto input{ m_pObject->GetComponent<dae::InputComponent>() };
-				auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
 
-				if (m_Movement == MathLib::EMovement::LEFT)
-				{
-					player->SetLastDirection("Left");
-				}
-				else if (m_Movement == MathLib::EMovement::RIGHT)
-				{
-					player->SetLastDirection("Right");
-				}
-				player->SetMovement(m_Movement);
-				input->SetMoveSpeed(m_MoveSpeed, m_Movement, false);
-				tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 3);
-			}
+			player->SetMovement(m_Movement);
+			input->SetMoveSpeed(m_MoveSpeed, m_Movement, false);
+			tex->SetTexture(m_Movement, m_TextureName + ".png", 0.1f, 3);
 		}
 		void Execute(glm::vec2 pos) override
 		{
@@ -70,6 +53,8 @@ namespace dae
 				return;
 
 			m_MoveSpeed = glm::vec3{ pos.x * 100, pos.y * -100, 0 };
+			auto input{ m_pObject->GetComponent<dae::InputComponent>() };
+			auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
 
 			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() })
 			{
@@ -82,7 +67,6 @@ namespace dae
 				{
 					m_Movement = MathLib::EMovement::LEFT;
 					m_TextureName = "Character/moveLeft.png";
-
 				}
 				else if (pos.y > 0)
 				{
@@ -96,53 +80,13 @@ namespace dae
 				}
 
 				auto state{ playerComp->GetState() };
-				if (state == MathLib::ELifeState::ALIVE)
-				{
-					auto input{ m_pObject->GetComponent<dae::InputComponent>() };
-					auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
-
-					player->SetMovement(m_Movement);
-					input->SetMoveSpeed(m_MoveSpeed, m_Movement, true);
-					tex->SetTexture(m_Movement, m_TextureName, 0.1f, 3);
-				}
+				if (state != MathLib::ELifeState::ALIVE)
+					return;
 			}
-			else
-			{
-				if (pos.x > 0)
-				{
-					m_Movement = MathLib::EMovement::RIGHT;
-					m_TextureName = "Enemies/Balloom.png";
-				}
-				else if (pos.x < 0)
-				{
-					m_Movement = MathLib::EMovement::LEFT;
-					m_TextureName = "Enemies/Balloom.png";
-				}
-				else if (pos.y > 0)
-				{
-					m_Movement = MathLib::EMovement::UP;
-					m_TextureName = "Enemies/Balloom.png";
-				}
-				else if (pos.y < 0)
-				{
-					m_Movement = MathLib::EMovement::DOWN;
-					m_TextureName = "Enemies/Balloom.png";
-				}
-				auto input{ m_pObject->GetComponent<dae::InputComponent>() };
-				auto tex{ m_pObject->GetComponent<dae::TextureComponent>() };
 
-				if (m_Movement == MathLib::EMovement::LEFT)
-				{
-					player->SetLastDirection("Left");
-				}
-				else if (m_Movement == MathLib::EMovement::RIGHT)
-				{
-					player->SetLastDirection("Right");
-				}
-				player->SetMovement(m_Movement);
-				input->SetMoveSpeed(m_MoveSpeed, m_Movement, true);
-				tex->SetTexture(m_Movement, m_TextureName, 0.1f, 3);
-			}
+			player->SetMovement(m_Movement);
+			input->SetMoveSpeed(m_MoveSpeed, m_Movement, true);
+			tex->SetTexture(m_Movement, m_TextureName, 0.1f, 3);
 		};
 
 	private:
@@ -231,7 +175,7 @@ namespace dae
 		void Execute(glm::vec2) override{};
 
 	private:
-		Scene* m_Scene{ nullptr };
+		Scene*		m_Scene{ nullptr };
 		GameObject* m_pObject;
 		bool		m_CanDrop{ false };
 	};
