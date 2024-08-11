@@ -28,6 +28,15 @@ namespace dae
 			delete BombDropper;
 			BombDropper = nullptr;
 		}
+
+		const std::vector<int> GetNeighbours() const {
+			return std::vector<int>{
+				(id - 1),
+				(id + 1),
+				(id - (GridSize * 1)),
+				(id + (GridSize * 1)),
+			};
+		}
 	};
 
 	class EntityMovementComponent;

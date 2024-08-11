@@ -198,6 +198,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\*.dll" "$(O
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuComponent.cpp" />
     <ClCompile Include="Observers.cpp" />
+    <ClCompile Include="PathFinding.cpp" />
     <ClCompile Include="PathwayCreatorComponent.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="BombComponent.cpp" />
@@ -211,6 +212,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\*.dll" "$(O
     <ClInclude Include="Main.h" />
     <ClInclude Include="MenuComponent.h" />
     <ClInclude Include="Observers.h" />
+    <ClInclude Include="PathFinding.h" />
     <ClInclude Include="PathwayCreatorComponent.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="BombComponent.h" />

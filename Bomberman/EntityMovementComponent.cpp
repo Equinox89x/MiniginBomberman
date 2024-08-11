@@ -5,8 +5,10 @@
 #include "Renderer.h"
 #include "TextureComponent.h"
 #include "Timer.h"
+#include "PathFinding.h"
 #include <SDL_rect.h>
 #include <iostream>
+#include "PlayerComponent.h"
 
 void dae::EntityMovementComponent::Update()
 {
@@ -50,12 +52,17 @@ void dae::EntityMovementComponent::Update()
 
 			if (!m_Target)
 			{
+				m_PathNodes.clear();
 				HandleSimpleMovement();
 			}
 			else
 			{
-				// TODO smart movement (follow player when close)
-			
+				if (m_PathNodes.empty())
+				{
+					m_PathNodes = PathFinding::AStar(m_Scene, m_Target->GetComponent<EntityMovementComponent>()->GetCurrentTileId(), GetCurrentTileId());
+				}
+
+				HandleSimpleMovement(m_PathNodes[m_PathNodes.size()-1]);
 			}
 
 		}
@@ -83,22 +90,23 @@ void dae::EntityMovementComponent::HandleTargetAquisition()
 	}
 }
 
-void dae::EntityMovementComponent::HandleSimpleMovement()
+void dae::EntityMovementComponent::HandleSimpleMovement(int id)
 {
 	auto  comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
-	auto& path = comp->GetPathways().find(m_PathId)->second;
-
+	auto& path = comp->GetPathways().find(id == -1 ? m_PathId : id)->second;
 	float dx = path.Middle.x - GetGameObject()->GetCenter().x;
 	float dy = path.Middle.y - GetGameObject()->GetCenter().y;
+
 	float distanceToTarget = std::sqrt(dx * dx + dy * dy);
-	if (distanceToTarget > 1)
+	if (distanceToTarget > 1.5)
 	{
 		dx /= distanceToTarget;
 		dy /= distanceToTarget;
 	}
-	else if (distanceToTarget < 1)
+	else if (distanceToTarget < 1.5f)
 	{
-		CheckMovement(comp->GetPathways());
+
+		id != -1 ? m_PathNodes.pop_back() : CheckMovement(comp->GetPathways());
 	}
 
 	GetGameObject()->GetTransform()->Translate((dx * 1.5f) * m_Stats.SpeedModifier, (dy * 1.5f) * m_Stats.SpeedModifier);
@@ -126,7 +134,14 @@ void dae::EntityMovementComponent::Render() const
 	////auto rrect = SDL_Rect{ int(m_CachedLocation.x), int(m_CachedLocation.y), 1,1 };
 	////SDL_RenderFillRect(Renderer::GetInstance().GetSDLRenderer(), &rrect);
 	// SDL_RenderFillRect(Renderer::GetInstance().GetSDLRenderer(), &rrect2);
-	//SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &m_EnemyDetectionOverlapper);
+	//for (auto node : m_PathNodes)
+	//{
+	//	auto  comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
+	//	auto& path = comp->GetPathways().find(node)->second;
+	//	auto  rrect = SDL_Rect{ int(path.Middle.x), int(path.Middle.y), 5, 5 };
+
+	//	SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &rrect);
+	//}
 }
 
 void dae::EntityMovementComponent::CheckMovement(const std::map<int, PathWay>& pathways)

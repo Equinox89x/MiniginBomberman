@@ -25,7 +25,8 @@ namespace dae
 		EntityMovementComponent& operator=(EntityMovementComponent&&) noexcept = delete;
 
 		virtual void Update() override;
-		void		 HandleSimpleMovement();
+		void		 HandleTargetAquisition();
+		void		 HandleSimpleMovement(int id = -1);
 		virtual void Render() const override;
 		virtual void Init() override
 		{
@@ -91,5 +92,6 @@ namespace dae
 		int			m_PathId{ 0 };
 		MathLib::FEnemyStats m_Stats{};
 		GameObject*			 m_Target{ nullptr };
+		std::vector<int>	 m_PathNodes{};
 	};
 } // namespace dae

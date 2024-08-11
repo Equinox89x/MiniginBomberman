@@ -57,6 +57,9 @@
     <ClCompile Include="States.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="PathFinding.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BombComponent.h">
@@ -90,6 +93,9 @@
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="States.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="PathFinding.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
   </ItemGroup>
