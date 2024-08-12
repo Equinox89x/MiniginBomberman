@@ -61,14 +61,17 @@ void dae::EntityMovementComponent::Update()
 				if (m_MoveTimer < 0 || m_PathNodes.empty())
 				{
 					m_MoveTimer = 5.f;
-
-					// if (m_PathNodes.empty())
-					//{
 					m_PathNodes = PathFinding::AStar(m_Scene, m_Target->GetComponent<EntityMovementComponent>()->GetCurrentTileId(), GetCurrentTileId());
-					//}
 				}
 
-				HandleSimpleMovement(m_PathNodes[m_PathNodes.size()-1]);
+				if (m_PathNodes.empty())
+				{
+					HandleSimpleMovement();
+				}
+				else
+				{
+					HandleSimpleMovement(m_PathNodes[m_PathNodes.size()-1]);
+				}
 			}
 
 		}

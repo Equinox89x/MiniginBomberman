@@ -44,7 +44,7 @@ std::vector<int> dae::PathFinding::AStar(Scene* scene, int startId, int goalId)
 		const PathWay& currentNode{ pathways.find(current.Id)->second };
 		for (const int neighborId : currentNode.GetNeighbours())
 		{
-			if (pathways.find(neighborId) == pathways.end())
+			if (pathways.find(neighborId) == pathways.end() || pathways.find(neighborId)->second.PathStats.PathType != MathLib::EPathType::Tile)
 				continue; // Skip if neighbor is not in the map
 
 			float tentativeGCost = gCostMap[current.Id] + 1.0f; // Assuming cost of 1 for each step
