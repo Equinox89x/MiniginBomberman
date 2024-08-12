@@ -38,7 +38,7 @@ namespace dae
 			}
 		}
 		
-		bool				HasDetonator{ true };
+		bool				HasDetonator{ false };
 		MathLib::ELifeState GetState() { return m_State; };
 		EntityState*		GetPlayerState() { return m_PlayerState.get(); };
 		int					GetBombStrength() { return m_BombStrength; };
@@ -53,6 +53,6 @@ namespace dae
 
 		glm::vec2 m_OriginalPosition;
 		int		  m_BombStrength{ 1 };
-		int		  m_MaxBombs{ 4 };
+		int		  m_MaxBombs{ 1 };
 	};
 } // namespace dae
