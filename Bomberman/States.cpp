@@ -11,6 +11,7 @@
 #include <InputComponent.h>
 #include <ValuesComponent.h>
 #include "MenuComponent.h"
+#include <FileReader.h>
 
 #pragma region Bomb
 
@@ -165,7 +166,7 @@ void dae::BombedState::Update(GameObject* pGameObject)
 			pGameObject->GetComponent<ValuesComponent>()->Damage();
 			if (pGameObject->GetComponent<ValuesComponent>()->GetLives() > 0)
 			{
-				playerComp->SetState(new AliveState(m_Scene), MathLib::ELifeState::ALIVE);
+				playerComp->SetState(new InvincibleState(m_Scene), MathLib::ELifeState::INVINCIBLE);
 			}
 			else
 			{
@@ -175,14 +176,10 @@ void dae::BombedState::Update(GameObject* pGameObject)
 	}
 }
 
-void dae::AliveState::OnStart(GameObject* pGameObject)
-{
+void dae::InvincibleState::OnStart(GameObject* pGameObject) {
 	if (!pGameObject)
 		return;
-	if (auto enemyComp{ pGameObject->GetComponent<EnemyComponent>() })
-	{
-	}
-	else if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
+	if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
 	{
 		pGameObject->GetComponent<TextureComponent>()->SetTexture("Character/moveDown.png", 0.2f, 3);
 		playerComp->Reposition();
@@ -191,12 +188,25 @@ void dae::AliveState::OnStart(GameObject* pGameObject)
 	}
 }
 
+void dae::InvincibleState::Update(GameObject* pGameObject)
+{
+	m_timer -= Timer::GetInstance().GetDeltaTime();
+	if (m_timer < 0)
+	{
+		pGameObject->GetComponent<PlayerComponent>()->SetState(new AliveState(m_Scene), MathLib::ELifeState::ALIVE);
+	}
+}
+
+void dae::AliveState::OnStart(GameObject* pGameObject)
+{
+	if (!pGameObject)
+		return;
+}
+
 void dae::AliveState::Update(GameObject* pGameObject)
 {
-	if (m_Scene && pGameObject)
+	if (m_Scene && pGameObject && !pGameObject->IsMarkedForDestroy())
 	{
-		if (pGameObject->IsMarkedForDestroy())
-			return;
 		if (auto playerComp{ pGameObject->GetComponent<PlayerComponent>() })
 		{
 			auto enemies{ m_Scene->GetGameObjects(EnumStrings[Names::EnemyGeneral], false) };
@@ -207,7 +217,7 @@ void dae::AliveState::Update(GameObject* pGameObject)
 					auto lifestate{ enemy->GetComponent<EnemyComponent>()->GetState() };
 					if (lifestate != MathLib::ELifeState::BOMBED && lifestate != MathLib::ELifeState::DEAD)
 					{
-						if (pGameObject && !pGameObject->IsMarkedForDestroy())
+						if (enemy && pGameObject && !pGameObject->IsMarkedForDestroy())
 						{
 							if (MathLib::IsOverlapping(pGameObject->GetComponent<TextureComponent>()->GetRect(), enemy->GetComponent<TextureComponent>()->GetRect()))
 							{
@@ -225,6 +235,16 @@ void dae::DeathState::OnStart(GameObject* pGameObject)
 {
 	if (pGameObject->GetComponent<PlayerComponent>())
 	{
+
+		if (auto player{ m_Scene->GetGameObject(EnumStrings[Names::Player0]) })
+		{
+			if (auto comp{ player->GetComponent<ValuesComponent>() })
+			{
+				FileReader* file{ new FileReader("../Data/save.json") };
+				file->WriteData({ { "Score", std::to_string(comp->GetScores()) }, { "Lives", std::to_string(comp->GetLives()) } });
+				delete file;
+			}
+		}
 
 		m_hasDeathSequence = false;
 		//pGameObject->MarkForDestroy();

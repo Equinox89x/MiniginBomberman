@@ -76,7 +76,7 @@ namespace dae
 		glm::vec2			m_PrevLoc{};
 
 		// Autonomous
-		float								  m_MoveTimer{ 2 };
+		float								  m_MoveTimer{ 5.f };
 		SDL_Rect							  m_EnemyDetectionOverlapper{};
 		MathLib::EMovingState				  m_State{ MathLib::EMovingState::MovingLeft };
 		std::map<MathLib::EMovingState, bool> m_MovementDir{

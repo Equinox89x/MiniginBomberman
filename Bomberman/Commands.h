@@ -36,7 +36,7 @@ namespace dae
 			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() })
 			{
 				auto state{ playerComp->GetState() };
-				if (state != MathLib::ELifeState::ALIVE)
+				if (state != MathLib::ELifeState::ALIVE && state != MathLib::ELifeState::INVINCIBLE)
 					return;
 			}
 
@@ -80,7 +80,7 @@ namespace dae
 				}
 
 				auto state{ playerComp->GetState() };
-				if (state != MathLib::ELifeState::ALIVE)
+				if (state != MathLib::ELifeState::ALIVE && state != MathLib::ELifeState::INVINCIBLE)
 					return;
 			}
 

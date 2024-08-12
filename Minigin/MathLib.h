@@ -1,36 +1,36 @@
 #pragma once
 #include <SDL_rect.h>
 #include <glm/glm.hpp>
-//#include <glm/gtc/random.hpp>
-#include <glm/ext/vector_float2.hpp>
-#include <vector>
-#include <cmath>
-#include <random>
+// #include <glm/gtc/random.hpp>
 #include "Timer.h"
 #include <chrono>
+#include <cmath>
+#include <glm/ext/vector_float2.hpp>
+#include <random>
+#include <vector>
 
 namespace
 {
 	int GridSize = 30;
 	int GridSizeX = 30;
-}
+} // namespace
 
-namespace MathLib {
+namespace MathLib
+{
 
+	inline float Square(float val) { return val * val; }
 
-	inline float Square(float val) {
-		return val * val;
-	}
-
-	#pragma region Bezier
-	inline int BinomialCoeff(int n, int i) {
+#pragma region Bezier
+	inline int BinomialCoeff(int n, int i)
+	{
 		if (i == 0 || i == n)
 			return 1;
 
 		int numerator = 1;
 		int denominator = 1;
 
-		for (int j = 1; j <= i; j++) {
+		for (int j = 1; j <= i; j++)
+		{
 			numerator *= (n - j + 1);
 			denominator *= j;
 		}
@@ -38,13 +38,15 @@ namespace MathLib {
 		return numerator / denominator;
 	}
 
-	inline glm::vec2 CalculateBezierPoint(float t, const std::vector<glm::vec2>& controlPoints) {
+	inline glm::vec2 CalculateBezierPoint(float t, const std::vector<glm::vec2>& controlPoints)
+	{
 		const int n{ static_cast<int>(controlPoints.size()) - 1 };
-		float x{ 0.0 };
-		float y{ 0.0 };
+		float	  x{ 0.0 };
+		float	  y{ 0.0 };
 
-		//Apply the quadtratic bezier formula as many times as there are controlPoint values
-		for (int i = 0; i <= n; i++) {
+		// Apply the quadtratic bezier formula as many times as there are controlPoint values
+		for (int i = 0; i <= n; i++)
+		{
 			const float blend{ static_cast<float>(BinomialCoeff(n, i) * pow(1 - t, n - i) * pow(t, i)) };
 			x += controlPoints[i].x * blend;
 			y += controlPoints[i].y * blend;
@@ -52,13 +54,14 @@ namespace MathLib {
 
 		return { x, y };
 	}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region Overlap
-	inline bool IsOverlapping(const SDL_Rect& source, const SDL_Rect& target) {
-		//bool doesXOverlap = (source.x < target.x + target.w) && (source.x + source.w > target.x);
-		//bool doesYOverlap = (source.y < target.y + target.h) && (source.y + source.h > target.y);
-		//return doesXOverlap && doesYOverlap;
+#pragma region Overlap
+	inline bool IsOverlapping(const SDL_Rect& source, const SDL_Rect& target)
+	{
+		// bool doesXOverlap = (source.x < target.x + target.w) && (source.x + source.w > target.x);
+		// bool doesYOverlap = (source.y < target.y + target.h) && (source.y + source.h > target.y);
+		// return doesXOverlap && doesYOverlap;
 
 		// Check for no overlap along the x-axis
 		if ((source.x + source.w <= target.x) || (target.x + target.w <= source.x))
@@ -72,7 +75,8 @@ namespace MathLib {
 		return true;
 	}
 
-	inline bool IsCompletelyOverlapping(const SDL_Rect& rect1, const SDL_Rect& rect2) {
+	inline bool IsCompletelyOverlapping(const SDL_Rect& rect1, const SDL_Rect& rect2)
+	{
 		// Calculate the coordinates of the bottom-right corners for both rectangles
 		const int rect1Right = rect1.x + rect1.w;
 		const int rect1Bottom = rect1.y + rect1.h;
@@ -81,12 +85,14 @@ namespace MathLib {
 		const int rect2Bottom = rect2.y + rect2.h;
 
 		// Check if rect1 is completely to the left of rect2 or completely to the right of rect2
-		if (rect1.x >= rect2Right || rect2.x >= rect1Right) {
+		if (rect1.x >= rect2Right || rect2.x >= rect1Right)
+		{
 			return false;
 		}
 
 		// Check if rect1 is completely above rect2 or completely below rect2
-		if (rect1.y >= rect2Bottom || rect2.y >= rect1Bottom) {
+		if (rect1.y >= rect2Bottom || rect2.y >= rect1Bottom)
+		{
 			return false;
 		}
 
@@ -94,25 +100,21 @@ namespace MathLib {
 		return true;
 	}
 
-	inline bool IsPointInsideRect(const SDL_Point& point, const SDL_Rect& rect) {
-		return (point.x >= rect.x && point.x <= rect.x + rect.w &&
-			point.y >= rect.y && point.y <= rect.y + rect.h);
-	}
-	#pragma endregion
+	inline bool IsPointInsideRect(const SDL_Point& point, const SDL_Rect& rect) { return (point.x >= rect.x && point.x <= rect.x + rect.w && point.y >= rect.y && point.y <= rect.y + rect.h); }
+#pragma endregion
 
-	inline bool IsSameRect(const SDL_Rect& rect1, const SDL_Rect& rect)
+	inline bool IsSameRect(const SDL_Rect& rect1, const SDL_Rect& rect) { return (rect1.x == rect.x && rect1.y == rect.y && rect1.w == rect.w && rect1.h == rect.h); }
+
+	enum class EMovement
 	{
-		return (rect1.x == rect.x &&
-			rect1.y == rect.y &&
-			rect1.w == rect.w &&
-			rect1.h == rect.h);
-	}
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT
+	};
 
-	enum class EMovement {
-		UP, DOWN, LEFT, RIGHT
-	};	
-	
-	enum class EMovingState {
+	enum class EMovingState
+	{
 		MovingLeft,
 		MovingRight,
 		MovingUp,
@@ -120,7 +122,8 @@ namespace MathLib {
 		Still
 	};
 
-	enum class ESide {
+	enum class ESide
+	{
 		None,
 		Top,
 		Bottom,
@@ -128,82 +131,114 @@ namespace MathLib {
 		Right
 	};
 
-	enum class GameMode {
-		SOLO, COOP, VERSUS
+	enum class GameMode
+	{
+		SOLO,
+		COOP,
+		VERSUS
 	};
 
-	enum class ELifeState {
-		ALIVE, DEAD, RESPAWN, BOMBED
+	enum class ELifeState
+	{
+		ALIVE,
+		INVINCIBLE,
+		DEAD,
+		RESPAWN,
+		BOMBED
 	};
 
-	enum class EBombState {
-		Fuse, Explosion, Death
+	enum class EBombState
+	{
+		Fuse,
+		Explosion,
+		Death
 	};
 
-	enum class EPathState {
-		Tile, Blocker, Spawn, EnemySpawn, Breakable, Bomb, Explosion, Powerup, Door
+	enum class EPathState
+	{
+		Tile,
+		Blocker,
+		Spawn,
+		EnemySpawn,
+		Breakable,
+		Bomb,
+		Explosion,
+		Powerup,
+		Door
 	};
 
-	enum class EPathType {
-		Tile = 1, Blocker = 2, Breakable = 3
+	enum class EPathType
+	{
+		Tile = 1,
+		Blocker = 2,
+		Breakable = 3
 	};
 
-	enum class EPowerupType {
-		ExtraBomb=1, Detonator=2, Flames=3, Door=4, None=-1
+	enum class EPowerupType
+	{
+		ExtraBomb = 1,
+		Detonator = 2,
+		Flames = 3,
+		Door = 4,
+		None = -1
 	};
 
-	enum class EEnemyType {
+	enum class EEnemyType
+	{
 		Balloom,
 		Oneal,
 		Doll,
 		Minvo
 	};
 
-	struct EPathStats {
-		EPathState PathState{ EPathState::Blocker };
-		EPathType PathType{ EPathType::Blocker };
-		bool HasUnderlyingThing{ false };
+	struct EPathStats
+	{
+		EPathState	 PathState{ EPathState::Blocker };
+		EPathType	 PathType{ EPathType::Blocker };
+		bool		 HasUnderlyingThing{ false };
 		EPowerupType PowerupType{ EPowerupType::None };
 	};
 
-	struct FEnemyStats {
-		EEnemyType EnemyType{ EEnemyType::Balloom };
-		bool IsSmart{ false };
-		float SpeedModifier{ 1 };
-		int Points{ 100 };
+	struct FEnemyStats
+	{
+		EEnemyType	EnemyType{ EEnemyType::Balloom };
+		bool		IsSmart{ false };
+		float		SpeedModifier{ 1 };
+		int			Points{ 100 };
 		std::string Name{ "Balloom" };
 	};
 
-	inline ESide GetNonOverlappingSide(const SDL_Rect& rect1, const SDL_Rect& rect2) {
+	inline ESide GetNonOverlappingSide(const SDL_Rect& rect1, const SDL_Rect& rect2)
+	{
 		//// Calculate the coordinates of the edges for both rectangles
-		//int rect1Right = rect1.x + rect1.w;
-		//int rect1Bottom = rect1.y + rect1.h;
+		// int rect1Right = rect1.x + rect1.w;
+		// int rect1Bottom = rect1.y + rect1.h;
 
-		//int rect2Right = rect2.x + rect2.w;
-		//int rect2Bottom = rect2.y + rect2.h;
+		// int rect2Right = rect2.x + rect2.w;
+		// int rect2Bottom = rect2.y + rect2.h;
 
 		//// Check if rect1 is completely to the left of rect2
-		//if (rect1Right <= rect2.x) {
+		// if (rect1Right <= rect2.x) {
 		//	return ESide::Left;
-		//}
+		// }
 
 		//// Check if rect1 is completely to the right of rect2
-		//if (rect1.x >= rect2Right) {
+		// if (rect1.x >= rect2Right) {
 		//	return ESide::Right;
-		//}
+		// }
 
 		//// Check if rect1 is completely above rect2
-		//if (rect1Bottom <= rect2.y) {
+		// if (rect1Bottom <= rect2.y) {
 		//	return ESide::Top;
-		//}
+		// }
 
 		//// Check if rect1 is completely below rect2
-		//if (rect1.y >= rect2Bottom) {
+		// if (rect1.y >= rect2Bottom) {
 		//	return ESide::Bottom;
-		//}
+		// }
 
 		//// If none of the above conditions are met, the squares are overlapping or intersecting
-		//return ESide::None;
+		// return ESide::None;
 
 		const auto xLeft{ rect1.x };
 		const auto xRight{ rect1.x + rect1.w };
@@ -215,11 +250,13 @@ namespace MathLib {
 		SDL_Rect two{ xRight, rect1.y + rect1.h, rect1.w / 5, rect1.h / 5 };
 		two.x -= two.w;
 
-		//if (rect1.y + 10 > rect2.y && rect1.y - 10 < rect2.y) {
-		if (!IsOverlapping(one, rect2)) {
+		// if (rect1.y + 10 > rect2.y && rect1.y - 10 < rect2.y) {
+		if (!IsOverlapping(one, rect2))
+		{
 			return ESide::Left;
 		}
-		else if (!IsOverlapping(two, rect2)) {
+		else if (!IsOverlapping(two, rect2))
+		{
 			return ESide::Right;
 		}
 		/*else if (!IsOverlapping(SDL_Point(rect1.x, yTop), rect2)) {
@@ -228,7 +265,8 @@ namespace MathLib {
 		else if (!IsOverlapping(SDL_Point(rect1.x, yBottom), rect2)) {
 			return ESide::Bottom;
 		}*/
-		else {
+		else
+		{
 			return ESide::None;
 		}
 		//}
@@ -244,13 +282,15 @@ namespace MathLib {
 		return direction * speed;
 	}
 
-	inline int CalculateChance(/*int min = 0.f,*/ int max = 100.f) {
-		if (max <= 0) {
+	inline int CalculateChance(/*int min = 0.f,*/ int max = 100.f)
+	{
+		if (max <= 0)
+		{
 			return 0;
 		}
 		std::random_device rd; // Non-deterministic random number generator
-		std::mt19937 gen(rd() + 1 * static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()));
-		auto distribution = std::uniform_int_distribution<>(0,max);
+		std::mt19937	   gen(rd() + 1 * static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()));
+		auto			   distribution = std::uniform_int_distribution<>(0, max);
 		return static_cast<int>(distribution(gen));
 	}
-}
+} // namespace MathLib

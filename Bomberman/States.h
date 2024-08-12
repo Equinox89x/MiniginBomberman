@@ -35,6 +35,17 @@ namespace dae
 	private:
 	};
 
+	class InvincibleState : public EntityState
+	{
+	public:
+		InvincibleState(Scene* scene) : EntityState(scene){};
+		void OnStart(GameObject* pGameObject) override;
+		void Update(GameObject* pGameObject) override;
+
+	private:
+		float m_timer{ 3.f };
+	};
+
 	class BombedState : public EntityState
 	{
 	public:
