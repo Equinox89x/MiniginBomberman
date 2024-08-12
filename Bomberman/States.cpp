@@ -235,14 +235,22 @@ void dae::DeathState::OnStart(GameObject* pGameObject)
 {
 	if (pGameObject->GetComponent<PlayerComponent>())
 	{
-
-		if (auto player{ m_Scene->GetGameObject(EnumStrings[Names::Player0]) })
+		if (m_Scene->GetName() == EnumStrings[Names::VersusLevelName])
 		{
-			if (auto comp{ player->GetComponent<ValuesComponent>() })
+			FileReader* file{ new FileReader("../Data/save.json") };
+			file->WriteData({ { "Score", pGameObject->GetName() }, { "Lives", "0" } });
+			delete file;
+		}
+		else
+		{
+			if (auto player{ m_Scene->GetGameObject(EnumStrings[Names::Player0]) })
 			{
-				FileReader* file{ new FileReader("../Data/save.json") };
-				file->WriteData({ { "Score", std::to_string(comp->GetScores()) }, { "Lives", std::to_string(comp->GetLives()) } });
-				delete file;
+				if (auto comp{ player->GetComponent<ValuesComponent>() })
+				{
+					FileReader* file{ new FileReader("../Data/save.json") };
+					file->WriteData({ { "Score", std::to_string(comp->GetScores()) }, { "Lives", std::to_string(comp->GetLives()) } });
+					delete file;
+				}
 			}
 		}
 
