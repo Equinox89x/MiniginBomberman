@@ -47,7 +47,7 @@ namespace dae
 		int					GetTileId() { return m_TileId; };
 
 		GameObject* BombDropper{ nullptr };
-
+		float		LifeTime{ 0 };
 
 	private:
 		std::unique_ptr<EntityState> m_BombState{ nullptr };

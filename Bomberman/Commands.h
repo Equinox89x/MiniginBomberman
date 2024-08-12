@@ -162,7 +162,7 @@ namespace dae
 			{
 				auto bombs{ m_Scene->GetGameObjects(EnumStrings[Names::Bomb]) };
 				auto playerComp{ m_pObject->GetComponent<PlayerComponent>() };
-				if (bombs.size() >= playerComp->GetMaxBombs())
+				if (static_cast<int>(bombs.size()) >= playerComp->GetMaxBombs())
 					return;
 
 				auto pBombObject = std::make_unique<GameObject>();
@@ -178,6 +178,37 @@ namespace dae
 		Scene*		m_Scene{ nullptr };
 		GameObject* m_pObject;
 		bool		m_CanDrop{ false };
+	};
+
+	class Detonate final : public Command
+	{
+	public:
+		Detonate(Scene* scene, GameObject* const object) : m_pObject(object), m_Scene{ scene } {}
+		void Execute() override
+		{
+			if (!m_Scene->GetIsActive())
+				return;
+
+			if (!m_pObject)
+				return;
+
+			if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() })
+			{
+				if (playerComp->HasDetonator)
+				{
+					if (auto gameObject{ playerComp->GetOldestBomb(m_pObject->GetName()) })
+					{
+						auto bomb(gameObject->GetComponent<BombComponent>());
+						bomb->SetState(new ExplosionState(m_Scene), MathLib::EBombState::Explosion);
+					}
+				}
+			}
+		}
+		void Execute(glm::vec2) override{};
+
+	private:
+		Scene*		m_Scene{ nullptr };
+		GameObject* m_pObject;
 	};
 
 #pragma region Menu

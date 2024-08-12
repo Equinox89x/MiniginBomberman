@@ -4074,6 +4074,7 @@ void ImGui::InputTextDeactivateHook(ImGuiID id)
         memcpy(g.InputTextDeactivatedState.TextA.Data, state->TextA.Data, state->CurLenA + 1);
     }
 }
+	#pragma warning(disable : 6011)
 
 // Edit a string of text
 // - buf_size account for the zero-terminator, so a buf_size of 6 can hold "Hello" but not "Hello!".

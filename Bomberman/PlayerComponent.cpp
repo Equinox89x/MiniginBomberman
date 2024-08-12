@@ -5,6 +5,7 @@
 #include <InputComponent.h>
 #include <ValuesComponent.h>
 #include <Renderer.h>
+#include "BombComponent.h"
 
 dae::PlayerComponent::~PlayerComponent() { m_PlayerState.reset(); }
 
@@ -34,6 +35,7 @@ void dae::PlayerComponent::ActivateUnderlyingThing(PathWay& pathway)
 			m_MaxBombs++;
 			break;
 		case MathLib::EPowerupType::Detonator:
+			HasDetonator = true;
 			break;
 		case MathLib::EPowerupType::Flames:
 			m_BombStrength++;
@@ -55,4 +57,27 @@ void dae::PlayerComponent::ActivateUnderlyingThing(PathWay& pathway)
 		Event scoreEvent{ EventType::DoorTrigger };
 		Notify(GetGameObject(), scoreEvent);
 	}
+}
+
+dae::GameObject* dae::PlayerComponent::GetOldestBomb(std::string playerName) { 
+	auto bombs{ m_Scene->GetGameObjects(EnumStrings[Names::Bomb]) };
+	std::vector<GameObject*> playerBombs{};
+		std::copy_if(
+		  bombs.begin(), bombs.end(), std::back_inserter(playerBombs), [&](GameObject * go) {
+			  auto bombComp{ go->GetComponent<BombComponent>() };
+					  return bombComp->BombDropper->GetName() == playerName;
+		});
+
+	float oldestBombValue{ 0 };
+	GameObject* oldestBomb{ nullptr };
+	for (auto bomb : playerBombs)
+	{
+		if (bomb->GetComponent<BombComponent>()->LifeTime > oldestBombValue)
+		{
+			oldestBombValue = bomb->GetComponent<BombComponent>()->LifeTime;
+			oldestBomb = bomb;
+		}
+	}
+
+	return oldestBomb;
 }

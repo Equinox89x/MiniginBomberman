@@ -37,10 +37,14 @@ namespace dae
 					m_PlayerState->OnStart(GetGameObject());
 			}
 		}
+		
+		bool				HasDetonator{ true };
 		MathLib::ELifeState GetState() { return m_State; };
 		EntityState*		GetPlayerState() { return m_PlayerState.get(); };
 		int					GetBombStrength() { return m_BombStrength; };
 		int					GetMaxBombs() { return m_MaxBombs; };
+		GameObject*			GetOldestBomb(std::string playerName);
+
 
 	private:
 		Scene*						 m_Scene{ nullptr };
@@ -49,6 +53,6 @@ namespace dae
 
 		glm::vec2 m_OriginalPosition;
 		int		  m_BombStrength{ 1 };
-		int		  m_MaxBombs{ 1 };
+		int		  m_MaxBombs{ 4 };
 	};
 } // namespace dae

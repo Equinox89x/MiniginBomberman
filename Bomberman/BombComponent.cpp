@@ -9,6 +9,7 @@
 
 void dae::BombComponent::Update()
 {
+	LifeTime += Timer::GetInstance().GetDeltaTime();
 	auto comp{ m_Scene->GetGameObject(EnumStrings[Names::PathCreator])->GetComponent<PathwayCreatorComponent>() };
 	auto pathways{ comp->GetPathways() };
 

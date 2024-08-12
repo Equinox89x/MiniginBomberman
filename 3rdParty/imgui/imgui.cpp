@@ -1009,6 +1009,8 @@ CODE
 #pragma warning (disable: 26812)            // [Static Analyzer] The enum type 'xxx' is unscoped. Prefer 'enum class' over 'enum' (Enum.3).
 #endif
 
+#pragma warning(disable : 28182)  
+
 // Clang/GCC warnings with -Weverything
 #if defined(__clang__)
 #if __has_warning("-Wunknown-warning-option")
