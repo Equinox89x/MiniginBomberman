@@ -149,6 +149,6 @@ namespace dae
 		std::string m_ObjectName{};
 		glm::vec2 m_Center{};
 
-		bool m_MarkedForDelete{ false }, m_NeedsUpdate{ true };
+		bool m_MarkedForDelete{ false };
 	};
 }

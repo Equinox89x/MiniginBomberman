@@ -233,15 +233,18 @@ void dae::AliveState::Update(GameObject* pGameObject)
 
 void dae::DeathState::OnStart(GameObject* pGameObject)
 {
+	if (m_Scene->GetName() == EnumStrings[Names::VersusLevelName])
+	{
+		FileReader* file{ new FileReader("../Data/save.json") };
+		file->WriteData({ { "Score", pGameObject->GetName() }, { "Lives", "0" } });
+		delete file;
+
+		auto* global{ m_Scene->GetGameObject(EnumStrings[Names::Global]) };
+		global->GetComponent<MenuComponent>()->GameOver();
+	}
 	if (pGameObject->GetComponent<PlayerComponent>())
 	{
-		if (m_Scene->GetName() == EnumStrings[Names::VersusLevelName])
-		{
-			FileReader* file{ new FileReader("../Data/save.json") };
-			file->WriteData({ { "Score", pGameObject->GetName() }, { "Lives", "0" } });
-			delete file;
-		}
-		else
+		if (m_Scene->GetName() != EnumStrings[Names::VersusLevelName])
 		{
 			if (auto player{ m_Scene->GetGameObject(EnumStrings[Names::Player0]) })
 			{

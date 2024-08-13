@@ -161,15 +161,25 @@ namespace dae
 			if (auto comp{ m_pObject->GetComponent<EntityMovementComponent>() })
 			{
 				auto bombs{ m_Scene->GetGameObjects(EnumStrings[Names::Bomb]) };
-				auto playerComp{ m_pObject->GetComponent<PlayerComponent>() };
-				if (static_cast<int>(bombs.size()) >= playerComp->GetMaxBombs())
-					return;
+				std::vector<GameObject*> playerBombs{};
+				std::copy_if(bombs.begin(), bombs.end(), std::back_inserter(playerBombs),
+							 [&](GameObject* go)
+							 {
+								 auto bombComp{ go->GetComponent<BombComponent>() };
+								 return bombComp->BombDropper->GetName() == m_pObject->GetName();
+							 });
 
-				auto pBombObject = std::make_unique<GameObject>();
-				pBombObject->SetName(EnumStrings[Names::Bomb]);
-				int tileId{ comp->GetCurrentTileId() };
-				pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene, m_pObject))->StartBomb(tileId, playerComp->GetBombStrength());
-				m_Scene->Add(std::move(pBombObject));
+				if (auto playerComp{ m_pObject->GetComponent<PlayerComponent>() })
+				{
+					if (static_cast<int>(playerBombs.size()) >= playerComp->GetMaxBombs())
+						return;
+
+					auto pBombObject = std::make_unique<GameObject>();
+					pBombObject->SetName(EnumStrings[Names::Bomb]);
+					int tileId{ comp->GetCurrentTileId() };
+					pBombObject->AddComponent(std::make_unique<dae::BombComponent>(m_Scene, m_pObject))->StartBomb(tileId, playerComp->GetBombStrength());
+					m_Scene->Add(std::move(pBombObject));
+				}
 			}
 		}
 		void Execute(glm::vec2) override{};
